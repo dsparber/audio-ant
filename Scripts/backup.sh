@@ -6,16 +6,17 @@ backupName="backup"
 packageLists="packageLists"
 
 # current time
+userName="pi"
 now="$(date +'%Y-%m-%d_%H-%M-%S')"
 echo "Backup process stared: (timestamp: $now):"
 
 # create backup folder
 echo "Copying contents..."
-mkdir $backup
+mkdir $backupName
 
 # copying files
 cp -r /etc $backupName
-cp -r $USER $backupName
+cp -r $userName $backupName
 
 # creating and copying package list
 mkdir $backupName/$packageLists
@@ -25,7 +26,7 @@ apt-key exportall > $backupName/$packageLists/repo.keys
 
 # creating archive (tar.gz)
 echo "Creating archive..."
-tar czf $now.tar.gz $backup
+tar czf $now.tar.gz $backupName
 
 # copying archive to destination device
 echo "Enter the connection information:"
@@ -37,7 +38,7 @@ rsync -ze ssh $now.tar.gz $destUser@$destIP:$destFolder
 echo "Transmitting backup..."
 
 # tidy up
-rm -R $backup
+rm -R $backupName
 rm $now.tar.gz
 echo "finished"
 
