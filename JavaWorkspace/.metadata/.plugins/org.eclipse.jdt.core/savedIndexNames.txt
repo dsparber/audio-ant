@@ -1,0 +1,19 @@
+INDEX VERSION 1.127+/Users/daniel/Documents/Arbeiten/Diplomarbeit AudioAnt/Workspace/JavaWorkspace/.metadata/.plugins/org.eclipse.jdt.core
+3012350825.index
+2740727979.index
+1896127371.index
+357248270.index
+493623724.index
+3262681985.index
+3877361413.index
+3801209182.index
+1864035518.index
+1138825561.index
+1926795589.index
+656804619.index
+2078654075.index
+2933912217.index
+502482616.index
+1271342938.index
+2538010415.index
+4293107288.index
