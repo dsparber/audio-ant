@@ -10,7 +10,6 @@ public class WavAudioFile {
 
 	public WavAudioFile(String fileName) throws IOException {
 		createFile(fileName);
-		writeHeader();
 	}
 
 	public void createFile(String fileName) throws IOException {
@@ -38,6 +37,7 @@ public class WavAudioFile {
 			sample = (short) (amp * Math.sin(phase + 2 * Math.PI * f * i / 44100));
 			writeShort(sample);
 		}
+		writeHeader();
 	}
 
 	private void writeShort(short val) throws IOException {
@@ -63,6 +63,7 @@ public class WavAudioFile {
 		byte[] chunk2 = { 'f', 'm', 't', ' ' };
 		file.write(chunk2);
 		len = 16; // Laenge der auf den fmt -Chunk folgenden Daten
+		writeInt(len);
 		writeShort(waveFormatEx.wFormatTag);
 		writeShort(waveFormatEx.nChannels);
 		writeInt(waveFormatEx.nSamplesPerSec);

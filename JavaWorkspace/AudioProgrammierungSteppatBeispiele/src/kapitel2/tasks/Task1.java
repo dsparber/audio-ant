@@ -18,6 +18,5 @@ public class Task1 {
 
 		file = new WavAudioFile("out/task1/1760Hz.wav");
 		file.createAudioData(32767, 1760, 0, 88200);
-
 	}
 }
