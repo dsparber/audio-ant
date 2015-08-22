@@ -9,11 +9,15 @@ public class WavAudioFile {
 	private WaveFormatEx waveFormatEx;
 
 	public WavAudioFile(String fileName) throws IOException {
-		createFile(fileName);
+		this.file = new RandomAccessFile(fileName, "rw");
 	}
 
-	public void createFile(String fileName) throws IOException {
-		file = new RandomAccessFile(fileName, "rw");
+	public void createFile() throws IOException {
+
+		createFile((short) 16, 44100);
+	}
+
+	public void createFile(short bitsPerSample, int samplesPerSec) throws IOException {
 		file.setLength(0);
 		int i;
 		for (i = 0; i < 44; i++) {
@@ -22,14 +26,17 @@ public class WavAudioFile {
 		waveFormatEx = new WaveFormatEx();
 		waveFormatEx.wFormatTag = 1;
 		waveFormatEx.nChannels = 1;
-		waveFormatEx.nSamplesPerSec = 44100;
-		waveFormatEx.nAvgBytesPerSec = 88200;
-		waveFormatEx.nBlockAlign = 2;
-		waveFormatEx.wBitsPerSample = 16;
+		waveFormatEx.nSamplesPerSec = samplesPerSec;
+		waveFormatEx.wBitsPerSample = bitsPerSample;
 		waveFormatEx.cbSize = 0;
+
+		waveFormatEx.nBlockAlign = (short) (waveFormatEx.nChannels * ((waveFormatEx.wBitsPerSample + 7) / 8));
+		waveFormatEx.nAvgBytesPerSec = waveFormatEx.nBlockAlign * waveFormatEx.nSamplesPerSec;
+
 	}
 
 	public void createAudioData(double amp, double f, double phase, int length) throws IOException {
+		createFile();
 		int i;
 		phase = phase * Math.PI / 180;
 		short sample;
@@ -76,40 +83,13 @@ public class WavAudioFile {
 		writeInt(len);
 	}
 
-	public void DoubleToLongDouble(byte[] outputValue, double inputValue) {
-		// Berechnung des Exponenten:
-		int exponent = (int) Math.floor(Math.log(inputValue) / Math.log(2));
-		// Berechnung der Mantisse:
-		double temp = Math.pow(2, 63) * (inputValue - Math.pow(2, exponent)) / Math.pow(2, exponent);
-		long fraction = (long) temp;
-		long ipart = 0x80000000;
-		ipart = ipart << 32;
-		fraction = fraction | ipart;
-		// Werte in das Datenfeld eintragen:
-		int biasedExponent = exponent + 16383;
-		outputValue[0] = (byte) (biasedExponent >> 8);
-		outputValue[1] = (byte) biasedExponent;
-		outputValue[2] = (byte) (fraction >> 56);
-		outputValue[3] = (byte) (fraction >> 48);
-		outputValue[4] = (byte) (fraction >> 40);
-		outputValue[5] = (byte) (fraction >> 32);
-		outputValue[6] = (byte) (fraction >> 24);
-		outputValue[7] = (byte) (fraction >> 16);
-		outputValue[8] = (byte) (fraction >> 8);
-		outputValue[9] = (byte) (fraction >> 0);
-	}
-
-	public int readHeader(RandomAccessFile file, WaveFormatEx waveFormatEx) throws IOException {
-		// Filepointer auf Dateianfang setzen:
+	public WaveFormatEx readHeader() throws IOException {
+		WaveFormatEx waveFormatEx = new WaveFormatEx();
 		file.seek(0);
-		// Suchen des fmt-Chunks:
 		int searchChunk = 0;
 		searchChunk = 'f' << 24 | 'm' << 16 | 't' << 8 | ' ';
-		int i;
-		int len = 0;
-		for (i = 0; i < file.length() - 4; i++) {
-			if (file.readInt() == searchChunk) { // Laenge des fmt-Chunks
-				len = file.readInt();
+		for (int i = 0; i < file.length() - 4; i++) {
+			if (file.readInt() == searchChunk) {
 				break;
 			}
 			file.seek(file.getFilePointer() - 3);
@@ -121,20 +101,8 @@ public class WavAudioFile {
 		waveFormatEx.nAvgBytesPerSec = file.readInt();
 		waveFormatEx.nBlockAlign = file.readShort();
 		waveFormatEx.wBitsPerSample = file.readShort();
-		// Filepointer auf Dateianfang setzen:
-		file.seek(0);
-		// Suchen des data-Chunks:
-		searchChunk = 0;
-		searchChunk = 'd' << 24 | 'a' << 16 | 't' << 8 | 'a';
-		for (i = 0; i < file.length() - 4; i++) {
-			if (file.readInt() == searchChunk) {
-				// Laenge des data-Chunks:
-				len = file.readInt();
-				break;
-			}
-			file.seek(file.getFilePointer() - 3);
-		}
-		return len;
+
+		return waveFormatEx;
 	}
 
 	public double getAmplificationFactor(int numberOfBytes) throws IOException {
