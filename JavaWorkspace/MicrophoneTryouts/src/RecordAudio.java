@@ -17,10 +17,16 @@ import javax.sound.sampled.TargetDataLine;
  */
 
 public class RecordAudio {
-	AudioFormat audioFormat;
-	TargetDataLine targetDataLine;
+	private AudioFormat audioFormat;
+	private TargetDataLine targetDataLine;
 
-	public void captureAudio() throws LineUnavailableException {
+	private String outputPath;
+
+	public RecordAudio(String outputPath) {
+		this.outputPath = outputPath;
+	}
+
+	public void startCapturing() throws LineUnavailableException {
 		audioFormat = getAudioFormat();
 
 		Info dataLineInfo = new Info(TargetDataLine.class, audioFormat);
@@ -51,7 +57,7 @@ public class RecordAudio {
 		@Override
 		public void run() {
 			Type fileType = Type.WAVE;
-			File audioFile = new File("out/recording.wav");
+			File audioFile = new File(outputPath);
 
 			try {
 				targetDataLine.open(audioFormat);

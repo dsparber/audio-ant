@@ -1,6 +1,5 @@
 import java.io.FileOutputStream;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import jAudioFeatureExtractor.Controller;
 import jAudioFeatureExtractor.ACE.DataTypes.Batch;
@@ -82,11 +81,11 @@ public class UseJAudio {
 
 		batch = new Batch();
 
-		LinkedList<RecordingInfo> recordings = new LinkedList<RecordingInfo>();
-		for (String path : filePaths) {
-			recordings.add(new RecordingInfo(path));
+		RecordingInfo[] recordings = new RecordingInfo[filePaths.length];
+		for (int i = 0; i < filePaths.length; i++) {
+			recordings[i] = new RecordingInfo(filePaths[i]);
 		}
-		batch.setRecording((RecordingInfo[]) recordings.toArray());
+		batch.setRecording(recordings);
 
 		batch.setSettings(windowSize, windowOverlap, samplingRate, normalise, perWindow, overall, outputType);
 
