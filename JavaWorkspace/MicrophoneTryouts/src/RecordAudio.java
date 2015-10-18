@@ -13,14 +13,14 @@ import javax.sound.sampled.TargetDataLine;
  * @author Daniel Sparber
  * @year 2015
  *
- * @version 0.9
+ * @version 1.0
  */
 
 public class RecordAudio {
 	AudioFormat audioFormat;
 	TargetDataLine targetDataLine;
 
-	private void captureAudio() throws LineUnavailableException {
+	public void captureAudio() throws LineUnavailableException {
 		audioFormat = getAudioFormat();
 
 		Info dataLineInfo = new Info(TargetDataLine.class, audioFormat);
@@ -42,7 +42,7 @@ public class RecordAudio {
 		return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
 	}
 
-	private void stopCapture() {
+	public void stopCapture() {
 		targetDataLine.stop();
 		targetDataLine.close();
 	}
