@@ -13,7 +13,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 public class TestRServe {
 	public static void main(String[] args) throws RserveException, REXPMismatchException {
 
-		RConnection connection = new RConnection();
+		RConnection connection = new RConnection("localhost");
 		REXP x = connection.eval("R.version.string");
 		System.out.println(x.asString());
 	}
