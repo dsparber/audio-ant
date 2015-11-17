@@ -73,7 +73,7 @@ public class WavAudioFileReader {
 		return waveFormat;
 	}
 
-	public Integer[] readData() throws IOException {
+	public int[] readData() throws IOException {
 
 		ArrayList<Integer> samples = new ArrayList<Integer>();
 
@@ -99,8 +99,10 @@ public class WavAudioFileReader {
 			}
 		}
 
-		Integer[] result = new Integer[samples.size()];
-		samples.toArray(result);
+		int[] result = new int[samples.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = samples.get(i);
+		}
 		return result;
 	}
 

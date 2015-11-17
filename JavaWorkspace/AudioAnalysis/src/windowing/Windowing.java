@@ -2,8 +2,7 @@ package windowing;
 
 public class Windowing {
 
-	public static Integer[][] generateHannWindows(final Integer[] audioSignal, final Integer frameLength,
-			final float overlap) {
+	public static int[][] generateHannWindows(final int[] audioSignal, final Integer frameLength, final float overlap) {
 
 		// Calculate multiplier
 		double[] w = new double[frameLength];
@@ -13,7 +12,7 @@ public class Windowing {
 			w[n] = 0.5 * (1 - Math.cos((2 * Math.PI * n) / (frameLength - 1)));
 		}
 
-		Integer[][] windows = createWindows(audioSignal, frameLength, overlap);
+		int[][] windows = createWindows(audioSignal, frameLength, overlap);
 
 		// Apply Hann windowing
 		for (int i = 0; i < windows.length; i++) {
@@ -25,8 +24,7 @@ public class Windowing {
 		return windows;
 	}
 
-	private static Integer[][] createWindows(final Integer[] audioSignal, final Integer frameLength,
-			final float overlap) {
+	private static int[][] createWindows(final int[] audioSignal, final Integer frameLength, final float overlap) {
 
 		// Calculate number of overlapping windows
 		int numOverlap = Math.round(frameLength * overlap);
@@ -46,7 +44,7 @@ public class Windowing {
 		}
 
 		// Create windows
-		Integer[][] windows = new Integer[numFrames][frameLength];
+		int[][] windows = new int[numFrames][frameLength];
 
 		for (int i = 0; i < windows.length; i++) {
 			for (int j = 0; j < windows[i].length; j++) {
@@ -55,7 +53,6 @@ public class Windowing {
 
 				windows[i][j] = paddedAudioSignal[n];
 			}
-			System.out.println();
 		}
 
 		return windows;
