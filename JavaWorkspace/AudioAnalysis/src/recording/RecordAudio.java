@@ -39,7 +39,7 @@ public class RecordAudio {
 
 	}
 
-	private AudioFormat getAudioFormat() {
+	public AudioFormat getAudioFormat() {
 
 		float sampleRate = 16000;
 		int sampleSizeInBits = 16;

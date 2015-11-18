@@ -27,6 +27,8 @@ public class LearnSound {
 	private static final String AUDIO_FILE = "out.wav";
 	private static final String CSV_FILE = "features.csv";
 
+	private static float sampleRate;
+
 	public static void main(String[] args)
 			throws LineUnavailableException, IOException, REngineException, REXPMismatchException {
 
@@ -50,6 +52,9 @@ public class LearnSound {
 		recordAudio.startCapturing();
 		s.nextLine();
 		recordAudio.stopCapture();
+
+		sampleRate = recordAudio.getAudioFormat().getSampleRate();
+
 		System.out.println("Recording ended");
 		s.close();
 	}
@@ -70,7 +75,7 @@ public class LearnSound {
 		for (int i = 0; i < windows.length; i++) {
 
 			rConnection.assign("window", windows[i]);
-			rConnection.eval("wave <- Wave(window)");
+			rConnection.eval("wave <- Wave(window, samp.rate = " + sampleRate + ")");
 			rConnection.eval("spec <- meanspec(wave, plot = FALSE)");
 			REXP strongestFreq = rConnection.eval("specprop(spec)$mode");
 			result[i] = strongestFreq.asDouble();
