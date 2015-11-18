@@ -24,7 +24,7 @@ public class Windowing {
 		return windows;
 	}
 
-	private static int[][] createWindows(final int[] audioSignal, final Integer frameLength, final float overlap) {
+	public static int[][] createWindows(final int[] audioSignal, final Integer frameLength, final float overlap) {
 
 		// Calculate number of overlapping windows
 		int numOverlap = Math.round(frameLength * overlap);

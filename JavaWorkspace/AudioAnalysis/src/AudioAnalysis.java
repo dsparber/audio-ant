@@ -10,6 +10,13 @@ import org.rosuda.REngine.Rserve.RConnection;
 import wave.WavAudioFileReader;
 import windowing.Windowing;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class AudioAnalysis {
 
 	public static void main(String[] args)
