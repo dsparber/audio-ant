@@ -1,4 +1,4 @@
-package recording;
+package microphone;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+
+import parameters.AudioParamters;
 
 /**
  * @author Daniel Sparber
@@ -29,7 +31,7 @@ public class RecordAudio {
 	}
 
 	public void startCapturing() throws LineUnavailableException {
-		audioFormat = getAudioFormat();
+		audioFormat = AudioParamters.AUDIO_FORMAT;
 
 		Info dataLineInfo = new Info(TargetDataLine.class, audioFormat);
 
@@ -37,17 +39,6 @@ public class RecordAudio {
 
 		new CaptureThread().start();
 
-	}
-
-	public AudioFormat getAudioFormat() {
-
-		float sampleRate = 16000;
-		int sampleSizeInBits = 16;
-		int channels = 1;
-		boolean bigEndian = false;
-		boolean signed = true;
-
-		return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
 	}
 
 	public void stopCapture() {
@@ -58,7 +49,7 @@ public class RecordAudio {
 	private class CaptureThread extends Thread {
 		@Override
 		public void run() {
-			Type fileType = Type.WAVE;
+			Type fileType = AudioParamters.FILE_TYPE;
 			File audioFile = new File(outputPath);
 
 			try {

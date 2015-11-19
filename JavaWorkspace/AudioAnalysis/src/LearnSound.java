@@ -9,7 +9,8 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 
 import csv.CsvWriter;
-import recording.RecordAudio;
+import microphone.RecordAudio;
+import parameters.AudioParamters;
 import wave.WavAudioFileReader;
 import windowing.Windowing;
 
@@ -26,8 +27,6 @@ public class LearnSound {
 	private static final String FOLDER = "/Users/daniel/Desktop/";
 	private static final String AUDIO_FILE = "out.wav";
 	private static final String CSV_FILE = "features.csv";
-
-	private static float sampleRate;
 
 	public static void main(String[] args)
 			throws LineUnavailableException, IOException, REngineException, REXPMismatchException {
@@ -53,8 +52,6 @@ public class LearnSound {
 		s.nextLine();
 		recordAudio.stopCapture();
 
-		sampleRate = recordAudio.getAudioFormat().getSampleRate();
-
 		System.out.println("Recording ended");
 		s.close();
 	}
@@ -63,7 +60,7 @@ public class LearnSound {
 
 		WavAudioFileReader reader = new WavAudioFileReader(FOLDER + AUDIO_FILE);
 
-		int[][] windows = Windowing.createWindows(reader.readData(), 2048, 0f);
+		int[][] windows = Windowing.createWindows(reader.readData(), AudioParamters.WINDOW_SIZE, 0f);
 
 		RConnection rConnection = new RConnection();
 
@@ -75,7 +72,7 @@ public class LearnSound {
 		for (int i = 0; i < windows.length; i++) {
 
 			rConnection.assign("window", windows[i]);
-			rConnection.eval("wave <- Wave(window, samp.rate = " + sampleRate + ")");
+			rConnection.eval("wave <- Wave(window, samp.rate = " + AudioParamters.SAMPLE_RATE + ")");
 			rConnection.eval("spec <- meanspec(wave, plot = FALSE)");
 			REXP strongestFreq = rConnection.eval("specprop(spec)$mode");
 			result[i] = strongestFreq.asDouble();

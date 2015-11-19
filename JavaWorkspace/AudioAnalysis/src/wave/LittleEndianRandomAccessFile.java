@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+
+import tools.LittleEndian;
 
 public class LittleEndianRandomAccessFile extends RandomAccessFile {
 
@@ -18,23 +18,21 @@ public class LittleEndianRandomAccessFile extends RandomAccessFile {
 	}
 
 	public void write(short val) throws IOException {
-		writeByte(val);
-		writeByte(val >> 8);
+		write(LittleEndian.toBytes(val));
 	}
 
 	@Override
 	public void write(int val) throws IOException {
-		write((short) val);
-		write((short) val >> 16);
+		write(LittleEndian.toBytes(val));
 	}
 
 	public short readTwoBytes() throws IOException {
 		byte[] bytes = { readByte(), readByte() };
-		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+		return LittleEndian.toShort(bytes);
 	}
 
 	public int readInteger() throws IOException {
 		byte[] bytes = { readByte(), readByte(), readByte(), readByte() };
-		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
+		return LittleEndian.toInt(bytes);
 	}
 }
