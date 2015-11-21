@@ -11,6 +11,7 @@ import org.rosuda.REngine.Rserve.RConnection;
 import csv.CsvWriter;
 import microphone.RecordAudio;
 import parameters.AudioParamters;
+import parameters.WorkingDirectory;
 import wave.WavAudioFileReader;
 import windowing.Windowing;
 
@@ -24,25 +25,20 @@ import windowing.Windowing;
 
 public class LearnSound {
 
-	private static final String FOLDER = "/Users/daniel/Desktop/";
-	private static final String AUDIO_FILE = "out.wav";
-	private static final String CSV_FILE = "features.csv";
-
-	public static void main(String[] args)
-			throws LineUnavailableException, IOException, REngineException, REXPMismatchException {
+	public void learnSound() throws LineUnavailableException, IOException, REngineException, REXPMismatchException {
 
 		recordAudio();
 
+		System.out.println("Extracting features...");
 		Double[] strongestFreq = extractStrongestFrequency();
 
-		CsvWriter writer = new CsvWriter(FOLDER + CSV_FILE);
+		CsvWriter writer = new CsvWriter(WorkingDirectory.FOLDER + WorkingDirectory.FEATURES_CSV);
 		writer.writeSingleColmn(strongestFreq);
-
-		System.out.println("Program terminated");
+		System.out.println("Features extracted");
 	}
 
-	private static void recordAudio() throws LineUnavailableException {
-		RecordAudio recordAudio = new RecordAudio(FOLDER + AUDIO_FILE);
+	private void recordAudio() throws LineUnavailableException {
+		RecordAudio recordAudio = new RecordAudio(WorkingDirectory.FOLDER + WorkingDirectory.AUDIO_FILE);
 
 		Scanner s = new Scanner(System.in);
 		System.out.println("Hit return to start recording");
@@ -56,9 +52,9 @@ public class LearnSound {
 		s.close();
 	}
 
-	private static Double[] extractStrongestFrequency() throws IOException, REngineException, REXPMismatchException {
+	private Double[] extractStrongestFrequency() throws IOException, REngineException, REXPMismatchException {
 
-		WavAudioFileReader reader = new WavAudioFileReader(FOLDER + AUDIO_FILE);
+		WavAudioFileReader reader = new WavAudioFileReader(WorkingDirectory.FOLDER + WorkingDirectory.AUDIO_FILE);
 
 		int[][] windows = Windowing.createWindows(reader.readData(), AudioParamters.WINDOW_SIZE, 0f);
 

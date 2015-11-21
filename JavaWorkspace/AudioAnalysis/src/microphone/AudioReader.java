@@ -13,6 +13,13 @@ import javax.sound.sampled.TargetDataLine;
 import parameters.AudioParamters;
 import tools.LittleEndian;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class AudioReader extends Observable {
 
 	private TargetDataLine line;
@@ -56,11 +63,16 @@ public class AudioReader extends Observable {
 
 				byte[] inBytes = new byte[line.getFormat().getSampleSizeInBits() / 8];
 
-				Integer[] windows = new Integer[AudioParamters.WINDOW_SIZE];
+				int[] windows = new int[AudioParamters.WINDOW_SIZE];
 
 				int i = 0;
 				while (stream.read(inBytes) != -1) {
-					int sample = LittleEndian.toInt(inBytes);
+					int sample;
+					if (line.getFormat().getFrameSize() == 2) {
+						sample = LittleEndian.toShort(inBytes);
+					} else {
+						sample = LittleEndian.toInt(inBytes);
+					}
 					windows[i++] = sample;
 
 					if (i == windows.length) {
