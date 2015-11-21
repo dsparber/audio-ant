@@ -1,5 +1,12 @@
 package windowing;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class Windowing {
 
 	public static int[][] generateHannWindows(final int[] audioSignal, final Integer frameLength, final float overlap) {

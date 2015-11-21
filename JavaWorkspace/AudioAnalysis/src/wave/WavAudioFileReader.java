@@ -3,6 +3,13 @@ package wave;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class WavAudioFileReader {
 
 	private LittleEndianRandomAccessFile file;

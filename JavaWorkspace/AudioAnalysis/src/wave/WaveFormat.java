@@ -1,5 +1,12 @@
 package wave;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class WaveFormat {
 	private Format format;
 	private short channels;

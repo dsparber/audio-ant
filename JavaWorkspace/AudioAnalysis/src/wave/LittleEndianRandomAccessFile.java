@@ -7,6 +7,13 @@ import java.io.RandomAccessFile;
 
 import tools.LittleEndian;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class LittleEndianRandomAccessFile extends RandomAccessFile {
 
 	public LittleEndianRandomAccessFile(String name, String mode) throws FileNotFoundException {

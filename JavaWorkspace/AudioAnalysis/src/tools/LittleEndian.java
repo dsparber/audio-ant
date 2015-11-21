@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class LittleEndian {
 
 	public static byte[] toBytes(short val) throws IOException {

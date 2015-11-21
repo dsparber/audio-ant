@@ -3,6 +3,13 @@ package parameters;
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioFormat;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2015
+ *
+ * @version 1.0
+ */
 public class AudioParamters {
 
 	public static final float SAMPLE_RATE = 16000;
