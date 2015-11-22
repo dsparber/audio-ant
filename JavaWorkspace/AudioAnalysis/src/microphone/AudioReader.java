@@ -28,6 +28,8 @@ public class AudioReader extends Observable {
 	private AudioFormat format;
 	private DataLine.Info info;
 
+	private StreamThread thread;
+
 	public AudioReader() {
 
 		format = AudioParamters.AUDIO_FORMAT;
@@ -43,7 +45,7 @@ public class AudioReader extends Observable {
 
 	public void streamWindows() {
 
-		StreamThread thread = new StreamThread();
+		thread = new StreamThread();
 		thread.start();
 
 	}
@@ -66,7 +68,7 @@ public class AudioReader extends Observable {
 				int[] windows = new int[AudioParamters.WINDOW_SIZE];
 
 				int i = 0;
-				while (stream.read(inBytes) != -1) {
+				while (stream.read(inBytes) > 0) {
 					int sample;
 					if (line.getFormat().getFrameSize() == 2) {
 						sample = LittleEndian.toShort(inBytes);

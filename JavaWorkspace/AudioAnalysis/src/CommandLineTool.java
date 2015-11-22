@@ -16,10 +16,12 @@ import org.rosuda.REngine.Rserve.RserveException;
  */
 public class CommandLineTool {
 
-	private static final char LEARN_OPTION = 'n';
-	private static final char START_STREAM_OPTION = 's';
-	private static final char STOP_STREAM_OPTION = 'e';
+	private static final char LEARN_OPTION = 'l';
+	private static final char ANALYSE_STREAM_OPTION = 'a';
+	private static final char END_STREAM_ANALYSIS_OPTION = 'e';
 	private static final char QUIT_OPTION = 'q';
+
+	private static AnalyseStream analyse;
 
 	public static void main(String[] args) {
 
@@ -27,48 +29,90 @@ public class CommandLineTool {
 
 		Scanner s = new Scanner(System.in);
 
-		AnalyseStream analyse = null;
-
 		char option;
-		while ((option = s.nextLine().charAt(0)) != QUIT_OPTION) {
+		while ((option = readSingelChar(s)) != QUIT_OPTION) {
+
 			if (option == LEARN_OPTION) {
 
-				try {
-					new LearnSound().learnSound();
-				} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException e) {
-					e.printStackTrace();
-				}
+				learnSound(s);
 
-			} else if (option == START_STREAM_OPTION) {
+			} else if (option == ANALYSE_STREAM_OPTION) {
 
-				try {
-					analyse = new AnalyseStream();
-					analyse.start();
-				} catch (RserveException | IOException e) {
-					e.printStackTrace();
-				}
+				analyseStream();
 
-			} else if (option == STOP_STREAM_OPTION) {
+			} else if (option == END_STREAM_ANALYSIS_OPTION) {
 
-				try {
-					analyse.stop();
-				} catch (NullPointerException e) {
-					System.out.println("Audio analysis never started");
-				}
+				endAnalysing();
 
 			} else {
 				System.out.println("Invalid Option");
+				printUsage();
 			}
-
 		}
 		s.close();
+		System.out.println("Program terminated");
 	}
 
 	private static void printUsage() {
 		System.out.println("Usage:");
 		System.out.println(LEARN_OPTION + ": learn new Signal");
-		System.out.println(START_STREAM_OPTION + ": start analysing stream");
-		System.out.println(STOP_STREAM_OPTION + ": stop the analysis");
+		System.out.println(ANALYSE_STREAM_OPTION + ": analyse stream");
+		System.out.println(END_STREAM_ANALYSIS_OPTION + ": end the analysing process");
 		System.out.println(QUIT_OPTION + ": quit program");
+	}
+
+	private static void analyseStream() {
+		try {
+			EventLogger logger = new EventLogger();
+			analyse = new AnalyseStream();
+			analyse.addObserver(logger);
+			analyse.start();
+			System.out.println("Analysing stream");
+		} catch (RserveException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void endAnalysing() {
+		try {
+			analyse.stop();
+			System.out.println("Analysing stopped");
+		} catch (NullPointerException e) {
+			System.out.println("Audio analysis never started");
+		}
+	}
+
+	private static void learnSound(Scanner scanner) {
+
+		try {
+			LearnSound learnSound = new LearnSound();
+
+			System.out.println("Hit return to start recording");
+			scanner.nextLine();
+
+			learnSound.startCapturing();
+			System.out.println("Start recording (Hit return to end)");
+
+			scanner.nextLine();
+			learnSound.stopCapturing();
+			System.out.println("Recording ended");
+			System.out.print("Extracting features...");
+
+			learnSound.extractFeatures();
+			System.out.println("done");
+
+		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static char readSingelChar(Scanner scanner) {
+		String in = scanner.nextLine();
+
+		if (in.length() > 0) {
+			return in.charAt(0);
+		}
+		return ' ';
 	}
 }
