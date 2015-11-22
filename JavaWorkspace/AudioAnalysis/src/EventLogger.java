@@ -6,7 +6,8 @@ import java.util.Observer;
 
 public class EventLogger implements Observer {
 
-	private long lastUpdate = System.currentTimeMillis();
+	private boolean soundDetected = false;
+	private int count = 0;
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -17,14 +18,32 @@ public class EventLogger implements Observer {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(date);
 
-		if (currentMillis - lastUpdate > 750) {
+		boolean soundDetected = (boolean) arg;
+
+		if (this.soundDetected && !soundDetected) {
+
+			if (count <= 2) {
+				System.out.print(" \t\t(unlikely)");
+			} else if (count <= 4) {
+				System.out.print("\t\t(maybe)");
+			} else if (count <= 6) {
+				System.out.print("\t\t(likley)");
+			} else {
+				System.out.print("  \t(almost sure)");
+			}
+
+		} else if (!this.soundDetected && soundDetected) {
+
 			System.out.printf("\n%d:%d:%d.%d:\tSound dedected.", calendar.get(Calendar.HOUR_OF_DAY),
 					calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
-		} else {
+			count = 1;
+
+		} else if (soundDetected) {
 			System.out.print('.');
+			count++;
 		}
 
-		lastUpdate = currentMillis;
+		this.soundDetected = soundDetected;
 	}
 
 }

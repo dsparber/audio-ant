@@ -73,9 +73,11 @@ public class AnalyseStream extends Observable implements Observer {
 
 			recentFreq.add(strongestFreq);
 
+			setChanged();
 			if (recentFreqMatch()) {
-				setChanged();
-				notifyObservers();
+				notifyObservers(true);
+			} else {
+				notifyObservers(false);
 			}
 
 		} catch (REngineException | REXPMismatchException e) {
