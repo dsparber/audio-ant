@@ -1,4 +1,4 @@
-package microphone;
+package io.microphone;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -10,7 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
-import parameters.AudioParamters;
+import audio.parameters.AudioParamters;
 import tools.LittleEndian;
 
 /**
@@ -20,7 +20,7 @@ import tools.LittleEndian;
  *
  * @version 1.0
  */
-public class AudioReader extends Observable {
+public class AudioStreamReader extends Observable {
 
 	private TargetDataLine line;
 	private AudioInputStream stream;
@@ -30,7 +30,7 @@ public class AudioReader extends Observable {
 
 	private StreamThread thread;
 
-	public AudioReader() {
+	public AudioStreamReader() {
 
 		format = AudioParamters.AUDIO_FORMAT;
 		info = new DataLine.Info(TargetDataLine.class, format);

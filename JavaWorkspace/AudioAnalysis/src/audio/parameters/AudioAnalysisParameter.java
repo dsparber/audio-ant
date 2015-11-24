@@ -1,4 +1,4 @@
-package parameters;
+package audio.parameters;
 
 public class AudioAnalysisParameter {
 
@@ -6,6 +6,4 @@ public class AudioAnalysisParameter {
 
 	public static final int MIN_FREQ = 500;
 	public static final int MAX_FREQ = 5000;
-
-	public static final int NUMBER_COMPARISON_WINDOWS = 10;
 }

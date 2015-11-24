@@ -1,4 +1,4 @@
-package csv;
+package io.csv;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

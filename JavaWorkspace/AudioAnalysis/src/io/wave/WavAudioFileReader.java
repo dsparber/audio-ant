@@ -1,7 +1,10 @@
-package wave;
+package io.wave;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import audio.wave.Format;
+import audio.wave.WaveFormat;
 
 /**
  *

@@ -1,4 +1,4 @@
-package parameters;
+package audio.parameters;
 
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioFormat;

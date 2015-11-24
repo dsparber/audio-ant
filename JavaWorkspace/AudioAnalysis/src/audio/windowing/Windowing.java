@@ -1,4 +1,4 @@
-package windowing;
+package audio.windowing;
 
 /**
  *

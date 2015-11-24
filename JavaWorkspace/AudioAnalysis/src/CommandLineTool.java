@@ -7,6 +7,10 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import audio.analysis.AudioStreamAnalyser;
+import audio.learning.MicrophoneSoundLearner;
+import io.logger.EventLogger;
+
 /**
  *
  * @author Daniel Sparber
@@ -20,8 +24,9 @@ public class CommandLineTool {
 	private static final char ANALYSE_STREAM_OPTION = 'a';
 	private static final char END_STREAM_ANALYSIS_OPTION = 'e';
 	private static final char QUIT_OPTION = 'q';
+	private static final char AUTO_TEST = 't';
 
-	private static AnalyseStream analyse;
+	private static AudioStreamAnalyser analyser;
 
 	public static void main(String[] args) {
 
@@ -44,6 +49,10 @@ public class CommandLineTool {
 
 				endAnalysing();
 
+			} else if (option == AUTO_TEST) {
+
+				performAutoTest();
+
 			} else {
 				System.out.println("Invalid Option");
 				printUsage();
@@ -58,15 +67,16 @@ public class CommandLineTool {
 		System.out.println(LEARN_OPTION + ": learn new Signal");
 		System.out.println(ANALYSE_STREAM_OPTION + ": analyse stream");
 		System.out.println(END_STREAM_ANALYSIS_OPTION + ": end the analysing process");
+		System.out.println(AUTO_TEST + ": start an automised test");
 		System.out.println(QUIT_OPTION + ": quit program");
 	}
 
 	private static void analyseStream() {
 		try {
 			EventLogger logger = new EventLogger();
-			analyse = new AnalyseStream();
-			analyse.addObserver(logger);
-			analyse.start();
+			analyser = new AudioStreamAnalyser();
+			analyser.addObserver(logger);
+			analyser.start();
 			System.out.println("Analysing stream");
 		} catch (RserveException | IOException e) {
 			e.printStackTrace();
@@ -75,7 +85,7 @@ public class CommandLineTool {
 
 	private static void endAnalysing() {
 		try {
-			analyse.stop();
+			analyser.stop();
 			System.out.println("Analysing stopped");
 		} catch (NullPointerException e) {
 			System.out.println("Audio analysis never started");
@@ -85,7 +95,7 @@ public class CommandLineTool {
 	private static void learnSound(Scanner scanner) {
 
 		try {
-			LearnSound learnSound = new LearnSound();
+			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner();
 
 			System.out.println("Hit return to start recording");
 			scanner.nextLine();
@@ -105,6 +115,10 @@ public class CommandLineTool {
 			e.printStackTrace();
 		}
 
+	}
+
+	private static void performAutoTest() {
+		// TODO: implement
 	}
 
 	private static char readSingelChar(Scanner scanner) {

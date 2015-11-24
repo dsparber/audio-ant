@@ -1,4 +1,4 @@
-package parameters;
+package io.parameters;
 
 public class WorkingDirectory {
 

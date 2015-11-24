@@ -1,4 +1,4 @@
-package microphone;
+package io.microphone;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +8,11 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine.Info;
+
+import audio.parameters.AudioParamters;
+
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
-
-import parameters.AudioParamters;
 
 /**
  * @author Daniel Sparber
@@ -20,13 +21,13 @@ import parameters.AudioParamters;
  * @version 1.0
  */
 
-public class RecordAudio {
+public class AudioRecorder {
 	private AudioFormat audioFormat;
 	private TargetDataLine targetDataLine;
 
 	private String outputPath;
 
-	public RecordAudio(String outputPath) {
+	public AudioRecorder(String outputPath) {
 		this.outputPath = outputPath;
 	}
 
