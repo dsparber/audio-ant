@@ -5,7 +5,6 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import audio.parameters.AudioParamters;
 import singleton.RConnectionSingletone;
 
 public class WindowAnalyser {
@@ -16,9 +15,9 @@ public class WindowAnalyser {
 		rConnection = RConnectionSingletone.getUniqueInstance();
 	}
 
-	public void assignSamples(int[] samples) throws REngineException {
+	public void assignSamples(int[] samples, float sampleRate) throws REngineException {
 		rConnection.assign("window", samples);
-		rConnection.eval("wave <- Wave(window, samp.rate = " + AudioParamters.SAMPLE_RATE + ")");
+		rConnection.eval("wave <- Wave(window, samp.rate = " + sampleRate + ")");
 	}
 
 	public double getStrongestFrequency() throws RserveException, REXPMismatchException {

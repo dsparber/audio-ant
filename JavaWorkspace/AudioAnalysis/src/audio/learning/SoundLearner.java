@@ -48,8 +48,10 @@ public abstract class SoundLearner {
 
 		for (int samples[] : windows) {
 
+			float sampleRate = reader.getWaveFormat().getSamplesPerSec();
+
 			WindowAnalyser analyser = new WindowAnalyser();
-			analyser.assignSamples(samples);
+			analyser.assignSamples(samples, sampleRate);
 			double strongestFreq = analyser.getStrongestFrequency();
 
 			if (strongestFreq >= AudioAnalysisParameter.MIN_FREQ && strongestFreq <= AudioAnalysisParameter.MAX_FREQ) {

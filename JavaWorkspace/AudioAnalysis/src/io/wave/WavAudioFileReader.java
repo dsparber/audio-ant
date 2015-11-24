@@ -19,7 +19,7 @@ public class WavAudioFileReader {
 	private WaveFormat waveFormat;
 
 	public WavAudioFileReader(String fileName) throws IOException {
-		this.file = new LittleEndianRandomAccessFile(fileName, "r");
+		file = new LittleEndianRandomAccessFile(fileName, "r");
 
 		waveFormat = readHeader();
 	}
@@ -116,4 +116,7 @@ public class WavAudioFileReader {
 		return result;
 	}
 
+	public WaveFormat getWaveFormat() {
+		return waveFormat;
+	}
 }

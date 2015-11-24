@@ -42,9 +42,9 @@ public class AudioAnalyser extends Observable {
 		recentFreqs = new MaxSizeArrayList<Double>(savedFreqs.length);
 	}
 
-	protected void addRecentFreq(int[] samples) throws REngineException, REXPMismatchException {
+	protected void addRecentFreq(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
 		WindowAnalyser analyser = new WindowAnalyser();
-		analyser.assignSamples(samples);
+		analyser.assignSamples(samples, sampleRate);
 		double strongestFreq = analyser.getStrongestFrequency();
 
 		recentFreqs.add(strongestFreq);
@@ -52,7 +52,7 @@ public class AudioAnalyser extends Observable {
 
 	protected double getFreqMatch() {
 
-		int matches = 0;
+		int matches1 = 0;
 
 		for (double savedFreq : savedFreqs) {
 
@@ -62,12 +62,28 @@ public class AudioAnalyser extends Observable {
 				double max = savedFreq + AudioAnalysisParameter.DETECTION_THRESHOLD;
 
 				if (recentFreq < max && recentFreq > min) {
-					matches++;
+					matches1++;
 					break;
 				}
 			}
 		}
 
-		return matches / (double) savedFreqs.length;
+		int matches2 = 0;
+
+		for (double recentFreq : recentFreqs) {
+
+			for (double savedFreq : savedFreqs) {
+
+				double min = savedFreq - AudioAnalysisParameter.DETECTION_THRESHOLD;
+				double max = savedFreq + AudioAnalysisParameter.DETECTION_THRESHOLD;
+
+				if (recentFreq < max && recentFreq > min) {
+					matches2++;
+					break;
+				}
+			}
+		}
+
+		return matches1 * matches2 / (double) (savedFreqs.length * recentFreqs.size());
 	}
 }

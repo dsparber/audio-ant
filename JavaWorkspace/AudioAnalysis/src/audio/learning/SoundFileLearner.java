@@ -8,9 +8,9 @@ package audio.learning;
  * @version 1.0
  */
 
-public class FileSoundLearner extends SoundLearner {
+public class SoundFileLearner extends SoundLearner {
 
-	public FileSoundLearner(String pathname) {
+	public SoundFileLearner(String pathname) {
 		super.pathnameIn = pathname;
 	}
 }

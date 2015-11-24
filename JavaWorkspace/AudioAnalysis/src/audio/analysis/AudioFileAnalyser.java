@@ -30,13 +30,15 @@ public class AudioFileAnalyser extends AudioAnalyser {
 
 		WavAudioFileReader reader = new WavAudioFileReader(pathname);
 
+		float sampleRate = reader.getWaveFormat().getSamplesPerSec();
+
 		int[][] windows = Windowing.createWindows(reader.readData(), AudioParamters.WINDOW_SIZE, 0f);
 
 		double max = 0;
 
 		for (int[] samples : windows) {
 
-			addRecentFreq(samples);
+			addRecentFreq(samples, sampleRate);
 			double currentMatch = getFreqMatch();
 
 			if (currentMatch > max) {

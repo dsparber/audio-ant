@@ -10,6 +10,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 import audio.analysis.AudioStreamAnalyser;
 import audio.learning.MicrophoneSoundLearner;
 import io.logger.EventLogger;
+import test.FeatureTest;
 
 /**
  *
@@ -51,7 +52,7 @@ public class CommandLineTool {
 
 			} else if (option == AUTO_TEST) {
 
-				performAutoTest();
+				performAutoTest(s);
 
 			} else {
 				System.out.println("Invalid Option");
@@ -67,7 +68,7 @@ public class CommandLineTool {
 		System.out.println(LEARN_OPTION + ": learn new Signal");
 		System.out.println(ANALYSE_STREAM_OPTION + ": analyse stream");
 		System.out.println(END_STREAM_ANALYSIS_OPTION + ": end the analysing process");
-		System.out.println(AUTO_TEST + ": start an automised test");
+		System.out.println(AUTO_TEST + ": start an automated test");
 		System.out.println(QUIT_OPTION + ": quit program");
 	}
 
@@ -117,8 +118,19 @@ public class CommandLineTool {
 
 	}
 
-	private static void performAutoTest() {
-		// TODO: implement
+	private static void performAutoTest(Scanner scanner) {
+
+		try {
+			System.out.println("Testverzeichnis eingeben: ");
+			FeatureTest test = new FeatureTest(scanner.nextLine());
+
+			System.out.println("Performing test...");
+			test.analyseFiles();
+			System.out.println("done");
+		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException e) {
+			System.out.println("failed");
+			e.printStackTrace();
+		}
 	}
 
 	private static char readSingelChar(Scanner scanner) {
