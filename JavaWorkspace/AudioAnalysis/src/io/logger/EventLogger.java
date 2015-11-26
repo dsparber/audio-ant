@@ -1,4 +1,5 @@
 package io.logger;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -22,7 +23,6 @@ public class EventLogger implements Observer {
 
 		System.out.printf("%d:%d:%d.%d:\t%.2f%%\n", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
 				calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND), percent);
-
 	}
 
 }

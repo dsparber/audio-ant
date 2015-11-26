@@ -6,8 +6,8 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import audio.parameters.AudioParamters;
 import audio.windowing.Windowing;
+import config.Parameters.Audio;
 import io.wave.WavAudioFileReader;
 
 /**
@@ -32,7 +32,7 @@ public class AudioFileAnalyser extends AudioAnalyser {
 
 		float sampleRate = reader.getWaveFormat().getSamplesPerSec();
 
-		int[][] windows = Windowing.createWindows(reader.readData(), AudioParamters.WINDOW_SIZE, 0f);
+		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 
 		double max = 0;
 

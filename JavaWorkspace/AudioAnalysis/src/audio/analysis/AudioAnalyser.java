@@ -8,10 +8,10 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import audio.parameters.AudioAnalysisParameter;
+import config.Parameters.Audio.Analysis;
+import config.Parameters.WorkingDir;
 import io.csv.CsvReader;
 import io.microphone.AudioStreamReader;
-import io.parameters.WorkingDirectory;
 import tools.MaxSizeArrayList;
 
 /**
@@ -30,7 +30,7 @@ public class AudioAnalyser extends Observable {
 
 	public AudioAnalyser() throws RserveException, IOException {
 
-		CsvReader reader = new CsvReader(WorkingDirectory.FOLDER + WorkingDirectory.FEATURES_CSV);
+		CsvReader reader = new CsvReader(WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.FEATURES_CSV);
 		String[] csvValues = reader.readSingleCol(0);
 
 		savedFreqs = new double[csvValues.length];
@@ -58,8 +58,8 @@ public class AudioAnalyser extends Observable {
 
 			for (double recentFreq : recentFreqs) {
 
-				double min = savedFreq - AudioAnalysisParameter.DETECTION_THRESHOLD;
-				double max = savedFreq + AudioAnalysisParameter.DETECTION_THRESHOLD;
+				double min = savedFreq - Analysis.DETECTION_THRESHOLD;
+				double max = savedFreq + Analysis.DETECTION_THRESHOLD;
 
 				if (recentFreq < max && recentFreq > min) {
 					matches1++;
@@ -74,8 +74,8 @@ public class AudioAnalyser extends Observable {
 
 			for (double savedFreq : savedFreqs) {
 
-				double min = savedFreq - AudioAnalysisParameter.DETECTION_THRESHOLD;
-				double max = savedFreq + AudioAnalysisParameter.DETECTION_THRESHOLD;
+				double min = savedFreq - Analysis.DETECTION_THRESHOLD;
+				double max = savedFreq + Analysis.DETECTION_THRESHOLD;
 
 				if (recentFreq < max && recentFreq > min) {
 					matches2++;

@@ -26,7 +26,7 @@ public class RConnectionSingletone {
 				instance.eval("library(tuneR)");
 				instance.eval("library(seewave)");
 			} catch (RserveException e) {
-				e.printStackTrace();
+				System.err.println("Rserve is not running");
 			}
 		}
 

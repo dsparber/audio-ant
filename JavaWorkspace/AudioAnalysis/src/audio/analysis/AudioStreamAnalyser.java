@@ -8,7 +8,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import audio.parameters.AudioParamters;
+import config.Parameters.Audio;
 import io.microphone.AudioStreamReader;
 
 /**
@@ -40,7 +40,7 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		try {
 			int[] samples = (int[]) arg;
 
-			addRecentFreq(samples, AudioParamters.SAMPLE_RATE);
+			addRecentFreq(samples, Audio.SAMPLE_RATE);
 
 			double match = getFreqMatch();
 

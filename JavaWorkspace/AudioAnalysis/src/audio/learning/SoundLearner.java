@@ -9,11 +9,11 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import audio.analysis.WindowAnalyser;
-import audio.parameters.AudioAnalysisParameter;
-import audio.parameters.AudioParamters;
 import audio.windowing.Windowing;
+import config.Parameters.Audio;
+import config.Parameters.Audio.Analysis;
+import config.Parameters.WorkingDir;
 import io.csv.CsvWriter;
-import io.parameters.WorkingDirectory;
 import io.wave.WavAudioFileReader;
 
 /**
@@ -27,7 +27,7 @@ import io.wave.WavAudioFileReader;
 public abstract class SoundLearner {
 
 	protected String pathnameIn;
-	protected String pathnameOut = WorkingDirectory.FOLDER + WorkingDirectory.FEATURES_CSV;
+	protected String pathnameOut = WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.FEATURES_CSV;
 
 	public void extractFeatures()
 			throws LineUnavailableException, IOException, REngineException, REXPMismatchException {
@@ -42,7 +42,7 @@ public abstract class SoundLearner {
 
 		WavAudioFileReader reader = new WavAudioFileReader(pathnameIn);
 
-		int[][] windows = Windowing.createWindows(reader.readData(), AudioParamters.WINDOW_SIZE, 0f);
+		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 
 		ArrayList<Double> results = new ArrayList<Double>();
 
@@ -54,7 +54,7 @@ public abstract class SoundLearner {
 			analyser.assignSamples(samples, sampleRate);
 			double strongestFreq = analyser.getStrongestFrequency();
 
-			if (strongestFreq >= AudioAnalysisParameter.MIN_FREQ && strongestFreq <= AudioAnalysisParameter.MAX_FREQ) {
+			if (strongestFreq >= Analysis.MIN_FREQ && strongestFreq <= Analysis.MAX_FREQ) {
 				results.add(strongestFreq);
 			}
 		}
