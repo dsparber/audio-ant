@@ -5,14 +5,14 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import singleton.RConnectionSingletone;
+import singleton.RConnectionSingleton;
 
 public class WindowAnalyser {
 
 	private RConnection rConnection;
 
 	public WindowAnalyser() {
-		rConnection = RConnectionSingletone.getUniqueInstance();
+		rConnection = RConnectionSingleton.getUniqueInstance();
 	}
 
 	public void assignSamples(int[] samples, float sampleRate) throws REngineException {

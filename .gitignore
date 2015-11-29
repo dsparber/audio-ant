@@ -14,3 +14,4 @@ features.out.xml
 JavaWorkspace/JAudioWithMicrophoneTryouts/out
 JavaWorkspace/AudioAnalysis/res/**/*.csv
 JavaWorkspace/AudioAnalysis/res/**/*.wav
+JavaWorkspace/AudioAnalysis/res/testSounds

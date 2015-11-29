@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -127,7 +128,7 @@ public class CommandLineTool {
 			System.out.println("Performing test...");
 			test.analyseFiles();
 			System.out.println("done");
-		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException e) {
+		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException | SQLException e) {
 			System.out.println("failed");
 			e.printStackTrace();
 		}

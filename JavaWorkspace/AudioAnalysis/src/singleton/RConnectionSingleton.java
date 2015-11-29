@@ -10,7 +10,7 @@ import org.rosuda.REngine.Rserve.RserveException;
  *
  * @version 1.0
  */
-public class RConnectionSingletone {
+public class RConnectionSingleton {
 
 	/** unique instance */
 	private static RConnection instance = null;
