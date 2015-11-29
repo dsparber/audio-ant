@@ -17,10 +17,10 @@ WHERE
 	
 -- Show wrong detections
 SELECT
-	s.name, 
+	t.id,
 	t.testDate, 
-	r.fileName, 
-	r.correctRecognition, 
+	s.name, 
+	r.fileName,  
 	f.strongestFrequency 
 FROM 
 	FeatureMatch as f, 
@@ -31,4 +31,20 @@ WHERE
 	t.id = r.testId AND 
 	s.id = r.soundId AND 
 	f.resultId = r.id AND
-	CorrectRecognition = 0;
+	r.CorrectRecognition = 0;
+	
+-- Show test summary
+SELECT
+	t.testDate as 'Date',
+	COUNT(DISTINCT r.soundId) as 'Number of sounds',
+	COUNT(*) / COUNT(DISTINCT r.soundId) as 'Files per Sound',
+	AVG(r.correctRecognition) as 'Avg. correctness'
+FROM
+	Results as r, 
+	Sounds as s, 
+	Tests as t 
+WHERE 
+	t.id = r.testId AND 
+	s.id = r.soundId
+GROUP BY
+	Date;
