@@ -44,10 +44,8 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 
 			double match = getFreqMatch();
 
-			if (match > 0) {
-				setChanged();
-				notifyObservers(match);
-			}
+			setChanged();
+			notifyObservers(match);
 
 		} catch (REngineException | REXPMismatchException e) {
 			e.printStackTrace();

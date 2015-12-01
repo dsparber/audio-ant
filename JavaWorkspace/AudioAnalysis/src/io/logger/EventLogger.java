@@ -21,8 +21,11 @@ public class EventLogger implements Observer {
 
 		percent *= 100;
 
-		System.out.printf("%d:%d:%d.%d:\t%.2f%%\n", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-				calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND), percent);
+		if (percent > 0) {
+			System.out.printf("%d:%d:%d.%d:\t%.2f%%\n", calendar.get(Calendar.HOUR_OF_DAY),
+					calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND),
+					percent);
+		}
 	}
 
 }
