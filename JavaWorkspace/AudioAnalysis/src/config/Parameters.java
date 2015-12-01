@@ -44,7 +44,9 @@ public class Parameters {
 			public static final double MATCH_THRESHOLD = .75; // Percent
 
 			public static final int MIN_FREQ = 500;
-			public static final int MAX_FREQ = 5000;
+			public static final int MAX_FREQ = 8000;
+
+			public static final int MIN_ENERGY = 40;
 		}
 	}
 

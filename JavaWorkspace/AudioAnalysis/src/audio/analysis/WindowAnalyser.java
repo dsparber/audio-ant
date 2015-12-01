@@ -27,4 +27,8 @@ public class WindowAnalyser {
 		return rConnection.eval("specprop(spec)$mode").asDouble();
 	}
 
+	public double getEnergy() throws RserveException, REXPMismatchException {
+		return rConnection.eval("20*log10(mean(abs(wave@left)))").asDouble();
+	}
+
 }

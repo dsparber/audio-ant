@@ -1,3 +1,5 @@
+use audioantTest;
+
 -- Show results
 SELECT
 	s.name, 

@@ -52,11 +52,15 @@ public abstract class SoundLearner {
 
 			WindowAnalyser analyser = new WindowAnalyser();
 			analyser.assignSamples(samples, sampleRate);
-			double strongestFreq = analyser.getStrongestFrequency();
 
-			if (strongestFreq >= Analysis.MIN_FREQ && strongestFreq <= Analysis.MAX_FREQ) {
+			double strongestFreq = analyser.getStrongestFrequency();
+			double energy = analyser.getEnergy();
+
+			if (energy > Analysis.MIN_ENERGY && strongestFreq >= Analysis.MIN_FREQ
+					&& strongestFreq <= Analysis.MAX_FREQ) {
 				results.add(strongestFreq);
 			}
+
 		}
 
 		Double[] result = new Double[results.size()];
