@@ -1,12 +1,11 @@
 #!/bin/bash
-cd /home/
+cd /tmp/
 
 # variables
 backupName="backup"
 packageLists="packageLists"
 
 # current time
-userName="pi"
 now="$(date +'%Y-%m-%d_%H-%M-%S')"
 echo "Backup process stared: (timestamp: $now):"
 
@@ -15,8 +14,8 @@ echo "Copying contents..."
 mkdir $backupName
 
 # copying files
-cp -r /etc $backupName
-cp -r $userName $backupName
+cp -r /etc/ $backupName
+cp -r /home/ $backupName
 
 # creating and copying package list
 mkdir $backupName/$packageLists
@@ -30,9 +29,9 @@ tar czf $now.tar.gz $backupName
 
 # copying archive to destination device
 echo "Enter the connection information:"
-read -p "IP: " destIP
-read -p "User:" destUser
-read -p "Folder:" destFolder
+read -p "Host: " destIP
+read -p "Folder: " destFolder
+read -p "User: " destUser
 
 rsync -ze ssh $now.tar.gz $destUser@$destIP:$destFolder
 echo "Transmitting backup..."
