@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
@@ -32,17 +33,21 @@ public class FeatureTest {
 
 	private AutomatedTestDatabaseManager manager;
 	private TestModel test;
+	private String fileType;
 
-	public FeatureTest(String testingDir) {
+	public FeatureTest(String testingDir, String fileType) {
 		this.testingDir = testingDir;
+		this.fileType = fileType;
 	}
 
-	public void analyseFiles()
-			throws LineUnavailableException, IOException, REngineException, REXPMismatchException, SQLException {
+	public void analyseFiles() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,
+			SQLException, UnsupportedAudioFileException {
+
+		long start = System.currentTimeMillis();
 
 		manager = new AutomatedTestDatabaseManager();
 
-		test = new TestModel();
+		test = new TestModel(fileType);
 		manager.insert(test);
 
 		File[] sounds = new File(testingDir).listFiles();
@@ -52,14 +57,16 @@ public class FeatureTest {
 				analyseSound(sound);
 			}
 		}
+
+		System.out.printf("Duration: %ss\n", (System.currentTimeMillis() - start) / 1000.);
 	}
 
 	private boolean fileShouldBeAnalysed(String fileName) {
 		return !fileName.matches(AutomatedTest.NAME_PATTERN_REFERENCE_FILE);
 	}
 
-	private void analyseSound(File soundDir)
-			throws LineUnavailableException, IOException, REngineException, REXPMismatchException, SQLException {
+	private void analyseSound(File soundDir) throws LineUnavailableException, IOException, REngineException,
+			REXPMismatchException, SQLException, UnsupportedAudioFileException {
 
 		String soundName = soundDir.getName();
 
@@ -92,7 +99,7 @@ public class FeatureTest {
 	}
 
 	private void analyseFile(File file, SoundModel sound)
-			throws IOException, REngineException, REXPMismatchException, SQLException {
+			throws IOException, REngineException, REXPMismatchException, SQLException, UnsupportedAudioFileException {
 
 		AudioFileAnalyser analyser = new AudioFileAnalyser(file.getAbsolutePath());
 		System.out.println(file.getAbsolutePath());

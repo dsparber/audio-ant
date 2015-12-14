@@ -38,6 +38,7 @@ WHERE
 -- Show test summary
 SELECT
 	t.testDate as 'Date',
+	t.fileType,
 	COUNT(DISTINCT r.soundId) as 'Number of sounds',
 	COUNT(*) / COUNT(DISTINCT r.soundId) as 'Files per Sound',
 	AVG(r.correctRecognition) as 'Avg. correctness'

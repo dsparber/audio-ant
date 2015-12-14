@@ -2,13 +2,16 @@ package audio.analysis;
 
 import java.io.IOException;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import audio.windowing.Windowing;
 import config.Parameters.Audio;
-import io.wave.WavAudioFileReader;
+import io.audio.AudioFileReader;
+import io.audio.AudioFileReaderFactory;
 
 /**
  *
@@ -26,11 +29,12 @@ public class AudioFileAnalyser extends AudioAnalyser {
 		this.pathname = pathname;
 	}
 
-	public double getMaxMatch() throws IOException, REngineException, REXPMismatchException {
+	public double getMaxMatch()
+			throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
 
-		WavAudioFileReader reader = new WavAudioFileReader(pathname);
+		AudioFileReader reader = AudioFileReaderFactory.getFileReader(pathname);
 
-		float sampleRate = reader.getWaveFormat().getSamplesPerSec();
+		float sampleRate = reader.getSampleRate();
 
 		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 

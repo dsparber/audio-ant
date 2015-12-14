@@ -63,9 +63,9 @@ public class Parameters {
 	// Automated test paramaters
 	public static class AutomatedTest {
 
-		public static final String NAME_PATTERN_SOUND_FILE = ".*.wav";
+		public static final String NAME_PATTERN_SOUND_FILE = ".*.(wav|mp3)";
 
-		public static final String NAME_PATTERN_SHOULD_BE_RECOGNISED = "true.*.wav";
-		public static final String NAME_PATTERN_REFERENCE_FILE = "00.*.wav";
+		public static final String NAME_PATTERN_SHOULD_BE_RECOGNISED = "true.*.(wav|mp3)";
+		public static final String NAME_PATTERN_REFERENCE_FILE = "00.*.(wav|mp3)";
 	}
 }

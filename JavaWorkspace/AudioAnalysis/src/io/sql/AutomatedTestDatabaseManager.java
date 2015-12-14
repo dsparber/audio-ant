@@ -30,10 +30,11 @@ public class AutomatedTestDatabaseManager {
 
 	public int insert(TestModel model) throws SQLException {
 
-		String sql = "INSERT INTO Tests (TestDate) VALUES (?)";
+		String sql = "INSERT INTO Tests (TestDate, FileType) VALUES (?, ?)";
 
 		PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 		statement.setTimestamp(1, model.getTimestamp());
+		statement.setString(2, model.getFileType());
 
 		statement.executeUpdate();
 

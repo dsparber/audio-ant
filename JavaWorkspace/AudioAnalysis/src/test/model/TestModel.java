@@ -12,11 +12,12 @@ import java.sql.Timestamp;;
 public class TestModel {
 
 	private Timestamp date;
+	private String fileType;
 	private int id;
 
-	public TestModel() {
+	public TestModel(String fileType) {
 		date = new Timestamp(System.currentTimeMillis());
-
+		this.fileType = fileType;
 	}
 
 	public Timestamp getTimestamp() {
@@ -29,5 +30,9 @@ public class TestModel {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getFileType() {
+		return fileType;
 	}
 }

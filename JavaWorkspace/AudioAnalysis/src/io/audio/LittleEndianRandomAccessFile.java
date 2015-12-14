@@ -1,4 +1,4 @@
-package io.wave;
+package io.audio;
 
 import java.io.File;
 import java.io.FileNotFoundException;

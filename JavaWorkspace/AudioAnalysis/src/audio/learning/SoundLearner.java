@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
@@ -13,8 +14,9 @@ import audio.windowing.Windowing;
 import config.Parameters.Audio;
 import config.Parameters.Audio.Analysis;
 import config.Parameters.WorkingDir;
+import io.audio.AudioFileReader;
+import io.audio.AudioFileReaderFactory;
 import io.csv.CsvWriter;
-import io.wave.WavAudioFileReader;
 
 /**
  *
@@ -29,8 +31,8 @@ public abstract class SoundLearner {
 	protected String pathnameIn;
 	protected String pathnameOut = WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.FEATURES_CSV;
 
-	public void extractFeatures()
-			throws LineUnavailableException, IOException, REngineException, REXPMismatchException {
+	public void extractFeatures() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,
+			UnsupportedAudioFileException {
 
 		Double[] strongestFreq = extractStrongestFrequency();
 
@@ -38,9 +40,10 @@ public abstract class SoundLearner {
 		writer.writeSingleColmn(strongestFreq);
 	}
 
-	protected Double[] extractStrongestFrequency() throws IOException, REngineException, REXPMismatchException {
+	protected Double[] extractStrongestFrequency()
+			throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
 
-		WavAudioFileReader reader = new WavAudioFileReader(pathnameIn);
+		AudioFileReader reader = AudioFileReaderFactory.getFileReader(pathnameIn);
 
 		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 
@@ -48,7 +51,7 @@ public abstract class SoundLearner {
 
 		for (int samples[] : windows) {
 
-			float sampleRate = reader.getWaveFormat().getSamplesPerSec();
+			float sampleRate = reader.getSampleRate();
 
 			WindowAnalyser analyser = new WindowAnalyser();
 			analyser.assignSamples(samples, sampleRate);

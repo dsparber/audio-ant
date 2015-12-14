@@ -20,11 +20,15 @@ public class WindowAnalyser {
 		rConnection.eval("wave <- Wave(window, samp.rate = " + sampleRate + ")");
 	}
 
-	public double getStrongestFrequency() throws RserveException, REXPMismatchException {
+	public double getStrongestFrequency() {
 
-		rConnection.eval("spec <- meanspec(wave, plot = FALSE)");
+		try {
+			rConnection.eval("spec <- meanspec(wave, plot = FALSE)");
+			return rConnection.eval("specprop(spec)$mode").asDouble();
 
-		return rConnection.eval("specprop(spec)$mode").asDouble();
+		} catch (RserveException | REXPMismatchException e) {
+			return -1;
+		}
 	}
 
 	public double getEnergy() throws RserveException, REXPMismatchException {

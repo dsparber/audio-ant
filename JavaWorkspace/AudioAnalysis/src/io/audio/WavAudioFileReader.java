@@ -1,4 +1,4 @@
-package io.wave;
+package io.audio;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import audio.wave.WaveFormat;
  *
  * @version 1.0
  */
-public class WavAudioFileReader {
+public class WavAudioFileReader implements AudioFileReader {
 
 	private LittleEndianRandomAccessFile file;
 	private WaveFormat waveFormat;
@@ -22,35 +22,6 @@ public class WavAudioFileReader {
 		file = new LittleEndianRandomAccessFile(fileName, "r");
 
 		waveFormat = readHeader();
-	}
-
-	public void writeHeader() throws IOException {
-		file.seek(0);
-
-		byte[] chunk0 = { 'R', 'I', 'F', 'F' };
-		file.write(chunk0);
-
-		int len = (int) file.length() - 8;
-		file.write(len);
-		byte[] chunk1 = { 'W', 'A', 'V', 'E' };
-		file.write(chunk1);
-		byte[] chunk2 = { 'f', 'm', 't', ' ' };
-		file.write(chunk2);
-
-		len = 16;
-		file.write(len);
-		file.write(waveFormat.getFormatTag());
-		file.write(waveFormat.getChannels());
-		file.write(waveFormat.getSamplesPerSec());
-		file.write(waveFormat.getAvgBytesPerSec());
-		file.write(waveFormat.getBlockAlign());
-		file.write(waveFormat.getBitsPerSample());
-
-		byte[] chunk3 = { 'd', 'a', 't', 'a' };
-		file.write(chunk3);
-
-		len = (int) file.length() - 44;
-		file.write(len);
 	}
 
 	private WaveFormat readHeader() throws IOException {
@@ -83,6 +54,7 @@ public class WavAudioFileReader {
 		return waveFormat;
 	}
 
+	@Override
 	public int[] readData() throws IOException {
 
 		ArrayList<Integer> samples = new ArrayList<Integer>();
@@ -118,5 +90,10 @@ public class WavAudioFileReader {
 
 	public WaveFormat getWaveFormat() {
 		return waveFormat;
+	}
+
+	@Override
+	public float getSampleRate() {
+		return waveFormat.getSamplesPerSec();
 	}
 }

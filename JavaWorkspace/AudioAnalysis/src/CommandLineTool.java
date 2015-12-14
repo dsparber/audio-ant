@@ -3,6 +3,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
@@ -116,7 +117,8 @@ public class CommandLineTool {
 			learnSound.extractFeatures();
 			System.out.println("done");
 
-		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException e) {
+		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
+				| UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
 
@@ -125,13 +127,17 @@ public class CommandLineTool {
 	private static void performAutoTest(Scanner scanner) {
 
 		try {
-			System.out.println("Testverzeichnis eingeben: ");
-			FeatureTest test = new FeatureTest(scanner.nextLine());
+			System.out.print("Testverzeichnis eingeben: ");
+			String dir = scanner.nextLine();
+			System.out.print("Dateiformat eingeben: ");
+			String type = scanner.nextLine();
+			FeatureTest test = new FeatureTest(dir, type);
 
 			System.out.println("Performing test...");
 			test.analyseFiles();
 			System.out.println("done");
-		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException | SQLException e) {
+		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException | SQLException
+				| UnsupportedAudioFileException e) {
 			System.out.println("failed");
 			e.printStackTrace();
 		}
