@@ -15,3 +15,4 @@ JavaWorkspace/JAudioWithMicrophoneTryouts/out
 JavaWorkspace/AudioAnalysis/res/**/*.csv
 JavaWorkspace/AudioAnalysis/res/**/*.wav
 JavaWorkspace/AudioAnalysis/res/testSounds
+**/log/**/*.log
