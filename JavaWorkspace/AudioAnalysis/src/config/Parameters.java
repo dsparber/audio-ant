@@ -22,6 +22,12 @@ public class Parameters {
 		public static final String FEATURES_CSV = "features.csv";
 	}
 
+	// Communication parameters
+	public static class Communication {
+
+		public static final int RASPBERRY_SOCKET_PORT = 4207;
+	}
+
 	// Audio parameters
 	public static class Audio {
 
