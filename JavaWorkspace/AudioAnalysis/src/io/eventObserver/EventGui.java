@@ -1,4 +1,4 @@
-package io.logger;
+package io.eventObserver;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,7 +12,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class EventLoggerGui extends JFrame implements Observer {
+public class EventGui extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public class EventLoggerGui extends JFrame implements Observer {
 
 	private JProgressBar progressBar;
 
-	public EventLoggerGui() {
+	public EventGui() {
 		setType(Type.UTILITY);
 
 		try {

@@ -1,4 +1,4 @@
-package io.logger;
+package io.eventObserver;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import config.Parameters.Audio.Analysis;
+import io.logging.LogFormatter;
 
 public class EventLogger implements Observer {
 
