@@ -1,7 +1,7 @@
 package io.eventObserver;
 
+import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
@@ -11,6 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import config.Parameters.Audio.Analysis;
+import config.Parameters.DateFormat;
+import config.Parameters.Logging;
+import config.Parameters.StringFormatter;
 import io.logging.LogFormatter;
 
 public class EventLogger implements Observer {
@@ -20,10 +23,11 @@ public class EventLogger implements Observer {
 	public EventLogger() {
 		try {
 
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
-			String date = format.format(new Date(System.currentTimeMillis()));
+			String date = DateFormat.FULL_DATE.format(new Date(System.currentTimeMillis()));
 
-			String fileName = "res/log/events/" + date + ".log";
+			String fileName = Logging.LOG_FOLDER_EVENTS + date + Logging.LOG_SUFFIX;
+
+			new File(fileName).getParentFile().mkdirs();
 
 			Handler handler = new FileHandler(fileName);
 
@@ -42,7 +46,7 @@ public class EventLogger implements Observer {
 
 		double percent = (double) arg;
 
-		String msg = String.format("%.2f", percent * 100);
+		String msg = String.format(StringFormatter.DOUBLE_FORMAT, percent * 100);
 
 		if (percent >= Analysis.MATCH_THRESHOLD) {
 			logger.info(msg);

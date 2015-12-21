@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import config.Parameters.Csv;
+
 /**
  * @author Daniel Sparber
  * @year 2015
@@ -32,12 +34,12 @@ public class CsvWriter {
 		for (Object[] objects : matrix) {
 			for (int i = 0; i < objects.length; i++) {
 
-				writer.append('"');
+				writer.append(Csv.TEXT_SEPERATOR);
 				writer.write(objects[i].toString());
-				writer.append('"');
+				writer.append(Csv.TEXT_SEPERATOR);
 
 				if (i < objects.length - 1) {
-					writer.append(',');
+					writer.append(Csv.VALUE_SEPERATOR);
 				}
 			}
 			writer.append('\n');

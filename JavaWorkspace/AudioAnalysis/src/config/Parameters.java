@@ -1,5 +1,7 @@
 package config;
 
+import java.text.SimpleDateFormat;
+
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioFormat;
 
@@ -26,6 +28,44 @@ public class Parameters {
 	public static class Communication {
 
 		public static final int RASPBERRY_SOCKET_PORT = 4207;
+		public static final String RASPBERRY_HOST_NAME = "audiopi.local";
+		public static final char VALUE_SEPERATOR = ';';
+	}
+
+	// CSV parameters
+	public static class Csv {
+		public static final char TEXT_SEPERATOR = '"';
+		public static final char VALUE_SEPERATOR = ',';
+		public static final String SEPERATOR = "" + TEXT_SEPERATOR + VALUE_SEPERATOR + TEXT_SEPERATOR;
+	}
+
+	// Date formats
+	public static class DateFormat {
+
+		public static final SimpleDateFormat FULL_DATE = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		public static final SimpleDateFormat FULL_DATE__MILLIS_SEPERATED = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss:SSS");
+	}
+
+	// Logging
+	public static class Logging {
+
+		public static final String LOG_FOLDER = "res/log/";
+		public static final String LOG_FOLDER_EVENTS = LOG_FOLDER + "events/";
+		public static final String LOG_SUFFIX = ".log";
+	}
+
+	// String formats
+	public static class StringFormatter {
+
+		public static final String DOUBLE_FORMAT = "%,.2f";
+		public static final String STRING_PLACEHOLDER = "%s";
+	}
+
+	// Special chars
+	public static class SpecialChars {
+
+		public static final char NEW_LINE = '\n';
 	}
 
 	// Audio parameters
@@ -37,6 +77,9 @@ public class Parameters {
 		public static final boolean BIG_ENDIAN = false;
 		public static final boolean SIGNED = true;
 		public static final Type FILE_TYPE = Type.WAVE;
+
+		public static final String WAV_FILEPATTERN = "wav";
+		public static final String MP3_FILEPATTERN = "mp3";
 
 		public static final AudioFormat AUDIO_FORMAT = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE_IN_BITS, CHANNELS,
 				SIGNED, BIG_ENDIAN);

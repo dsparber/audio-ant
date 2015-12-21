@@ -11,8 +11,8 @@ import org.rosuda.REngine.Rserve.RserveException;
 
 import audio.analysis.AudioStreamAnalyser;
 import audio.learning.MicrophoneSoundLearner;
+import io.eventObserver.EventLights;
 import io.eventObserver.EventLogger;
-import io.eventObserver.EventGui;
 import test.FeatureTest;
 
 /**
@@ -78,10 +78,12 @@ public class CommandLineTool {
 	private static void analyseStream() {
 		try {
 			EventLogger logger = new EventLogger();
-			EventGui loggerGui = new EventGui();
+			// EventGui loggerGui = new EventGui();
+			EventLights lights = new EventLights();
 			analyser = new AudioStreamAnalyser();
 			analyser.addObserver(logger);
-			analyser.addObserver(loggerGui);
+			// analyser.addObserver(loggerGui);
+			analyser.addObserver(lights);
 			analyser.start();
 			System.out.println("Analysing stream");
 		} catch (RserveException | IOException e) {

@@ -24,10 +24,11 @@ public class AudioRecorder {
 	private AudioFormat audioFormat;
 	private TargetDataLine targetDataLine;
 
-	private String outputPath;
+	private File audioFile;
 
 	public AudioRecorder(String outputPath) {
-		this.outputPath = outputPath;
+		audioFile = new File(outputPath);
+		audioFile.getParentFile().mkdirs();
 	}
 
 	public void startCapturing() throws LineUnavailableException {
@@ -50,7 +51,6 @@ public class AudioRecorder {
 		@Override
 		public void run() {
 			Type fileType = Audio.FILE_TYPE;
-			File audioFile = new File(outputPath);
 
 			try {
 				targetDataLine.open(audioFormat);

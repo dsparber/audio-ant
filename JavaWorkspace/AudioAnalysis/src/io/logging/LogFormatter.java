@@ -1,17 +1,17 @@
 package io.logging;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+
+import config.Parameters.DateFormat;
 
 public class LogFormatter extends Formatter {
 
 	@Override
 	public String format(LogRecord record) {
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-		String timestamp = format.format(new Date(System.currentTimeMillis()));
+		String timestamp = DateFormat.FULL_DATE__MILLIS_SEPERATED.format(new Date(System.currentTimeMillis()));
 
 		return String.format("%s %s: %s\n", timestamp, record.getLevel(), record.getMessage());
 	}

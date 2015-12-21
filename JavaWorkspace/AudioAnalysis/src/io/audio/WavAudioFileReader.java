@@ -19,6 +19,7 @@ public class WavAudioFileReader implements AudioFileReader {
 	private WaveFormat waveFormat;
 
 	public WavAudioFileReader(String fileName) throws IOException {
+
 		file = new LittleEndianRandomAccessFile(fileName, "r");
 
 		waveFormat = readHeader();

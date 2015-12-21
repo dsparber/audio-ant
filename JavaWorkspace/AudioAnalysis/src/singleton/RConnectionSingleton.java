@@ -1,5 +1,7 @@
 package singleton;
 
+import java.io.IOException;
+
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
@@ -21,6 +23,13 @@ public class RConnectionSingleton {
 	public static synchronized RConnection getUniqueInstance() {
 
 		if (instance == null) {
+
+			try {
+				Runtime.getRuntime().exec("R CMD Rserve");
+			} catch (IOException e) {
+				System.err.println("Rserve could not be started");
+			}
+
 			try {
 				instance = new RConnection();
 				instance.eval("library(tuneR)");
@@ -29,8 +38,6 @@ public class RConnectionSingleton {
 				System.err.println("Rserve is not running");
 			}
 		}
-
 		return instance;
-
 	}
 }

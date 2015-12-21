@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import config.Parameters.Csv;
+
 /**
  * @author Daniel Sparber
  * @year 2015
@@ -37,7 +39,7 @@ public class CsvReader {
 		while ((line = reader.readLine()) != null) {
 
 			line = line.substring(1, line.length() - 1);
-			String[] lineArray = line.split("\";\"");
+			String[] lineArray = line.split(Csv.SEPERATOR);
 			lines.add(lineArray);
 		}
 		reader.close();
