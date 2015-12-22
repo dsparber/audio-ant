@@ -17,3 +17,4 @@ JavaWorkspace/AudioAnalysis/res/**/*.wav
 JavaWorkspace/AudioAnalysis/res/testSounds
 **/log/**/*.log
 *.log.lck
+__pycache__
