@@ -22,7 +22,6 @@ public class EventLights implements Observer {
 				controller.on(LEDS.ALERT);
 				Thread.sleep(1000);
 				controller.off(LEDS.ALERT);
-				controller.close();
 
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
