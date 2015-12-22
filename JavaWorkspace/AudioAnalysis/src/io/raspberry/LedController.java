@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import config.Parameters.Communication;
+import config.Parameters.PythonResources;
 
 public class LedController {
 
@@ -16,6 +17,9 @@ public class LedController {
 	public LedController() throws UnknownHostException, IOException {
 
 		if (socket == null || writer == null) {
+
+			// Starting the counter side socket
+			Runtime.getRuntime().exec(PythonResources.EXECUTE + PythonResources.CONNECTION_PY);
 
 			socket = new Socket(Communication.RASPBERRY_HOST_NAME, Communication.RASPBERRY_SOCKET_PORT);
 			socket.setKeepAlive(true);
