@@ -16,16 +16,23 @@ public class EventLights implements Observer {
 		double percent = (double) arg;
 
 		if (percent >= Analysis.MATCH_THRESHOLD) {
-			try {
 
-				LedController controller = new LedController();
-				controller.on(LEDS.ALERT);
-				Thread.sleep(1000);
-				controller.off(LEDS.ALERT);
+			Runnable runnable = () -> {
 
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
-			}
+				try {
+
+					LedController controller = new LedController();
+					controller.on(LEDS.ALERT);
+					Thread.sleep(3000);
+					controller.off(LEDS.ALERT);
+
+				} catch (IOException | InterruptedException e) {
+					e.printStackTrace();
+				}
+
+			};
+
+			new Thread(runnable).start();
 		}
 	}
 
