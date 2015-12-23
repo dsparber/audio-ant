@@ -28,7 +28,6 @@ public class RConnectionSingleton {
 				Runtime.getRuntime().exec("R CMD Rserve");
 			} catch (IOException e) {
 				System.err.println("Rserve could not be started");
-				e.printStackTrace();
 			}
 
 			try {

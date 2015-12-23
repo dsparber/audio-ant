@@ -20,8 +20,15 @@ import io.microphone.AudioStreamReader;
  */
 public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 
+	private long startTime;
+	private long analysisTime;
+	private int count;
+
 	public AudioStreamAnalyser() throws RserveException, IOException {
 		super();
+		startTime = System.currentTimeMillis();
+		analysisTime = 0;
+		count = 0;
 	}
 
 	public void start() {
@@ -37,18 +44,51 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		try {
-			int[] samples = (int[]) arg;
+		Runnable runnable = new AnalysisRunnable((int[]) arg);
+		Thread thread = new Thread(runnable);
+		thread.start();
 
-			addRecentFreq(samples, Audio.SAMPLE_RATE);
+		count++;
+	}
 
-			double match = getFreqMatch();
+	public double getAvgSampleReceiveTime() {
 
-			setChanged();
-			notifyObservers(match);
+		long timeDiff = System.currentTimeMillis() - startTime;
 
-		} catch (REngineException | REXPMismatchException e) {
-			e.printStackTrace();
+		return (double) timeDiff / count;
+	}
+
+	public double getAvgAnalysisTime() {
+
+		return (double) analysisTime / count;
+	}
+
+	private class AnalysisRunnable implements Runnable {
+
+		private int[] samples;
+
+		public AnalysisRunnable(int[] samples) {
+			this.samples = samples;
+		}
+
+		@Override
+		public void run() {
+
+			long timeStart = System.currentTimeMillis();
+
+			try {
+				addRecentFreq(samples, Audio.SAMPLE_RATE);
+
+				double match = getFreqMatch();
+
+				setChanged();
+				notifyObservers(match);
+
+			} catch (REngineException | REXPMismatchException e) {
+				e.printStackTrace();
+			}
+
+			analysisTime += System.currentTimeMillis() - timeStart;
 		}
 	}
 }

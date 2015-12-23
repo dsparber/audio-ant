@@ -95,6 +95,9 @@ public class CommandLineTool {
 		try {
 			analyser.stop();
 			System.out.println("Analysing stopped");
+			System.out.printf("Avg receive time: %.2f ms\n", analyser.getAvgSampleReceiveTime());
+			System.out.printf("Avg analysis time: %.2f ms\n", analyser.getAvgAnalysisTime());
+
 		} catch (NullPointerException e) {
 			System.out.println("Audio analysis never started");
 		}
