@@ -36,6 +36,7 @@ WHERE
 	r.CorrectRecognition = 0;
 	
 -- Show test summary
+SET sql_mode = '';
 SELECT
 	t.testDate as 'Date',
 	t.fileType,
