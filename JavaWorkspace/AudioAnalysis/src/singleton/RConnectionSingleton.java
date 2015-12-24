@@ -34,6 +34,7 @@ public class RConnectionSingleton {
 				instance = new RConnection();
 				instance.eval("library(tuneR)");
 				instance.eval("library(seewave)");
+				instance.eval("library(quantmod)");
 			} catch (RserveException e) {
 				System.err.println("Rserve is not running");
 			}

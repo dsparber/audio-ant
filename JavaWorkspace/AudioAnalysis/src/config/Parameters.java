@@ -100,12 +100,15 @@ public class Parameters {
 		public static class Analysis {
 
 			public static final double DETECTION_THRESHOLD = 5; // Hertz
-			public static final double MATCH_THRESHOLD = .75; // Percent
+			public static final double MATCH_THRESHOLD = .7; // Percent
+
+			public static final double AMPLITUDE_THRESHOLD = 0.1;
 
 			public static final int MIN_FREQ = 500;
 			public static final int MAX_FREQ = 8000;
 
 			public static final int MIN_ENERGY = 40;
+			public static final int MAX_PEAK_COUNT = 4;
 		}
 	}
 

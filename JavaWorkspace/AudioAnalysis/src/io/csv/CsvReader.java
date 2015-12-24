@@ -44,7 +44,14 @@ public class CsvReader {
 		}
 		reader.close();
 
-		String[][] matrix = new String[lines.size()][lines.get(0).length];
+		int maxWidth = 0;
+		for (String[] s : lines) {
+			if (s.length > maxWidth) {
+				maxWidth = s.length;
+			}
+		}
+
+		String[][] matrix = new String[lines.size()][maxWidth];
 
 		for (int i = 0; i < lines.size(); i++) {
 			matrix[i] = lines.get(i);

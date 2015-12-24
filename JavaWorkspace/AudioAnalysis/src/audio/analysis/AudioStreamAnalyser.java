@@ -44,9 +44,21 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		Runnable runnable = new AnalysisRunnable((int[]) arg);
-		Thread thread = new Thread(runnable);
-		thread.start();
+		long timeStart = System.currentTimeMillis();
+
+		try {
+			addRecentFreq((int[]) arg, Audio.SAMPLE_RATE);
+
+			double match = getFreqMatch();
+
+			setChanged();
+			notifyObservers(match);
+
+		} catch (REngineException | REXPMismatchException e) {
+			e.printStackTrace();
+		}
+
+		analysisTime += System.currentTimeMillis() - timeStart;
 
 		count++;
 	}
@@ -63,32 +75,4 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		return (double) analysisTime / count;
 	}
 
-	private class AnalysisRunnable implements Runnable {
-
-		private int[] samples;
-
-		public AnalysisRunnable(int[] samples) {
-			this.samples = samples;
-		}
-
-		@Override
-		public void run() {
-
-			long timeStart = System.currentTimeMillis();
-
-			try {
-				addRecentFreq(samples, Audio.SAMPLE_RATE);
-
-				double match = getFreqMatch();
-
-				setChanged();
-				notifyObservers(match);
-
-			} catch (REngineException | REXPMismatchException e) {
-				e.printStackTrace();
-			}
-
-			analysisTime += System.currentTimeMillis() - timeStart;
-		}
-	}
 }

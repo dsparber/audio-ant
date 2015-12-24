@@ -2,6 +2,7 @@ package audio.learning;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -10,6 +11,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import audio.analysis.WindowAnalyser;
+import audio.analysis.model.StrongestFrequenciesModel;
 import audio.windowing.Windowing;
 import config.Parameters.Audio;
 import config.Parameters.Audio.Analysis;
@@ -34,20 +36,41 @@ public abstract class SoundLearner {
 	public void extractFeatures() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,
 			UnsupportedAudioFileException {
 
-		Double[] strongestFreq = extractStrongestFrequency();
+		List<StrongestFrequenciesModel> strongestFreq = extractStrongestFrequency();
+
+		int maxWidth = 0;
+
+		for (StrongestFrequenciesModel model : strongestFreq) {
+			if (model.size() > maxWidth) {
+				maxWidth = model.size();
+			}
+		}
+
+		String[][] out = new String[strongestFreq.size()][maxWidth];
+
+		for (int i = 0; i < out.length; i++) {
+			for (int j = 0; j < out[i].length; j++) {
+
+				if (strongestFreq.get(i).size() > j) {
+					out[i][j] = strongestFreq.get(i).get(j).toString();
+				} else {
+					out[i][j] = "";
+				}
+			}
+		}
 
 		CsvWriter writer = new CsvWriter(pathnameOut);
-		writer.writeSingleColmn(strongestFreq);
+		writer.writeMatrix(out);
 	}
 
-	protected Double[] extractStrongestFrequency()
+	protected List<StrongestFrequenciesModel> extractStrongestFrequency()
 			throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
 
 		AudioFileReader reader = AudioFileReaderFactory.getFileReader(pathnameIn);
 
 		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 
-		ArrayList<Double> results = new ArrayList<Double>();
+		ArrayList<StrongestFrequenciesModel> results = new ArrayList<StrongestFrequenciesModel>();
 
 		for (int samples[] : windows) {
 
@@ -56,21 +79,17 @@ public abstract class SoundLearner {
 			WindowAnalyser analyser = new WindowAnalyser();
 			analyser.assignSamples(samples, sampleRate);
 
-			double strongestFreq = analyser.getStrongestFrequency();
 			double energy = analyser.getEnergy();
 
-			if (energy > Analysis.MIN_ENERGY && strongestFreq >= Analysis.MIN_FREQ
-					&& strongestFreq <= Analysis.MAX_FREQ) {
-				results.add(strongestFreq);
+			if (energy > Analysis.MIN_ENERGY) {
+
+				StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
+
+				if (strongestFreq.size() > 0 && strongestFreq.size() <= Analysis.MAX_PEAK_COUNT) {
+					results.add(strongestFreq);
+				}
 			}
-
 		}
-
-		Double[] result = new Double[results.size()];
-		for (int j = 0; j < results.size(); j++) {
-			result[j] = results.get(j);
-		}
-
-		return result;
+		return results;
 	}
 }

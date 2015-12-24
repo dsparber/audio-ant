@@ -8,7 +8,8 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import config.Parameters.Audio.Analysis;
+import audio.analysis.model.FrequencyModel;
+import audio.analysis.model.StrongestFrequenciesModel;
 import config.Parameters.WorkingDir;
 import io.csv.CsvReader;
 import io.microphone.AudioStreamReader;
@@ -25,65 +26,80 @@ public class AudioAnalyser extends Observable {
 
 	protected AudioStreamReader reader;
 
-	protected double[] savedFreqs;
-	protected ArrayList<Double> recentFreqs;
+	protected StrongestFrequenciesModel[] savedFreqs;
+	protected ArrayList<StrongestFrequenciesModel> recentFreqs;
 
 	public AudioAnalyser() throws RserveException, IOException {
 
 		CsvReader reader = new CsvReader(WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.FEATURES_CSV);
-		String[] csvValues = reader.readSingleCol(0);
+		String[][] csvValues = reader.readMatrix();
 
-		savedFreqs = new double[csvValues.length];
+		savedFreqs = new StrongestFrequenciesModel[csvValues.length];
 
 		for (int i = 0; i < csvValues.length; i++) {
-			savedFreqs[i] = Double.parseDouble(csvValues[i]);
+
+			StrongestFrequenciesModel model = new StrongestFrequenciesModel();
+
+			for (int j = 0; j < csvValues[i].length; j++) {
+
+				if (!csvValues[i][j].isEmpty()) {
+					model.addFrequency(new FrequencyModel(csvValues[i][j]));
+				}
+			}
+
+			savedFreqs[i] = model;
 		}
 
-		recentFreqs = new MaxSizeArrayList<Double>(savedFreqs.length);
+		recentFreqs = new MaxSizeArrayList<StrongestFrequenciesModel>(savedFreqs.length);
 	}
 
 	protected void addRecentFreq(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
+
 		WindowAnalyser analyser = new WindowAnalyser();
 		analyser.assignSamples(samples, sampleRate);
-		double strongestFreq = analyser.getStrongestFrequency();
+		StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
 
 		recentFreqs.add(strongestFreq);
 	}
 
 	protected double getFreqMatch() {
 
-		int matches1 = 0;
+		double c1 = 0, count = 0;
+		for (StrongestFrequenciesModel savedFreq : savedFreqs) {
 
-		for (double savedFreq : savedFreqs) {
+			double max = 0;
+			for (StrongestFrequenciesModel recentFreq : recentFreqs) {
 
-			for (double recentFreq : recentFreqs) {
-
-				double min = savedFreq - Analysis.DETECTION_THRESHOLD;
-				double max = savedFreq + Analysis.DETECTION_THRESHOLD;
-
-				if (recentFreq < max && recentFreq > min) {
-					matches1++;
-					break;
+				double tmp = savedFreq.overlap(recentFreq);
+				if (tmp > max) {
+					max = tmp;
 				}
 			}
+			c1 += max;
+			count++;
 		}
+		c1 /= count;
 
-		int matches2 = 0;
+		double c2 = 0;
+		count = 0;
+		for (StrongestFrequenciesModel recentFreq : recentFreqs) {
 
-		for (double recentFreq : recentFreqs) {
+			double max = 0;
+			for (StrongestFrequenciesModel savedFreq : savedFreqs) {
 
-			for (double savedFreq : savedFreqs) {
-
-				double min = savedFreq - Analysis.DETECTION_THRESHOLD;
-				double max = savedFreq + Analysis.DETECTION_THRESHOLD;
-
-				if (recentFreq < max && recentFreq > min) {
-					matches2++;
-					break;
+				double tmp = recentFreq.overlap(savedFreq);
+				if (tmp > max) {
+					max = tmp;
 				}
 			}
+			c2 += max;
+			count++;
 		}
 
-		return matches1 * matches2 / (double) (savedFreqs.length * recentFreqs.size());
+		c2 /= count;
+
+		double result = c1 * c2;
+
+		return result;
 	}
 }
