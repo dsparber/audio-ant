@@ -5,8 +5,8 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import audio.analysis.model.FrequencyModel;
-import audio.analysis.model.StrongestFrequenciesModel;
+import audio.analysis.features.strongestFrequency.FrequencyModel;
+import audio.analysis.features.strongestFrequency.StrongestFrequenciesModel;
 import config.Parameters.Audio.Analysis;
 import singleton.RConnectionSingleton;
 
@@ -23,10 +23,13 @@ public class WindowAnalyser {
 		rConnection.eval("wave <- Wave(window, samp.rate = " + sampleRate + ")");
 	}
 
+	public void generateSpectrum() throws RserveException {
+		rConnection.eval("spec <- meanspec(wave, fftw = TRUE, plot = FALSE)");
+	}
+
 	public StrongestFrequenciesModel getStrongestFrequencies() {
 
 		try {
-			rConnection.eval("spec <- meanspec(wave, plot = FALSE)");
 			rConnection.eval("peaks = spec[findPeaks(spec[,2]) -1,]");
 			rConnection.eval("strongest = peaks[peaks[,2] >=" + Analysis.AMPLITUDE_THRESHOLD + ", ]");
 
@@ -58,11 +61,21 @@ public class WindowAnalyser {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 
 	public double getEnergy() throws RserveException, REXPMismatchException {
 		return rConnection.eval("20*log10(mean(abs(wave@left)))").asDouble();
 	}
 
+	public double getSpectralRolloffPoint() throws RserveException, REXPMismatchException {
+
+		rConnection.eval("sum <- sum(spec[,2], na.rm = TRUE)");
+		rConnection.eval("current <- 0.0");
+		rConnection.eval("index <- 0");
+
+		rConnection.eval("while (current <= (0.67 * sum)){\n" + "index <- index + 1\n"
+				+ "current = current + spec[index, 2]\n" + "}");
+
+		return rConnection.eval("spec[index,1] * 1000").asDouble();
+	}
 }

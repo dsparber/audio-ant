@@ -103,14 +103,16 @@ public class FeatureTest {
 
 		AudioFileAnalyser analyser = new AudioFileAnalyser(file.getAbsolutePath());
 		System.out.println(file.getAbsolutePath());
+		analyser.analyse();
 		double matchResult = analyser.getMaxMatch();
 
-		boolean wasRecognised = matchResult >= Analysis.MATCH_THRESHOLD;
+		boolean wasRecognised = matchResult >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD;
 
 		ResultModel result = new ResultModel(test.getId(), sound.getId(), file.getName(), wasRecognised);
 		manager.insert(result);
 
-		FeatureMatchModel match = new FeatureMatchModel(result.getId(), matchResult);
+		FeatureMatchModel match = new FeatureMatchModel(result.getId(), analyser.getMaxFrequnecyMatch(),
+				analyser.getMaxSrpMatch());
 		manager.insert(match);
 	}
 }

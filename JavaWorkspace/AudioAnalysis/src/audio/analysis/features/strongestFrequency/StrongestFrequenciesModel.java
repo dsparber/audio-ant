@@ -1,4 +1,4 @@
-package audio.analysis.model;
+package audio.analysis.features.strongestFrequency;
 
 import java.util.ArrayList;
 import java.util.List;

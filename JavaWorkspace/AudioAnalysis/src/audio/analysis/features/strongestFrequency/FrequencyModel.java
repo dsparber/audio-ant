@@ -1,4 +1,4 @@
-package audio.analysis.model;
+package audio.analysis.features.strongestFrequency;
 
 import config.Parameters.Audio.Analysis;
 

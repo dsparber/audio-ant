@@ -12,11 +12,12 @@ public class FeatureMatchModel {
 	private int resultId;
 
 	private double strongestFrequencyMatch;
+	private double spectralRolloffPointMatch;
 
-	public FeatureMatchModel(int resultId, double strongestFrequencyMatch) {
-		super();
+	public FeatureMatchModel(int resultId, double strongestFrequencyMatch, double spectralRolloffPointMatch) {
 		this.resultId = resultId;
 		this.strongestFrequencyMatch = strongestFrequencyMatch;
+		this.spectralRolloffPointMatch = spectralRolloffPointMatch;
 	}
 
 	public int getResultId() {
@@ -29,6 +30,10 @@ public class FeatureMatchModel {
 
 	public int getId() {
 		return id;
+	}
+
+	public double getSpectralRolloffPointMatch() {
+		return spectralRolloffPointMatch;
 	}
 
 	public void setId(int id) {

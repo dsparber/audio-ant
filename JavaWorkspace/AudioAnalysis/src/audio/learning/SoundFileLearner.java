@@ -13,7 +13,7 @@ import java.io.File;
 public class SoundFileLearner extends SoundLearner {
 
 	public SoundFileLearner(String pathname) {
-		super.pathnameIn = pathname;
+		super.soundfile = pathname;
 		File file = new File(pathname);
 		file.getParentFile().mkdirs();
 	}

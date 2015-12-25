@@ -15,7 +15,7 @@ public class EventLights implements Observer {
 
 		double percent = (double) arg;
 
-		if (percent >= Analysis.MATCH_THRESHOLD) {
+		if (percent >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD) {
 
 			Runnable runnable = () -> {
 

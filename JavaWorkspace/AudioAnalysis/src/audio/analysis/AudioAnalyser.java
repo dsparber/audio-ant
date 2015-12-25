@@ -1,19 +1,16 @@
 package audio.analysis;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Observable;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import audio.analysis.model.FrequencyModel;
-import audio.analysis.model.StrongestFrequenciesModel;
-import config.Parameters.WorkingDir;
-import io.csv.CsvReader;
+import audio.analysis.features.spectralRolloffPoint.SrpAnalyser;
+import audio.analysis.features.strongestFrequency.FrequnecyAnalyser;
+import config.Parameters.Audio.Analysis;
 import io.microphone.AudioStreamReader;
-import tools.MaxSizeArrayList;
 
 /**
  *
@@ -26,80 +23,42 @@ public class AudioAnalyser extends Observable {
 
 	protected AudioStreamReader reader;
 
-	protected StrongestFrequenciesModel[] savedFreqs;
-	protected ArrayList<StrongestFrequenciesModel> recentFreqs;
+	private WindowAnalyser analyser;
+	private FrequnecyAnalyser frequnecyAnalyser;
+	private SrpAnalyser srpAnalyser;
 
 	public AudioAnalyser() throws RserveException, IOException {
 
-		CsvReader reader = new CsvReader(WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.FEATURES_CSV);
-		String[][] csvValues = reader.readMatrix();
+		analyser = new WindowAnalyser();
 
-		savedFreqs = new StrongestFrequenciesModel[csvValues.length];
-
-		for (int i = 0; i < csvValues.length; i++) {
-
-			StrongestFrequenciesModel model = new StrongestFrequenciesModel();
-
-			for (int j = 0; j < csvValues[i].length; j++) {
-
-				if (!csvValues[i][j].isEmpty()) {
-					model.addFrequency(new FrequencyModel(csvValues[i][j]));
-				}
-			}
-
-			savedFreqs[i] = model;
-		}
-
-		recentFreqs = new MaxSizeArrayList<StrongestFrequenciesModel>(savedFreqs.length);
+		frequnecyAnalyser = new FrequnecyAnalyser(analyser);
+		srpAnalyser = new SrpAnalyser(analyser);
 	}
 
-	protected void addRecentFreq(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
+	protected void addSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
 
-		WindowAnalyser analyser = new WindowAnalyser();
 		analyser.assignSamples(samples, sampleRate);
-		StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
+		analyser.generateSpectrum();
 
-		recentFreqs.add(strongestFreq);
+		frequnecyAnalyser.analyseSamples();
+		srpAnalyser.analyseSamples();
 	}
 
-	protected double getFreqMatch() {
+	protected double getMatch() {
 
-		double c1 = 0, count = 0;
-		for (StrongestFrequenciesModel savedFreq : savedFreqs) {
-
-			double max = 0;
-			for (StrongestFrequenciesModel recentFreq : recentFreqs) {
-
-				double tmp = savedFreq.overlap(recentFreq);
-				if (tmp > max) {
-					max = tmp;
-				}
+		if (frequnecyAnalyser.getMatch() > Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD) {
+			if (srpAnalyser.getMatch() > Analysis.SRP_MATCH_THRESHOLD) {
+				return 1;
 			}
-			c1 += max;
-			count++;
 		}
-		c1 /= count;
+		return 0;
+	}
 
-		double c2 = 0;
-		count = 0;
-		for (StrongestFrequenciesModel recentFreq : recentFreqs) {
+	public double getSrpMatch() {
+		return srpAnalyser.getMatch();
+	}
 
-			double max = 0;
-			for (StrongestFrequenciesModel savedFreq : savedFreqs) {
-
-				double tmp = recentFreq.overlap(savedFreq);
-				if (tmp > max) {
-					max = tmp;
-				}
-			}
-			c2 += max;
-			count++;
-		}
-
-		c2 /= count;
-
-		double result = c1 * c2;
-
-		return result;
+	public double getfrequencyMatch() {
+		return frequnecyAnalyser.getMatch();
 	}
 }

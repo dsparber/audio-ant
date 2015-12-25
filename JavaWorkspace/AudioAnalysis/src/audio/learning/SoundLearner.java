@@ -1,8 +1,6 @@
 package audio.learning;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -11,14 +9,13 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import audio.analysis.WindowAnalyser;
-import audio.analysis.model.StrongestFrequenciesModel;
+import audio.learning.features.spectralRolloffPoint.SrpLearner;
+import audio.learning.features.strongestFrequency.StrongestFrequencyLearner;
 import audio.windowing.Windowing;
 import config.Parameters.Audio;
 import config.Parameters.Audio.Analysis;
-import config.Parameters.WorkingDir;
 import io.audio.AudioFileReader;
 import io.audio.AudioFileReaderFactory;
-import io.csv.CsvWriter;
 
 /**
  *
@@ -30,66 +27,36 @@ import io.csv.CsvWriter;
 
 public abstract class SoundLearner {
 
-	protected String pathnameIn;
-	protected String pathnameOut = WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.FEATURES_CSV;
+	protected String soundfile;
+
+	private WindowAnalyser windowAnalyser = new WindowAnalyser();
+
+	private SrpLearner srpLearner = new SrpLearner(windowAnalyser);
+	private StrongestFrequencyLearner frequencyLearner = new StrongestFrequencyLearner(windowAnalyser);
 
 	public void extractFeatures() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,
 			UnsupportedAudioFileException {
 
-		List<StrongestFrequenciesModel> strongestFreq = extractStrongestFrequency();
-
-		int maxWidth = 0;
-
-		for (StrongestFrequenciesModel model : strongestFreq) {
-			if (model.size() > maxWidth) {
-				maxWidth = model.size();
-			}
-		}
-
-		String[][] out = new String[strongestFreq.size()][maxWidth];
-
-		for (int i = 0; i < out.length; i++) {
-			for (int j = 0; j < out[i].length; j++) {
-
-				if (strongestFreq.get(i).size() > j) {
-					out[i][j] = strongestFreq.get(i).get(j).toString();
-				} else {
-					out[i][j] = "";
-				}
-			}
-		}
-
-		CsvWriter writer = new CsvWriter(pathnameOut);
-		writer.writeMatrix(out);
-	}
-
-	protected List<StrongestFrequenciesModel> extractStrongestFrequency()
-			throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
-
-		AudioFileReader reader = AudioFileReaderFactory.getFileReader(pathnameIn);
+		AudioFileReader reader = AudioFileReaderFactory.getFileReader(soundfile);
 
 		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
-
-		ArrayList<StrongestFrequenciesModel> results = new ArrayList<StrongestFrequenciesModel>();
+		float sampleRate = reader.getSampleRate();
 
 		for (int samples[] : windows) {
 
-			float sampleRate = reader.getSampleRate();
+			windowAnalyser.assignSamples(samples, sampleRate);
 
-			WindowAnalyser analyser = new WindowAnalyser();
-			analyser.assignSamples(samples, sampleRate);
+			if (windowAnalyser.getEnergy() > Analysis.MIN_ENERGY) {
 
-			double energy = analyser.getEnergy();
+				windowAnalyser.generateSpectrum();
 
-			if (energy > Analysis.MIN_ENERGY) {
-
-				StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
-
-				if (strongestFreq.size() > 0 && strongestFreq.size() <= Analysis.MAX_PEAK_COUNT) {
-					results.add(strongestFreq);
+				if (frequencyLearner.analyseWindow()) {
+					srpLearner.analyseWindow();
 				}
 			}
 		}
-		return results;
+
+		frequencyLearner.saveFeatures();
+		srpLearner.saveFeatures();
 	}
 }

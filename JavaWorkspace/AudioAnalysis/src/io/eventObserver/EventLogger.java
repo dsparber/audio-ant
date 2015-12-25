@@ -48,9 +48,9 @@ public class EventLogger implements Observer {
 
 		String msg = String.format(StringFormatter.DOUBLE_FORMAT, percent * 100);
 
-		if (percent >= Analysis.MATCH_THRESHOLD) {
+		if (percent >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD) {
 			logger.info(msg);
-		} else if (percent > Analysis.MATCH_THRESHOLD / 3.) {
+		} else if (percent > Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD / 3.) {
 			logger.fine(msg);
 		} else if (percent > 0) {
 			logger.finer(msg);

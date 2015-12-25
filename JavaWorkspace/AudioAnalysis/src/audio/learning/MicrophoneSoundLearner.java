@@ -18,8 +18,8 @@ public class MicrophoneSoundLearner extends SoundLearner {
 	private AudioRecorder recordAudio;
 
 	public MicrophoneSoundLearner() {
-		super.pathnameIn = WorkingDir.FOLDER_LEARNED_SOUNDS + WorkingDir.AUDIO_FILE;
-		recordAudio = new AudioRecorder(super.pathnameIn);
+		super.soundfile = WorkingDir.AUDIO_FILE;
+		recordAudio = new AudioRecorder(super.soundfile);
 	}
 
 	public void startCapturing() throws LineUnavailableException {

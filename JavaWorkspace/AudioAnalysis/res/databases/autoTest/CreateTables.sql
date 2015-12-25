@@ -26,5 +26,6 @@ CREATE TABLE Results (
 CREATE TABLE FeatureMatch (
 	ID INTEGER PRIMARY KEY AUTO_INCREMENT,
 	ResultID INTEGER NOT NULL,
-	StrongestFrequency DOUBLE
+	StrongestFrequency DOUBLE,
+	SpectralRolloffPoint DOUBLE
 );

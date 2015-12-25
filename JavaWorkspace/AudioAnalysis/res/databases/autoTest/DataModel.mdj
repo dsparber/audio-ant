@@ -370,7 +370,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFRRCwyVReyslQ="
 									},
-									"name": "ExampleFeature",
+									"name": "SpectralRolloffPoint",
 									"type": "DOUBLE",
 									"length": 0,
 									"primaryKey": false,
@@ -424,7 +424,7 @@
 									"containerExtending": false,
 									"left": 32,
 									"top": 53,
-									"width": 164.79248046875,
+									"width": 172.81591796875,
 									"height": 13,
 									"autoResize": false,
 									"underline": false,
@@ -462,7 +462,7 @@
 											"containerExtending": false,
 											"left": 37,
 											"top": 76,
-											"width": 154.79248046875,
+											"width": 162.81591796875,
 											"height": 13,
 											"autoResize": false
 										},
@@ -486,7 +486,7 @@
 											"containerExtending": false,
 											"left": 37,
 											"top": 91,
-											"width": 154.79248046875,
+											"width": 162.81591796875,
 											"height": 13,
 											"autoResize": false
 										},
@@ -510,7 +510,7 @@
 											"containerExtending": false,
 											"left": 37,
 											"top": 106,
-											"width": 154.79248046875,
+											"width": 162.81591796875,
 											"height": 13,
 											"autoResize": false
 										}
@@ -526,7 +526,7 @@
 									"containerExtending": false,
 									"left": 32,
 									"top": 71,
-									"width": 164.79248046875,
+									"width": 172.81591796875,
 									"height": 53,
 									"autoResize": false
 								}
@@ -542,7 +542,7 @@
 							"containerExtending": false,
 							"left": 32,
 							"top": 48,
-							"width": 164.79248046875,
+							"width": 172.81591796875,
 							"height": 76,
 							"autoResize": false,
 							"nameLabel": {
@@ -959,7 +959,7 @@
 									"showShadow": false,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 242,
+									"left": 246,
 									"top": 59,
 									"width": 0,
 									"height": 13,
@@ -989,7 +989,7 @@
 									"showShadow": false,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 218,
+									"left": 226,
 									"top": 59,
 									"width": 7,
 									"height": 13,
@@ -1053,7 +1053,7 @@
 								"$ref": "AAAAAAFRRBUmWhaEx58="
 							},
 							"lineStyle": 2,
-							"points": "196:80;288:80",
+							"points": "204:80;288:80",
 							"nameLabel": {
 								"$ref": "AAAAAAFRRCh+WRdJFeg="
 							},

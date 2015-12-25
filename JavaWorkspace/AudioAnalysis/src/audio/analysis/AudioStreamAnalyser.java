@@ -47,9 +47,9 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		long timeStart = System.currentTimeMillis();
 
 		try {
-			addRecentFreq((int[]) arg, Audio.SAMPLE_RATE);
+			addSamples((int[]) arg, Audio.SAMPLE_RATE);
 
-			double match = getFreqMatch();
+			double match = getMatch();
 
 			setChanged();
 			notifyObservers(match);

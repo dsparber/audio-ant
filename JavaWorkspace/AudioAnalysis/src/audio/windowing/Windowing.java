@@ -1,5 +1,7 @@
 package audio.windowing;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Daniel Sparber
@@ -51,15 +53,33 @@ public class Windowing {
 		}
 
 		// Create windows
-		int[][] windows = new int[numFrames][frameLength];
+		ArrayList<int[]> windowList = new ArrayList<int[]>();
 
-		for (int i = 0; i < windows.length; i++) {
-			for (int j = 0; j < windows[i].length; j++) {
+		for (int i = 0; i < numFrames; i++) {
+
+			int[] tmp = new int[frameLength];
+
+			boolean onlyZeros = true;
+
+			for (int j = 0; j < tmp.length; j++) {
 
 				int n = j + i * (frameLength - numOverlap);
 
-				windows[i][j] = paddedAudioSignal[n];
+				tmp[j] = paddedAudioSignal[n];
+
+				if (paddedAudioSignal[n] != 0) {
+					onlyZeros = false;
+				}
 			}
+			if (!onlyZeros) {
+				windowList.add(tmp);
+			}
+		}
+
+		int[][] windows = new int[windowList.size()][windowList.get(0).length];
+
+		for (int i = 0; i < windows.length; i++) {
+			windows[i] = windowList.get(i);
 		}
 
 		return windows;

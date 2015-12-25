@@ -24,13 +24,14 @@ public class AudioFileAnalyser extends AudioAnalyser {
 
 	private String pathname;
 
+	private double match, frequencyMatch, srpMatch;
+
 	public AudioFileAnalyser(String pathname) throws RserveException, IOException {
 		super();
 		this.pathname = pathname;
 	}
 
-	public double getMaxMatch()
-			throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
+	public void analyse() throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
 
 		AudioFileReader reader = AudioFileReaderFactory.getFileReader(pathname);
 
@@ -39,16 +40,43 @@ public class AudioFileAnalyser extends AudioAnalyser {
 		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 
 		double max = 0;
+		double maxSrp = 0;
+		double maxFreq = 0;
 
 		for (int[] samples : windows) {
 
-			addRecentFreq(samples, sampleRate);
-			double currentMatch = getFreqMatch();
+			addSamples(samples, sampleRate);
+
+			double currentMatch = getMatch();
+			double currentFreqMatch = getfrequencyMatch();
+			double currentSrpMatch = getSrpMatch();
 
 			if (currentMatch > max) {
 				max = currentMatch;
 			}
+
+			if (currentFreqMatch > maxFreq) {
+				maxFreq = currentFreqMatch;
+			}
+
+			if (currentSrpMatch > maxSrp) {
+				maxSrp = currentSrpMatch;
+			}
 		}
-		return max;
+		match = max;
+		frequencyMatch = maxFreq;
+		srpMatch = maxSrp;
+	}
+
+	public double getMaxMatch() {
+		return match;
+	}
+
+	public double getMaxFrequnecyMatch() {
+		return frequencyMatch;
+	}
+
+	public double getMaxSrpMatch() {
+		return srpMatch;
 	}
 }
