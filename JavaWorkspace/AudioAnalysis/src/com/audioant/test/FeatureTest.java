@@ -77,7 +77,7 @@ public class FeatureTest {
 
 			if (file.getName().matches(AutomatedTest.NAME_PATTERN_REFERENCE_FILE)) {
 
-				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath(), file.getName());
+				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath(), "");
 				learner.extractFeatures();
 
 				break;
@@ -100,7 +100,7 @@ public class FeatureTest {
 	private void analyseFile(File file, SoundModel sound)
 			throws IOException, REngineException, REXPMismatchException, SQLException, UnsupportedAudioFileException {
 
-		SoundFileAnalyser analyser = new SoundFileAnalyser(file.getName(), file.getAbsolutePath());
+		SoundFileAnalyser analyser = new SoundFileAnalyser("", file.getAbsolutePath());
 		System.out.println(file.getAbsolutePath());
 		analyser.analyse();
 

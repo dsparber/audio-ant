@@ -73,9 +73,6 @@ public class SrpMatchAnalyser {
 
 		double result = c1 * c2;
 
-		// System.out.printf("%.2f %.2f %.2f %.2f\n",
-		// recentValues.get(recentValues.size() - 1), c1, c2, result);
-
 		return result;
 	}
 

@@ -37,7 +37,7 @@ WHERE
 	t.id = r.testId AND 
 	s.id = r.soundId AND 
 	f.resultId = r.id AND
-	r.CorrectRecognition = 0;
+	r.correctRecognition = 0;
 	
 -- Show test summary
 SET sql_mode = '';
@@ -57,3 +57,23 @@ WHERE
 	s.id = r.soundId
 GROUP BY
 	Date;
+
+-- CSV export
+SELECT 
+	r.ShouldBeRecognised,  
+	f.strongestFrequency, 
+	f.SpectralRolloffPoint  
+FROM  
+	FeatureMatch as f,  
+	Results as r,  
+	Sounds as s,  
+	Tests as t  
+WHERE  
+	t.id = r.testId AND 
+	s.id = r.soundId AND  
+	f.resultId = r.id AND
+	t.id = 119
+INTO 
+	OUTFILE '/tmp/databaseExport.csv'
+	FIELDS ENCLOSED BY '"' TERMINATED BY ';' ESCAPED BY '"'
+	LINES TERMINATED BY '\r\n';
