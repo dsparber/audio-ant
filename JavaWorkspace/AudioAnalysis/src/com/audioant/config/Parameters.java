@@ -20,9 +20,10 @@ public class Parameters {
 
 		public static final String FOLDER = "res/";
 		public static final String FOLDER_LEARNED_SOUNDS = FOLDER + "learnedSounds/";
-		public static final String AUDIO_FILE = FOLDER_LEARNED_SOUNDS + "learnedSound.wav";
-		public static final String FREQUENCIES_CSV = FOLDER_LEARNED_SOUNDS + "frequencies.csv";
-		public static final String SRP_CSV = FOLDER_LEARNED_SOUNDS + "srp.csv";
+
+		public static final String AUDIO_FILE = "learnedSound.wav";
+		public static final String FREQUENCIES_CSV = "frequencies.csv";
+		public static final String SRP_CSV = "srp.csv";
 	}
 
 	// Communication parameters
@@ -102,7 +103,7 @@ public class Parameters {
 
 			public static final double DETECTION_THRESHOLD = 5; // Hertz
 			public static final double STRONGEST_FREQUENCY_MATCH_THRESHOLD = .7; // Percent
-			public static final double SRP_MATCH_THRESHOLD = .33; // Percent
+			public static final double SRP_MATCH_THRESHOLD = .2; // Percent
 
 			public static final double AMPLITUDE_THRESHOLD = 0.1;
 

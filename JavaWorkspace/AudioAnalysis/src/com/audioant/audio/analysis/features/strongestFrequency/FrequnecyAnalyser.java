@@ -8,6 +8,7 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
+import com.audioant.audio.model.SoundModel;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
@@ -26,9 +27,12 @@ public class FrequnecyAnalyser {
 
 	private WindowAnalyser analyser;
 
-	public FrequnecyAnalyser(WindowAnalyser analyser) throws RserveException, IOException {
+	private SoundModel soundModel;
+
+	public FrequnecyAnalyser(WindowAnalyser analyser, SoundModel soundModel) throws RserveException, IOException {
 
 		this.analyser = analyser;
+		this.soundModel = soundModel;
 
 		savedFreqs = loadCsvValues();
 
@@ -86,7 +90,7 @@ public class FrequnecyAnalyser {
 
 		StrongestFrequenciesModel[] savedFreqs;
 
-		CsvReader reader = new CsvReader(WorkingDir.FREQUENCIES_CSV);
+		CsvReader reader = new CsvReader(soundModel.getFolder() + WorkingDir.FREQUENCIES_CSV);
 		String[][] csvValues = reader.readMatrix();
 
 		savedFreqs = new StrongestFrequenciesModel[csvValues.length];

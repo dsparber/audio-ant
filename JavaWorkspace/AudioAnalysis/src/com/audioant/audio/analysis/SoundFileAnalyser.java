@@ -20,14 +20,15 @@ import com.audioant.io.audio.AudioFileReaderFactory;
  *
  * @version 1.0
  */
-public class AudioFileAnalyser extends AudioAnalyser {
+public class SoundFileAnalyser extends SoundAnalyser {
 
 	private String pathname;
 
-	private double match, frequencyMatch, srpMatch;
+	private boolean match;
+	private double frequencyMatch, srpMatch;
 
-	public AudioFileAnalyser(String pathname) throws RserveException, IOException {
-		super();
+	public SoundFileAnalyser(String soundName, String pathname) throws RserveException, IOException {
+		super(soundName);
 		this.pathname = pathname;
 	}
 
@@ -39,7 +40,7 @@ public class AudioFileAnalyser extends AudioAnalyser {
 
 		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
 
-		double max = 0;
+		boolean match = false;
 		double maxSrp = 0;
 		double maxFreq = 0;
 
@@ -47,12 +48,12 @@ public class AudioFileAnalyser extends AudioAnalyser {
 
 			addSamples(samples, sampleRate);
 
-			double currentMatch = getMatch();
+			boolean currentMatch = isMatch();
 			double currentFreqMatch = getfrequencyMatch();
 			double currentSrpMatch = getSrpMatch();
 
-			if (currentMatch > max) {
-				max = currentMatch;
+			if (currentMatch) {
+				match = true;
 			}
 
 			if (currentFreqMatch > maxFreq) {
@@ -63,12 +64,12 @@ public class AudioFileAnalyser extends AudioAnalyser {
 				maxSrp = currentSrpMatch;
 			}
 		}
-		match = max;
+		this.match = match;
 		frequencyMatch = maxFreq;
 		srpMatch = maxSrp;
 	}
 
-	public double getMaxMatch() {
+	public boolean getMatch() {
 		return match;
 	}
 

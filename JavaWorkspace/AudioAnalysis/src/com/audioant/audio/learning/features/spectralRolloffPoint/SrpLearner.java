@@ -24,15 +24,16 @@ import com.audioant.io.csv.CsvWriter;
 
 public class SrpLearner {
 
-	protected String pathnameOut = WorkingDir.SRP_CSV;
+	protected String pathnameOut;
 
 	private WindowAnalyser analyser;
 
 	private List<Double> results;
 
-	public SrpLearner(WindowAnalyser analyser) {
+	public SrpLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
+		pathnameOut = pathname + WorkingDir.SRP_CSV;
 		results = new ArrayList<Double>();
 	}
 

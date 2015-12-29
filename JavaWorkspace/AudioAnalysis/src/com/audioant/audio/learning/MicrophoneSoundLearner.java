@@ -17,8 +17,9 @@ public class MicrophoneSoundLearner extends SoundLearner {
 
 	private AudioRecorder recordAudio;
 
-	public MicrophoneSoundLearner() {
-		super.soundfile = WorkingDir.AUDIO_FILE;
+	public MicrophoneSoundLearner(String soundName) {
+		super(soundName);
+		super.soundfile = super.soundModel.getFolder() + WorkingDir.AUDIO_FILE;
 		recordAudio = new AudioRecorder(super.soundfile);
 	}
 

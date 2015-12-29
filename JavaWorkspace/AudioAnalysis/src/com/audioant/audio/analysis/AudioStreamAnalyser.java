@@ -1,6 +1,7 @@
 package com.audioant.audio.analysis;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -8,6 +9,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.model.SoundModel;
 import com.audioant.config.Parameters.Audio;
 import com.audioant.io.microphone.AudioStreamReader;
 
@@ -49,10 +51,12 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		try {
 			addSamples((int[]) arg, Audio.SAMPLE_RATE);
 
-			double match = getMatch();
+			List<SoundModel> matches = getMatches();
 
-			setChanged();
-			notifyObservers(match);
+			if (!matches.isEmpty()) {
+				setChanged();
+				notifyObservers(matches);
+			}
 
 		} catch (REngineException | REXPMismatchException e) {
 			e.printStackTrace();

@@ -8,8 +8,9 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.audio.model.SoundModel;
 import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
 
@@ -26,10 +27,12 @@ public class SrpAnalyser {
 	protected ArrayList<Double> recentValues;
 
 	private WindowAnalyser analyser;
+	private SoundModel soundModel;
 
-	public SrpAnalyser(WindowAnalyser analyser) throws RserveException, IOException {
+	public SrpAnalyser(WindowAnalyser analyser, SoundModel soundModel) throws RserveException, IOException {
 
 		this.analyser = analyser;
+		this.soundModel = soundModel;
 
 		savedValues = loadCsvValues();
 
@@ -97,7 +100,7 @@ public class SrpAnalyser {
 
 	private double[] loadCsvValues() throws IOException {
 
-		CsvReader reader = new CsvReader(WorkingDir.SRP_CSV);
+		CsvReader reader = new CsvReader(soundModel.getFolder() + WorkingDir.SRP_CSV);
 		String[] csvValues = reader.readSingleCol(0);
 
 		double[] values = new double[csvValues.length];

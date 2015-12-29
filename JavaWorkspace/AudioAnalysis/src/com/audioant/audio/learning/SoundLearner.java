@@ -11,6 +11,7 @@ import org.rosuda.REngine.REngineException;
 import com.audioant.audio.analysis.WindowAnalyser;
 import com.audioant.audio.learning.features.spectralRolloffPoint.SrpLearner;
 import com.audioant.audio.learning.features.strongestFrequency.StrongestFrequencyLearner;
+import com.audioant.audio.model.SoundModel;
 import com.audioant.audio.windowing.Windowing;
 import com.audioant.config.Parameters.Audio;
 import com.audioant.config.Parameters.Audio.Analysis;
@@ -28,11 +29,21 @@ import com.audioant.io.audio.AudioFileReaderFactory;
 public abstract class SoundLearner {
 
 	protected String soundfile;
+	protected SoundModel soundModel;
 
-	private WindowAnalyser windowAnalyser = new WindowAnalyser();
+	private WindowAnalyser windowAnalyser;
 
-	private SrpLearner srpLearner = new SrpLearner(windowAnalyser);
-	private StrongestFrequencyLearner frequencyLearner = new StrongestFrequencyLearner(windowAnalyser);
+	private SrpLearner srpLearner;
+	private StrongestFrequencyLearner frequencyLearner;
+
+	public SoundLearner(String soundName) {
+
+		soundModel = new SoundModel(soundName);
+
+		windowAnalyser = new WindowAnalyser();
+		srpLearner = new SrpLearner(windowAnalyser, soundModel.getFolder());
+		frequencyLearner = new StrongestFrequencyLearner(windowAnalyser, soundModel.getFolder());
+	}
 
 	public void extractFeatures() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,
 			UnsupportedAudioFileException {

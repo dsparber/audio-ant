@@ -3,6 +3,7 @@ package com.audioant.io.eventObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.FileHandler;
@@ -10,10 +11,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.audioant.audio.model.SoundModel;
 import com.audioant.config.Parameters.DateFormat;
 import com.audioant.config.Parameters.Logging;
-import com.audioant.config.Parameters.StringFormatter;
-import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.io.logging.LogFormatter;
 
 public class EventLogger implements Observer {
@@ -44,18 +44,18 @@ public class EventLogger implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		double percent = (double) arg;
+		@SuppressWarnings("unchecked")
+		List<SoundModel> matches = (List<SoundModel>) arg;
 
-		String msg = String.format(StringFormatter.DOUBLE_FORMAT, percent * 100);
+		StringBuilder msg = new StringBuilder();
 
-		if (percent >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD) {
-			logger.info(msg);
-		} else if (percent > Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD / 3.) {
-			logger.fine(msg);
-		} else if (percent > 0) {
-			logger.finer(msg);
-		} else {
-			logger.finest(msg);
+		msg.append(String.format("%d match(es): ", matches.size()));
+
+		for (SoundModel soundModel : matches) {
+			msg.append(soundModel.getSoundName());
+			msg.append(", ");
 		}
+
+		logger.info(msg.toString().substring(0, msg.length() - 2));
 	}
 }

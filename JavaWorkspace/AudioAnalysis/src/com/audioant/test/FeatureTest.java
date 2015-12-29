@@ -10,10 +10,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
-import com.audioant.audio.analysis.AudioFileAnalyser;
+import com.audioant.audio.analysis.SoundFileAnalyser;
 import com.audioant.audio.learning.SoundFileLearner;
 import com.audioant.config.Parameters.AutomatedTest;
-import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.io.sql.AutomatedTestDatabaseManager;
 import com.audioant.test.model.FeatureMatchModel;
 import com.audioant.test.model.ResultModel;
@@ -78,7 +77,7 @@ public class FeatureTest {
 
 			if (file.getName().matches(AutomatedTest.NAME_PATTERN_REFERENCE_FILE)) {
 
-				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath());
+				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath(), file.getName());
 				learner.extractFeatures();
 
 				break;
@@ -101,12 +100,11 @@ public class FeatureTest {
 	private void analyseFile(File file, SoundModel sound)
 			throws IOException, REngineException, REXPMismatchException, SQLException, UnsupportedAudioFileException {
 
-		AudioFileAnalyser analyser = new AudioFileAnalyser(file.getAbsolutePath());
+		SoundFileAnalyser analyser = new SoundFileAnalyser(file.getName(), file.getAbsolutePath());
 		System.out.println(file.getAbsolutePath());
 		analyser.analyse();
-		double matchResult = analyser.getMaxMatch();
 
-		boolean wasRecognised = matchResult >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD;
+		boolean wasRecognised = analyser.getMatch();
 
 		ResultModel result = new ResultModel(test.getId(), sound.getId(), file.getName(), wasRecognised);
 		manager.insert(result);

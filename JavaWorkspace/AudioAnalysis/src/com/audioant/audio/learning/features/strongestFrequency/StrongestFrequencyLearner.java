@@ -12,8 +12,8 @@ import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
 import com.audioant.audio.analysis.features.strongestFrequency.StrongestFrequenciesModel;
-import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvWriter;
 
 /**
@@ -26,15 +26,15 @@ import com.audioant.io.csv.CsvWriter;
 
 public class StrongestFrequencyLearner {
 
-	protected String pathnameOut = WorkingDir.FREQUENCIES_CSV;
+	protected String pathnameOut;
 
 	private WindowAnalyser analyser;
-
 	private List<StrongestFrequenciesModel> results;
 
-	public StrongestFrequencyLearner(WindowAnalyser analyser) {
+	public StrongestFrequencyLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
+		pathnameOut = pathname + WorkingDir.FREQUENCIES_CSV;
 		results = new ArrayList<StrongestFrequenciesModel>();
 	}
 

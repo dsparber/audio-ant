@@ -12,7 +12,8 @@ import java.io.File;
 
 public class SoundFileLearner extends SoundLearner {
 
-	public SoundFileLearner(String pathname) {
+	public SoundFileLearner(String pathname, String soundName) {
+		super(soundName);
 		super.soundfile = pathname;
 		File file = new File(pathname);
 		file.getParentFile().mkdirs();

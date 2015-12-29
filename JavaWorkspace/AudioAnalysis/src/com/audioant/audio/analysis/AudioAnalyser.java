@@ -1,15 +1,17 @@
 package com.audioant.audio.analysis;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.audioant.audio.analysis.features.spectralRolloffPoint.SrpAnalyser;
-import com.audioant.audio.analysis.features.strongestFrequency.FrequnecyAnalyser;
-import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.audio.model.SoundModel;
+import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.microphone.AudioStreamReader;
 
 /**
@@ -23,42 +25,42 @@ public class AudioAnalyser extends Observable {
 
 	protected AudioStreamReader reader;
 
-	private WindowAnalyser analyser;
-	private FrequnecyAnalyser frequnecyAnalyser;
-	private SrpAnalyser srpAnalyser;
+	private List<SoundAnalyser> soundAnalysers;
 
 	public AudioAnalyser() throws RserveException, IOException {
 
-		analyser = new WindowAnalyser();
+		soundAnalysers = new ArrayList<SoundAnalyser>();
 
-		frequnecyAnalyser = new FrequnecyAnalyser(analyser);
-		srpAnalyser = new SrpAnalyser(analyser);
+		File[] learnedSounds = new File(WorkingDir.FOLDER_LEARNED_SOUNDS).listFiles();
+
+		for (File file : learnedSounds) {
+
+			if (file.isDirectory()) {
+
+				String soundName = file.getName();
+
+				soundAnalysers.add(new SoundAnalyser(soundName));
+			}
+		}
 	}
 
 	protected void addSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
 
-		analyser.assignSamples(samples, sampleRate);
-		analyser.generateSpectrum();
-
-		frequnecyAnalyser.analyseSamples();
-		srpAnalyser.analyseSamples();
+		for (SoundAnalyser analyser : soundAnalysers) {
+			analyser.addSamples(samples, sampleRate);
+		}
 	}
 
-	protected double getMatch() {
+	protected List<SoundModel> getMatches() {
 
-		if (frequnecyAnalyser.getMatch() > Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD) {
-			if (srpAnalyser.getMatch() > Analysis.SRP_MATCH_THRESHOLD) {
-				return 1;
+		List<SoundModel> sounds = new ArrayList<SoundModel>();
+
+		for (SoundAnalyser analyser : soundAnalysers) {
+			if (analyser.isMatch()) {
+				sounds.add(analyser.getSoundModel());
 			}
 		}
-		return 0;
-	}
 
-	public double getSrpMatch() {
-		return srpAnalyser.getMatch();
-	}
-
-	public double getfrequencyMatch() {
-		return frequnecyAnalyser.getMatch();
+		return sounds;
 	}
 }

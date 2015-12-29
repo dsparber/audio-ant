@@ -1,4 +1,5 @@
 package com.audioant;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -78,11 +79,9 @@ public class CommandLineTool {
 	private static void analyseStream() {
 		try {
 			EventLogger logger = new EventLogger();
-			// EventGui loggerGui = new EventGui();
 			// EventLights lights = new EventLights();
 			analyser = new AudioStreamAnalyser();
 			analyser.addObserver(logger);
-			// analyser.addObserver(loggerGui);
 			// analyser.addObserver(lights);
 			analyser.start();
 			System.out.println("Analysing stream");
@@ -106,7 +105,9 @@ public class CommandLineTool {
 	private static void learnSound(Scanner scanner) {
 
 		try {
-			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner();
+			System.out.print("Enter the name of the sound: ");
+
+			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(scanner.nextLine());
 
 			System.out.println("Hit return to start recording");
 			scanner.nextLine();
