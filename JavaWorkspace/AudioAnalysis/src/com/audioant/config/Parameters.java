@@ -102,8 +102,8 @@ public class Parameters {
 		public static class Analysis {
 
 			public static final double DETECTION_THRESHOLD = 5; // Hertz
-			public static final double STRONGEST_FREQUENCY_MATCH_THRESHOLD = .7; // Percent
-			public static final double SRP_MATCH_THRESHOLD = .2; // Percent
+			public static final double STRONGEST_FREQUENCY_MATCH_THRESHOLD = .67; // Percent
+			public static final double SRP_MATCH_THRESHOLD = .5; // Percent
 
 			public static final double AMPLITUDE_THRESHOLD = 0.1;
 
@@ -113,7 +113,7 @@ public class Parameters {
 			public static final int MIN_ENERGY = 40;
 			public static final int MAX_PEAK_COUNT = 4;
 
-			public static final double SRP_TOLERANCE = .04; // Percent
+			public static final double SRP_TOLERANCE = .2; // Percent
 		}
 	}
 
