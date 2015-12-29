@@ -8,6 +8,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.model.ResultModel;
 import com.audioant.audio.windowing.Windowing;
 import com.audioant.config.Parameters.Audio;
 import com.audioant.io.audio.AudioFileReader;
@@ -26,10 +27,12 @@ public class SoundFileAnalyser extends SoundAnalyser {
 
 	private boolean match;
 	private double frequencyMatch, srpMatch;
+	private MatchAnalyser matchAnalyser;
 
 	public SoundFileAnalyser(String soundName, String pathname) throws RserveException, IOException {
-		super(soundName);
+		super();
 		this.pathname = pathname;
+		matchAnalyser = new MatchAnalyser(soundName);
 	}
 
 	public void analyse() throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
@@ -46,11 +49,13 @@ public class SoundFileAnalyser extends SoundAnalyser {
 
 		for (int[] samples : windows) {
 
-			addSamples(samples, sampleRate);
+			ResultModel resultModel = analyseSamples(samples, sampleRate);
 
-			boolean currentMatch = isMatch();
-			double currentFreqMatch = getfrequencyMatch();
-			double currentSrpMatch = getSrpMatch();
+			matchAnalyser.addAnalysisResult(resultModel);
+
+			boolean currentMatch = matchAnalyser.isMatch();
+			double currentFreqMatch = matchAnalyser.getfrequencyMatch();
+			double currentSrpMatch = matchAnalyser.getSrpMatch();
 
 			if (currentMatch) {
 				match = true;
