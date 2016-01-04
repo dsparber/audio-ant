@@ -13,9 +13,12 @@ public class FeatureMatchModel {
 
 	private double strongestFrequencyMatch;
 	private double spectralRolloffPointMatch;
+	private double mfccMatch;
 
-	public FeatureMatchModel(int resultId, double strongestFrequencyMatch, double spectralRolloffPointMatch) {
+	public FeatureMatchModel(int resultId, double strongestFrequencyMatch, double spectralRolloffPointMatch,
+			double mfccMatch) {
 		this.resultId = resultId;
+		this.mfccMatch = mfccMatch;
 		this.strongestFrequencyMatch = strongestFrequencyMatch;
 		this.spectralRolloffPointMatch = spectralRolloffPointMatch;
 	}
@@ -38,5 +41,9 @@ public class FeatureMatchModel {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public double getMfccMatch() {
+		return mfccMatch;
 	}
 }

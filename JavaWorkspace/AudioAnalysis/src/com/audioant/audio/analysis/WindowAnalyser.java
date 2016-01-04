@@ -27,6 +27,14 @@ public class WindowAnalyser {
 		rConnection.eval("spec <- meanspec(wave, fftw = TRUE, plot = FALSE)");
 	}
 
+	public double[] getMFCC() throws RserveException, REXPMismatchException {
+
+		rConnection.eval("mfcc <- colMeans(melfcc(wave))");
+		rConnection.eval("mfcc <- mfcc / max(mfcc)");
+
+		return rConnection.eval("mfcc").asDoubles();
+	}
+
 	public StrongestFrequenciesModel getStrongestFrequencies() {
 
 		try {

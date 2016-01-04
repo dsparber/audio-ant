@@ -9,6 +9,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
+import com.audioant.audio.learning.features.mfcc.MfccLearner;
 import com.audioant.audio.learning.features.spectralRolloffPoint.SrpLearner;
 import com.audioant.audio.learning.features.strongestFrequency.StrongestFrequencyLearner;
 import com.audioant.audio.model.SoundModel;
@@ -34,6 +35,7 @@ public abstract class SoundLearner {
 	private WindowAnalyser windowAnalyser;
 
 	private SrpLearner srpLearner;
+	private MfccLearner mfccLearner;
 	private StrongestFrequencyLearner frequencyLearner;
 
 	public SoundLearner(String soundName) {
@@ -41,7 +43,9 @@ public abstract class SoundLearner {
 		soundModel = new SoundModel(soundName);
 
 		windowAnalyser = new WindowAnalyser();
+
 		srpLearner = new SrpLearner(windowAnalyser, soundModel.getFolder());
+		mfccLearner = new MfccLearner(windowAnalyser, soundModel.getFolder());
 		frequencyLearner = new StrongestFrequencyLearner(windowAnalyser, soundModel.getFolder());
 	}
 
@@ -62,12 +66,14 @@ public abstract class SoundLearner {
 				windowAnalyser.generateSpectrum();
 
 				if (frequencyLearner.analyseWindow()) {
+					mfccLearner.analyseWindow();
 					srpLearner.analyseWindow();
 				}
 			}
 		}
 
 		frequencyLearner.saveFeatures();
+		mfccLearner.saveFeatures();
 		srpLearner.saveFeatures();
 	}
 }

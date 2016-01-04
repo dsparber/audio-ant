@@ -24,6 +24,7 @@ public class Parameters {
 		public static final String AUDIO_FILE = "learnedSound.wav";
 		public static final String FREQUENCIES_CSV = "frequencies.csv";
 		public static final String SRP_CSV = "srp.csv";
+		public static final String MFCC_CSV = "mfcc.csv";
 	}
 
 	// Communication parameters
@@ -102,8 +103,9 @@ public class Parameters {
 		public static class Analysis {
 
 			public static final double DETECTION_THRESHOLD = 5; // Hertz
-			public static final double STRONGEST_FREQUENCY_MATCH_THRESHOLD = .67; // Percent
-			public static final double SRP_MATCH_THRESHOLD = .5; // Percent
+			public static final double STRONGEST_FREQUENCY_MATCH_THRESHOLD = .5; // Percent
+			public static final double SRP_MATCH_THRESHOLD = .36; // Percent
+			public static final double MFCC_MATCH_THRESHOLD = .6; // Percent
 
 			public static final double AMPLITUDE_THRESHOLD = 0.1;
 
@@ -114,6 +116,11 @@ public class Parameters {
 			public static final int MAX_PEAK_COUNT = 4;
 
 			public static final double SRP_TOLERANCE = .2; // Percent
+
+			// MFCC
+			private static boolean t = true, f = false;
+			public static final boolean[] MFCC_COEFFICIENT_USED = { f, t, f, t, f, t, t, t, t, t, t, f };
+			public static final double[] MFCC_TOLERANCE = { .1, .11, .11, .07, .17, .13, .13, .07, .18, .13, .13, .16 };
 		}
 	}
 

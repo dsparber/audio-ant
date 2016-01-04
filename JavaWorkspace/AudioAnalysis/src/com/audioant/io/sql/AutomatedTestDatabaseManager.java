@@ -110,12 +110,13 @@ public class AutomatedTestDatabaseManager {
 
 	public int insert(FeatureMatchModel model) throws SQLException {
 
-		String sql = "INSERT INTO FeatureMatch (resultId, strongestFrequency, spectralRolloffPoint) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO FeatureMatch (resultId, strongestFrequency, spectralRolloffPoint, mfcc) VALUES (?, ?, ?, ?)";
 
 		PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 		statement.setInt(1, model.getResultId());
 		statement.setDouble(2, model.getStrongestFrequencyMatch());
 		statement.setDouble(3, model.getSpectralRolloffPointMatch());
+		statement.setDouble(4, model.getMfccMatch());
 
 		statement.executeUpdate();
 

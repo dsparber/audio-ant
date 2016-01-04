@@ -5,6 +5,7 @@ import java.util.Observable;
 
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.analysis.features.mfcc.MfccMatchAnalyser;
 import com.audioant.audio.analysis.features.spectralRolloffPoint.SrpMatchAnalyser;
 import com.audioant.audio.analysis.features.strongestFrequency.FrequnecyMatchAnalyser;
 import com.audioant.audio.model.ResultModel;
@@ -23,6 +24,7 @@ public class MatchAnalyser extends Observable {
 	private SoundModel soundModel;
 
 	private SrpMatchAnalyser srpAnalyser;
+	private MfccMatchAnalyser mfccAnalyser;
 	private FrequnecyMatchAnalyser frequnecyAnalyser;
 
 	public MatchAnalyser(String soundName) throws RserveException, IOException {
@@ -30,31 +32,33 @@ public class MatchAnalyser extends Observable {
 		soundModel = new SoundModel(soundName);
 
 		srpAnalyser = new SrpMatchAnalyser(soundModel);
+		mfccAnalyser = new MfccMatchAnalyser(soundModel);
 		frequnecyAnalyser = new FrequnecyMatchAnalyser(soundModel);
 	}
 
 	public void addAnalysisResult(ResultModel resultModel) {
 		srpAnalyser.addValue(resultModel.getSpectralRolloffPoint());
+		mfccAnalyser.addValue(resultModel.getMfcc());
 		frequnecyAnalyser.addValue(resultModel.getStrongestFrequencies());
-
 	}
 
 	protected boolean isMatch() {
 
-		if (frequnecyAnalyser.getMatch() > Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD) {
-			if (srpAnalyser.getMatch() > Analysis.SRP_MATCH_THRESHOLD) {
-				return true;
-			}
-		}
-		return false;
+		return frequnecyAnalyser.getMatch() >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD
+				&& mfccAnalyser.getMatch() >= Analysis.MFCC_MATCH_THRESHOLD
+				&& srpAnalyser.getMatch() >= Analysis.SRP_MATCH_THRESHOLD;
 	}
 
 	public double getSrpMatch() {
 		return srpAnalyser.getMatch();
 	}
 
-	public double getfrequencyMatch() {
+	public double getFrequencyMatch() {
 		return frequnecyAnalyser.getMatch();
+	}
+
+	public double getMfccMatch() {
+		return mfccAnalyser.getMatch();
 	}
 
 	public SoundModel getSoundModel() {

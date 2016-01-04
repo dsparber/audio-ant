@@ -9,7 +9,8 @@ SELECT
 	r.correctRecognition, 
 	r.ShouldBeRecognised,
 	f.strongestFrequency,
-	f.SpectralRolloffPoint 
+	f.spectralRolloffPoint,
+	f.mfcc
 FROM 
 	FeatureMatch as f, 
 	Results as r, 
@@ -27,7 +28,8 @@ SELECT
 	s.name, 
 	r.fileName,  
 	f.strongestFrequency,
-	f.SpectralRolloffPoint 
+	f.spectralRolloffPoint,
+	f.mfcc
 FROM 
 	FeatureMatch as f, 
 	Results as r, 
@@ -62,15 +64,14 @@ GROUP BY
 SELECT 
 	r.ShouldBeRecognised,  
 	f.strongestFrequency, 
-	f.SpectralRolloffPoint  
+	f.SpectralRolloffPoint,
+	f.mfcc
 FROM  
 	FeatureMatch as f,  
 	Results as r,  
-	Sounds as s,  
 	Tests as t  
 WHERE  
 	t.id = r.testId AND 
-	s.id = r.soundId AND  
 	f.resultId = r.id AND
 	t.id = 119
 INTO 
