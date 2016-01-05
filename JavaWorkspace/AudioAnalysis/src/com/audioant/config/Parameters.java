@@ -123,10 +123,10 @@ public class Parameters {
 			public static final double SRP_TOLERANCE = .2; // Percent
 
 			// Detection thresholds
-			public static final double MATCH_THRESHOLD_SRP = .36; // Percent
-			public static final double MATCH_THRESHOLD_MFCC = .6; // Percent
-			public static final double MATCH_THRESHOLD_ENERGY = .7; // Percent
-			public static final double MATCH_THRESHOLD_STRONGEST_FREQUENCY = .5; // Percent
+			public static final double MATCH_THRESHOLD_SRP = .15; // Percent
+			public static final double MATCH_THRESHOLD_MFCC = .37; // Percent
+			public static final double MATCH_THRESHOLD_ENERGY = .45; // Percent
+			public static final double MATCH_THRESHOLD_STRONGEST_FREQUENCY = .46; // Percent
 		}
 	}
 

@@ -22,6 +22,8 @@ import com.audioant.config.Parameters.Audio.Analysis;
  */
 public class MatchAnalyser extends Observable {
 
+	// private long time = System.currentTimeMillis();
+
 	private SoundModel soundModel;
 
 	private SrpMatchAnalyser srpAnalyser;
@@ -47,6 +49,34 @@ public class MatchAnalyser extends Observable {
 	}
 
 	protected boolean isMatch() {
+
+		/*
+		 * *********************************************************************
+		 * FOR TESTING PURPOSE *************************************************
+		 * *********************************************************************
+		 * if (frequnecyAnalyser.getMatch() >=
+		 * Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY / 2 &&
+		 * mfccAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_MFCC / 2 &&
+		 * srpAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_SRP / 2 &&
+		 * energyAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_ENERGY / 2) {
+		 *
+		 * if (System.currentTimeMillis() - time > 350) { System.out.println();
+		 * } time = System.currentTimeMillis();
+		 *
+		 * System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\t",
+		 * frequnecyAnalyser.getMatch(), srpAnalyser.getMatch(),
+		 * mfccAnalyser.getMatch(), energyAnalyser.getMatch());
+		 *
+		 * if (frequnecyAnalyser.getMatch() <
+		 * Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY) {
+		 * System.out.print("f"); } if (srpAnalyser.getMatch() <
+		 * Analysis.MATCH_THRESHOLD_SRP) { System.out.print("s"); } if
+		 * (mfccAnalyser.getMatch() < Analysis.MATCH_THRESHOLD_MFCC) {
+		 * System.out.print("m"); } if (energyAnalyser.getMatch() <
+		 * Analysis.MATCH_THRESHOLD_ENERGY) { System.out.print("e"); }
+		 *
+		 * System.out.println(); }
+		 */
 
 		return frequnecyAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY
 				&& mfccAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_MFCC
