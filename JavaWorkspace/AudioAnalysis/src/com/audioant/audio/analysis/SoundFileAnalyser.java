@@ -26,7 +26,7 @@ public class SoundFileAnalyser extends SoundAnalyser {
 	private String pathname;
 
 	private boolean match;
-	private double frequencyMatch, srpMatch, mfccMatch;
+	private double frequencyMatch, srpMatch, mfccMatch, energyMatch;
 	private MatchAnalyser matchAnalyser;
 
 	public SoundFileAnalyser(String soundName, String pathname) throws RserveException, IOException {
@@ -47,6 +47,7 @@ public class SoundFileAnalyser extends SoundAnalyser {
 		double maxSrp = 0;
 		double maxFreq = 0;
 		double maxMfcc = 0;
+		double maxEnergy = 0;
 
 		for (int[] samples : windows) {
 
@@ -58,6 +59,7 @@ public class SoundFileAnalyser extends SoundAnalyser {
 			double currentFreqMatch = matchAnalyser.getFrequencyMatch();
 			double currentSrpMatch = matchAnalyser.getSrpMatch();
 			double currentMfccMatch = matchAnalyser.getMfccMatch();
+			double currentEnergy = matchAnalyser.getEnergyMatch();
 
 			if (currentMatch) {
 				match = true;
@@ -74,11 +76,16 @@ public class SoundFileAnalyser extends SoundAnalyser {
 			if (currentMfccMatch > maxMfcc) {
 				maxMfcc = currentMfccMatch;
 			}
+
+			if (currentEnergy > maxEnergy) {
+				maxEnergy = currentEnergy;
+			}
 		}
 		this.match = match;
 		frequencyMatch = maxFreq;
 		srpMatch = maxSrp;
 		mfccMatch = maxMfcc;
+		energyMatch = maxEnergy;
 	}
 
 	public boolean getMatch() {
@@ -96,4 +103,9 @@ public class SoundFileAnalyser extends SoundAnalyser {
 	public double getMaxMfccMatch() {
 		return mfccMatch;
 	}
+
+	public double getMaxEnergyMatch() {
+		return energyMatch;
+	}
+
 }

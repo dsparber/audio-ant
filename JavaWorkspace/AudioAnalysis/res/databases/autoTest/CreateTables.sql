@@ -28,5 +28,6 @@ CREATE TABLE FeatureMatch (
 	ResultID INTEGER NOT NULL,
 	StrongestFrequency DOUBLE,
 	SpectralRolloffPoint DOUBLE,
-	MFCC DOUBLE
+	MFCC DOUBLE,
+	Energy DOUBLE
 );

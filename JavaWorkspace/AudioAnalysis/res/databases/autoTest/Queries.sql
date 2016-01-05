@@ -7,10 +7,11 @@ SELECT
 	t.testDate, 
 	r.fileName, 
 	r.correctRecognition, 
-	r.ShouldBeRecognised,
+	r.shouldBeRecognised,
 	f.strongestFrequency,
 	f.spectralRolloffPoint,
-	f.mfcc
+	f.mfcc,
+	f.energy
 FROM 
 	FeatureMatch as f, 
 	Results as r, 
@@ -29,7 +30,8 @@ SELECT
 	r.fileName,  
 	f.strongestFrequency,
 	f.spectralRolloffPoint,
-	f.mfcc
+	f.mfcc,
+	f.energy
 FROM 
 	FeatureMatch as f, 
 	Results as r, 
@@ -52,20 +54,19 @@ SELECT
 	AVG(r.correctRecognition) as 'Avg. correctness'
 FROM
 	Results as r, 
-	Sounds as s, 
 	Tests as t 
 WHERE 
-	t.id = r.testId AND 
-	s.id = r.soundId
+	t.id = r.testId
 GROUP BY
 	Date;
 
 -- CSV export
 SELECT 
-	r.ShouldBeRecognised,  
+	r.shouldBeRecognised,  
 	f.strongestFrequency, 
-	f.SpectralRolloffPoint,
-	f.mfcc
+	f.spectralRolloffPoint,
+	f.mfcc,
+	f.energy
 FROM  
 	FeatureMatch as f,  
 	Results as r,  

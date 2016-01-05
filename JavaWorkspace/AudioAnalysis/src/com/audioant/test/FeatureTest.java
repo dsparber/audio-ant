@@ -110,7 +110,7 @@ public class FeatureTest {
 		manager.insert(result);
 
 		FeatureMatchModel match = new FeatureMatchModel(result.getId(), analyser.getMaxFrequnecyMatch(),
-				analyser.getMaxSrpMatch(), analyser.getMaxMfccMatch());
+				analyser.getMaxSrpMatch(), analyser.getMaxMfccMatch(), analyser.getMaxEnergyMatch());
 		manager.insert(match);
 	}
 }
