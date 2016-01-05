@@ -71,6 +71,10 @@ public class WindowAnalyser {
 		}
 	}
 
+	public double getRmsEnergy() throws RserveException, REXPMismatchException {
+		return rConnection.eval("rms(wave@left)").asDouble();
+	}
+
 	public double getEnergy() throws RserveException, REXPMismatchException {
 		return rConnection.eval("20*log10(mean(abs(wave@left)))").asDouble();
 	}

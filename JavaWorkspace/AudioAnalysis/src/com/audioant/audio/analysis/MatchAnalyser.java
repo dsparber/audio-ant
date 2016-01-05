@@ -5,6 +5,7 @@ import java.util.Observable;
 
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.analysis.features.energy.EnergyMatchAnalyser;
 import com.audioant.audio.analysis.features.mfcc.MfccMatchAnalyser;
 import com.audioant.audio.analysis.features.spectralRolloffPoint.SrpMatchAnalyser;
 import com.audioant.audio.analysis.features.strongestFrequency.FrequnecyMatchAnalyser;
@@ -25,6 +26,7 @@ public class MatchAnalyser extends Observable {
 
 	private SrpMatchAnalyser srpAnalyser;
 	private MfccMatchAnalyser mfccAnalyser;
+	private EnergyMatchAnalyser energyAnalyser;
 	private FrequnecyMatchAnalyser frequnecyAnalyser;
 
 	public MatchAnalyser(String soundName) throws RserveException, IOException {
@@ -33,20 +35,23 @@ public class MatchAnalyser extends Observable {
 
 		srpAnalyser = new SrpMatchAnalyser(soundModel);
 		mfccAnalyser = new MfccMatchAnalyser(soundModel);
+		energyAnalyser = new EnergyMatchAnalyser(soundModel);
 		frequnecyAnalyser = new FrequnecyMatchAnalyser(soundModel);
 	}
 
 	public void addAnalysisResult(ResultModel resultModel) {
 		srpAnalyser.addValue(resultModel.getSpectralRolloffPoint());
 		mfccAnalyser.addValue(resultModel.getMfcc());
+		energyAnalyser.addValue(resultModel.getEnergy());
 		frequnecyAnalyser.addValue(resultModel.getStrongestFrequencies());
 	}
 
 	protected boolean isMatch() {
 
-		return frequnecyAnalyser.getMatch() >= Analysis.STRONGEST_FREQUENCY_MATCH_THRESHOLD
-				&& mfccAnalyser.getMatch() >= Analysis.MFCC_MATCH_THRESHOLD
-				&& srpAnalyser.getMatch() >= Analysis.SRP_MATCH_THRESHOLD;
+		return frequnecyAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY
+				&& mfccAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_MFCC
+				&& srpAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_SRP
+				&& energyAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_ENERGY;
 	}
 
 	public double getSrpMatch() {
@@ -59,6 +64,10 @@ public class MatchAnalyser extends Observable {
 
 	public double getMfccMatch() {
 		return mfccAnalyser.getMatch();
+	}
+
+	public double getEnergyMatch() {
+		return energyAnalyser.getMatch();
 	}
 
 	public SoundModel getSoundModel() {

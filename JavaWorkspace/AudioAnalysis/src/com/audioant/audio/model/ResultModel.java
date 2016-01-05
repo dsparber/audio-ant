@@ -6,12 +6,14 @@ public class ResultModel {
 
 	private StrongestFrequenciesModel strongestFrequencies;
 	private double spectralRolloffPoint;
+	private double energy;
 	private double[] mfcc;
 
-	public ResultModel(StrongestFrequenciesModel strongestFrequencies, double spectralRolloffPoint, double[] mfcc) {
-		super();
+	public ResultModel(StrongestFrequenciesModel strongestFrequencies, double spectralRolloffPoint, double[] mfcc,
+			double energy) {
 		this.strongestFrequencies = strongestFrequencies;
 		this.spectralRolloffPoint = spectralRolloffPoint;
+		this.energy = energy;
 		this.mfcc = mfcc;
 	}
 
@@ -25,5 +27,9 @@ public class ResultModel {
 
 	public double[] getMfcc() {
 		return mfcc;
+	}
+
+	public double getEnergy() {
+		return energy;
 	}
 }

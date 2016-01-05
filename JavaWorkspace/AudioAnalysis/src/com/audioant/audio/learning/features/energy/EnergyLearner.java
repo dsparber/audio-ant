@@ -1,4 +1,4 @@
-package com.audioant.audio.learning.features.spectralRolloffPoint;
+package com.audioant.audio.learning.features.energy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +9,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
+import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
+import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvWriter;
 
@@ -22,7 +24,7 @@ import com.audioant.io.csv.CsvWriter;
  * @version 1.0
  */
 
-public class SrpLearner {
+public class EnergyLearner {
 
 	protected String pathnameOut;
 
@@ -30,15 +32,25 @@ public class SrpLearner {
 
 	private List<Double> results;
 
-	public SrpLearner(WindowAnalyser analyser, String pathname) {
+	public EnergyLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
-		pathnameOut = pathname + WorkingDir.SRP_CSV;
+		pathnameOut = pathname + WorkingDir.POWER_CSV;
 		results = new ArrayList<Double>();
 	}
 
 	public void saveFeatures() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,
 			UnsupportedAudioFileException {
+
+		double max = 0;
+		for (Double d : results) {
+			if (d > max) {
+				max = d;
+			}
+		}
+		for (int i = 0; i < results.size(); i++) {
+			results.set(i, (results.get(i) / max));
+		}
 
 		String[] out = new String[results.size()];
 
@@ -50,10 +62,13 @@ public class SrpLearner {
 		writer.writeSingleColmn(out);
 	}
 
+	public boolean shouldBeAnalysed() throws RserveException, REXPMismatchException {
+		return analyser.getRmsEnergy() >= Analysis.MIN_RMS_ENERGY;
+	}
+
 	public void analyseWindow() throws REngineException, REXPMismatchException {
 
-		double srp = analyser.getSpectralRolloffPoint();
-
-		results.add(srp);
+		double energy = analyser.getRmsEnergy();
+		results.add(energy);
 	}
 }

@@ -9,13 +9,13 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
+import com.audioant.audio.learning.features.energy.EnergyLearner;
 import com.audioant.audio.learning.features.mfcc.MfccLearner;
 import com.audioant.audio.learning.features.spectralRolloffPoint.SrpLearner;
 import com.audioant.audio.learning.features.strongestFrequency.StrongestFrequencyLearner;
 import com.audioant.audio.model.SoundModel;
 import com.audioant.audio.windowing.Windowing;
 import com.audioant.config.Parameters.Audio;
-import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.io.audio.AudioFileReader;
 import com.audioant.io.audio.AudioFileReaderFactory;
 
@@ -36,6 +36,7 @@ public abstract class SoundLearner {
 
 	private SrpLearner srpLearner;
 	private MfccLearner mfccLearner;
+	private EnergyLearner energyLearner;
 	private StrongestFrequencyLearner frequencyLearner;
 
 	public SoundLearner(String soundName) {
@@ -46,6 +47,7 @@ public abstract class SoundLearner {
 
 		srpLearner = new SrpLearner(windowAnalyser, soundModel.getFolder());
 		mfccLearner = new MfccLearner(windowAnalyser, soundModel.getFolder());
+		energyLearner = new EnergyLearner(windowAnalyser, soundModel.getFolder());
 		frequencyLearner = new StrongestFrequencyLearner(windowAnalyser, soundModel.getFolder());
 	}
 
@@ -60,19 +62,19 @@ public abstract class SoundLearner {
 		for (int samples[] : windows) {
 
 			windowAnalyser.assignSamples(samples, sampleRate);
+			windowAnalyser.generateSpectrum();
 
-			if (windowAnalyser.getEnergy() > Analysis.MIN_ENERGY) {
+			if (energyLearner.shouldBeAnalysed() && frequencyLearner.shouldBeAnalysed()) {
 
-				windowAnalyser.generateSpectrum();
-
-				if (frequencyLearner.analyseWindow()) {
-					mfccLearner.analyseWindow();
-					srpLearner.analyseWindow();
-				}
+				frequencyLearner.analyseWindow();
+				energyLearner.analyseWindow();
+				mfccLearner.analyseWindow();
+				srpLearner.analyseWindow();
 			}
 		}
 
 		frequencyLearner.saveFeatures();
+		energyLearner.saveFeatures();
 		mfccLearner.saveFeatures();
 		srpLearner.saveFeatures();
 	}

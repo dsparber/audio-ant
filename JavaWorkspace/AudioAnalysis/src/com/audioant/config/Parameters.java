@@ -25,6 +25,7 @@ public class Parameters {
 		public static final String FREQUENCIES_CSV = "frequencies.csv";
 		public static final String SRP_CSV = "srp.csv";
 		public static final String MFCC_CSV = "mfcc.csv";
+		public static final String POWER_CSV = "power.csv";
 	}
 
 	// Communication parameters
@@ -102,25 +103,30 @@ public class Parameters {
 		// Audio analysis parameter
 		public static class Analysis {
 
+			// For strongest frequency analysis
 			public static final double DETECTION_THRESHOLD = 5; // Hertz
-			public static final double STRONGEST_FREQUENCY_MATCH_THRESHOLD = .5; // Percent
-			public static final double SRP_MATCH_THRESHOLD = .36; // Percent
-			public static final double MFCC_MATCH_THRESHOLD = .6; // Percent
-
-			public static final double AMPLITUDE_THRESHOLD = 0.1;
-
-			public static final int MIN_FREQ = 500;
-			public static final int MAX_FREQ = 8000;
-
-			public static final int MIN_ENERGY = 40;
+			public static final double AMPLITUDE_THRESHOLD = 0.1; // Percent
 			public static final int MAX_PEAK_COUNT = 4;
+			public static final int MIN_FREQ = 500; // Hertz
+			public static final int MAX_FREQ = 10000; // Hertz
 
-			public static final double SRP_TOLERANCE = .2; // Percent
-
-			// MFCC
+			// For MFCC analysis
 			private static boolean t = true, f = false;
 			public static final boolean[] MFCC_COEFFICIENT_USED = { f, t, f, t, f, t, t, t, t, t, t, f };
 			public static final double[] MFCC_TOLERANCE = { .1, .11, .11, .07, .17, .13, .13, .07, .18, .13, .13, .16 };
+
+			// For energy analysis
+			public static final int MIN_RMS_ENERGY = 200;
+			public static final double ENERGY_TOLERANCE = 0.08; // Percent
+
+			// For SRP analysis
+			public static final double SRP_TOLERANCE = .2; // Percent
+
+			// Detection thresholds
+			public static final double MATCH_THRESHOLD_SRP = .36; // Percent
+			public static final double MATCH_THRESHOLD_MFCC = .6; // Percent
+			public static final double MATCH_THRESHOLD_ENERGY = .7; // Percent
+			public static final double MATCH_THRESHOLD_STRONGEST_FREQUENCY = .5; // Percent
 		}
 	}
 

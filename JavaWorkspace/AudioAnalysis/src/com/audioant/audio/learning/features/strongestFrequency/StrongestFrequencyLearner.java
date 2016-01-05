@@ -66,14 +66,16 @@ public class StrongestFrequencyLearner {
 		writer.writeMatrix(out);
 	}
 
-	public boolean analyseWindow() throws REngineException, REXPMismatchException {
+	public boolean shouldBeAnalysed() {
+		StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
+
+		return strongestFreq.size() > 0 && strongestFreq.size() <= Analysis.MAX_PEAK_COUNT;
+	}
+
+	public void analyseWindow() throws REngineException, REXPMismatchException {
 
 		StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
 
-		if (strongestFreq.size() > 0 && strongestFreq.size() <= Analysis.MAX_PEAK_COUNT) {
-			results.add(strongestFreq);
-			return true;
-		}
-		return false;
+		results.add(strongestFreq);
 	}
 }

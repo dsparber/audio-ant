@@ -52,12 +52,10 @@ public class MfccLearner {
 		writer.writeMatrix(out);
 	}
 
-	public boolean analyseWindow() throws REngineException, REXPMismatchException {
+	public void analyseWindow() throws REngineException, REXPMismatchException {
 
 		double[] mfcc = analyser.getMFCC();
 
 		results.add(mfcc);
-
-		return true;
 	}
 }
