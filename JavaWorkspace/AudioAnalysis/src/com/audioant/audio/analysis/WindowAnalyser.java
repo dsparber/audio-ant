@@ -23,6 +23,11 @@ public class WindowAnalyser {
 		rConnection.eval("wave <- Wave(window, samp.rate = " + sampleRate + ")");
 	}
 
+	public void applyBandpassFilter(double min, double max) throws RserveException {
+		rConnection.eval("wave <- Wave(ffilter(wave, from = " + min + ", to = " + max
+				+ ", fftw = TRUE), samp.rate = wave@samp.rate, bit = wave@bit)");
+	}
+
 	public void generateSpectrum() throws RserveException {
 		rConnection.eval("spec <- meanspec(wave, fftw = TRUE, plot = FALSE)");
 	}

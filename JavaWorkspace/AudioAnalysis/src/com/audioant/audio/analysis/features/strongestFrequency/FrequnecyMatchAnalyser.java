@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.model.SoundModel;
+import com.audioant.config.Parameters.Audio;
+import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
@@ -23,6 +25,8 @@ public class FrequnecyMatchAnalyser {
 	protected ArrayList<StrongestFrequenciesModel> recentFreqs;
 
 	private SoundModel soundModel;
+
+	private static double max = 0, min = Audio.SAMPLE_RATE;
 
 	public FrequnecyMatchAnalyser(SoundModel soundModel) throws RserveException, IOException {
 
@@ -91,6 +95,13 @@ public class FrequnecyMatchAnalyser {
 
 				if (!csvValues[i][j].isEmpty()) {
 					model.addFrequency(new FrequencyModel(csvValues[i][j]));
+					double freq = model.get(model.size() - 1).getFrequency();
+					if (freq > max) {
+						max = freq;
+					}
+					if (freq < min) {
+						min = freq;
+					}
 				}
 			}
 
@@ -101,5 +112,13 @@ public class FrequnecyMatchAnalyser {
 
 	public void addValue(StrongestFrequenciesModel strongestFrequencies) {
 		recentFreqs.add(strongestFrequencies);
+	}
+
+	public static double getMax() {
+		return max + Analysis.BANDPASS_DELTA;
+	}
+
+	public static double getMin() {
+		return min - Analysis.BANDPASS_DELTA;
 	}
 }

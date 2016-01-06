@@ -109,6 +109,7 @@ public class Parameters {
 			public static final int MAX_PEAK_COUNT = 4;
 			public static final int MIN_FREQ = 500; // Hertz
 			public static final int MAX_FREQ = 10000; // Hertz
+			public static final int BANDPASS_DELTA = 50; // Hertz
 
 			// For MFCC analysis
 			private static boolean t = true, f = false;
@@ -117,7 +118,7 @@ public class Parameters {
 
 			// For energy analysis
 			public static final int MIN_RMS_ENERGY = 200;
-			public static final double ENERGY_TOLERANCE = 0.08; // Percent
+			public static final double ENERGY_TOLERANCE = 0.12; // Percent
 
 			// For SRP analysis
 			public static final double SRP_TOLERANCE = .2; // Percent
