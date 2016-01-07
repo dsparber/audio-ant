@@ -2,34 +2,17 @@ package com.audioant.io.raspberry;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 import com.audioant.config.Parameters.Communication;
-import com.audioant.config.Parameters.PythonResources;
+import com.audioant.io.raspberry.hardware.HARDWARE;
+import com.audioant.io.raspberry.hardware.LEDS;
 
 public class LedController {
 
 	static private BufferedWriter writer;
-	static private Socket socket;
 
-	public LedController() throws UnknownHostException, IOException {
-
-		if (socket == null || writer == null) {
-
-			// Starting the counter side socket
-			Runtime.getRuntime().exec(PythonResources.EXECUTE + PythonResources.CONNECTION_PY);
-
-			socket = new Socket(Communication.RASPBERRY_HOST_NAME, Communication.RASPBERRY_SOCKET_PORT);
-			socket.setKeepAlive(true);
-			writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		}
-	}
-
-	public void close() throws IOException {
-		writer.close();
-		socket.close();
+	public LedController() throws IOException {
+		writer = RaspberryConnection.getWriter();
 	}
 
 	public void on(LEDS led) throws IOException {
@@ -41,7 +24,18 @@ public class LedController {
 	}
 
 	private void set(LEDS led, boolean on) throws IOException {
-		writer.write(led.toString() + Communication.VALUE_SEPERATOR + on);
+
+		StringBuilder message = new StringBuilder();
+
+		message.append(HARDWARE.LED);
+		message.append(Communication.VALUE_SEPERATOR);
+		message.append(led);
+		message.append(Communication.VALUE_SEPERATOR);
+		message.append(on);
+
+		System.out.println(message.toString());
+
+		writer.write(message.toString());
 		writer.flush();
 	}
 }

@@ -79,10 +79,8 @@ public class CommandLineTool {
 	private static void analyseStream() {
 		try {
 			EventLogger logger = new EventLogger();
-			// EventLights lights = new EventLights();
 			analyser = new AudioStreamAnalyser();
 			analyser.addObserver(logger);
-			// analyser.addObserver(lights);
 			analyser.start();
 			System.out.println("Analysing stream");
 		} catch (RserveException | IOException e) {
