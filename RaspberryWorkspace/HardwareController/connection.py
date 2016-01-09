@@ -20,8 +20,12 @@ def sendThread(clientsocket):
 	while True:
 		text = input()
 		text = "BUTTON;BUTTON_RECORDING\r\n"
-		clientsocket.send(text.encode('utf-8'))
-
+		try:
+			if clientsocket.send(text.encode('utf-8')) == 0:
+				break
+		except (BrokenPipeError, IOError):
+			break
+				
 def receiveThread(clientsocket):
 	while True:
 		data = clientsocket.recv(1024)

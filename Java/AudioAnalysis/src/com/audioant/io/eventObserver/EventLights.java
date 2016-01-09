@@ -9,25 +9,37 @@ import com.audioant.io.raspberry.hardware.Led;
 
 public class EventLights implements Observer {
 
+	private static final int SLEEP_MILLIS = 3000;
+
+	private long time;
+
+	public EventLights() {
+		time = System.currentTimeMillis();
+	}
+
 	@Override
 	public void update(Observable o, Object arg) {
 
-		Runnable runnable = () -> {
+		if (System.currentTimeMillis() - time >= SLEEP_MILLIS) {
 
-			try {
+			Runnable runnable = () -> {
 
-				LedController controller = new LedController();
-				controller.on(Led.LED_ALERT);
-				Thread.sleep(3000);
-				controller.off(Led.LED_ALERT);
+				try {
 
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
-			}
+					LedController controller = new LedController();
+					controller.on(Led.LED_ALERT);
+					Thread.sleep(SLEEP_MILLIS);
+					controller.off(Led.LED_ALERT);
 
-		};
+				} catch (IOException | InterruptedException e) {
+					e.printStackTrace();
+				}
 
-		new Thread(runnable).start();
+			};
+
+			new Thread(runnable).start();
+			time = System.currentTimeMillis();
+		}
 	}
 
 }
