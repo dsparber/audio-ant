@@ -4,8 +4,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 import com.audioant.config.Parameters.Communication;
-import com.audioant.io.raspberry.hardware.HARDWARE;
-import com.audioant.io.raspberry.hardware.LEDS;
+import com.audioant.io.raspberry.hardware.Hardware;
+import com.audioant.io.raspberry.hardware.Led;
 
 public class LedController {
 
@@ -15,25 +15,23 @@ public class LedController {
 		writer = RaspberryConnection.getWriter();
 	}
 
-	public void on(LEDS led) throws IOException {
+	public void on(Led led) throws IOException {
 		set(led, true);
 	}
 
-	public void off(LEDS led) throws IOException {
+	public void off(Led led) throws IOException {
 		set(led, false);
 	}
 
-	private void set(LEDS led, boolean on) throws IOException {
+	private void set(Led led, boolean on) throws IOException {
 
 		StringBuilder message = new StringBuilder();
 
-		message.append(HARDWARE.LED);
+		message.append(Hardware.LED);
 		message.append(Communication.VALUE_SEPERATOR);
 		message.append(led);
 		message.append(Communication.VALUE_SEPERATOR);
 		message.append(on);
-
-		System.out.println(message.toString());
 
 		writer.write(message.toString());
 		writer.flush();

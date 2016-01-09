@@ -19,8 +19,7 @@ def sendThread(clientsocket):
 	
 	while True:
 		text = input()
-		text += "\r\n"
-		print(text)
+		text = "BUTTON;BUTTON_RECORDING\r\n"
 		clientsocket.send(text.encode('utf-8'))
 
 def receiveThread(clientsocket):
@@ -40,6 +39,8 @@ def receiveThread(clientsocket):
 			ledName = options[0]
 			ledOn = options[1] == "true"
 		
+			print(ledName)
+			print(ledOn)
 			# led(ledName, ledOn)
  
 while True:

@@ -5,7 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.audioant.io.raspberry.LedController;
-import com.audioant.io.raspberry.hardware.LEDS;
+import com.audioant.io.raspberry.hardware.Led;
 
 public class EventLights implements Observer {
 
@@ -17,9 +17,9 @@ public class EventLights implements Observer {
 			try {
 
 				LedController controller = new LedController();
-				controller.on(LEDS.LED_ALERT);
+				controller.on(Led.LED_ALERT);
 				Thread.sleep(3000);
-				controller.off(LEDS.LED_ALERT);
+				controller.off(Led.LED_ALERT);
 
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();

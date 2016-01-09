@@ -52,7 +52,11 @@ public class EventLogger implements Observer {
 		msg.append(String.format("%d match(es): ", matches.size()));
 
 		for (SoundModel soundModel : matches) {
-			msg.append(soundModel.getSoundName());
+			if (soundModel.isUnnamed()) {
+				msg.append(soundModel.getSoundNumber());
+			} else {
+				msg.append(soundModel.getSoundName());
+			}
 			msg.append(", ");
 		}
 

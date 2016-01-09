@@ -77,7 +77,7 @@ public class FeatureTest {
 
 			if (file.getName().matches(AutomatedTest.NAME_PATTERN_REFERENCE_FILE)) {
 
-				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath(), "");
+				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath());
 				learner.extractFeatures();
 
 				break;

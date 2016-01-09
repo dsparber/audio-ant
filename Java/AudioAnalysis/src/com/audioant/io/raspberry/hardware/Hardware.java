@@ -1,5 +1,5 @@
 package com.audioant.io.raspberry.hardware;
 
-public enum HARDWARE {
-	LED, DISPLAY
+public enum Hardware {
+	LED, DISPLAY, BUTTON
 }

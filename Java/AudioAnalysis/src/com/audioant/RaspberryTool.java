@@ -12,12 +12,14 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.AudioStreamAnalyser;
+import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.io.eventObserver.EventLights;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.io.raspberry.ButtonController;
 import com.audioant.io.raspberry.LedController;
-import com.audioant.io.raspberry.hardware.LEDS;
+import com.audioant.io.raspberry.hardware.Button;
+import com.audioant.io.raspberry.hardware.Led;
 
 public class RaspberryTool implements Observer {
 
@@ -40,7 +42,9 @@ public class RaspberryTool implements Observer {
 
 		try {
 			RaspberryTool raspberryTool = new RaspberryTool();
-			raspberryTool.startAnalysis();
+			if (!LearnedSounds.getSounds().isEmpty()) {
+				raspberryTool.startAnalysis();
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -55,7 +59,9 @@ public class RaspberryTool implements Observer {
 				analyser.addObserver(new EventLogger());
 				analyser.addObserver(new EventLights());
 			}
-			analyser.start();
+			if (!analyser.isRunning()) {
+				analyser.start();
+			}
 
 		} catch (RserveException | IOException e) {
 			e.printStackTrace();
@@ -63,48 +69,58 @@ public class RaspberryTool implements Observer {
 	}
 
 	private void stopAnalysis() {
-		analyser.stop();
+		if (analyser != null && analyser.isRunning()) {
+			analyser.stop();
+		}
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 
-		if (recording) {
+		Button button = (Button) arg;
 
-			recording = true;
-			try {
-				ledController.on(LEDS.LED_RECORDING);
-			} catch (IOException e) {
-				e.printStackTrace();
+		if (button == Button.BUTTON_RECORDING) {
+			if (!recording) {
+
+				System.out.println("Started recording");
+
+				recording = true;
+				try {
+					ledController.on(Led.LED_RECORDING);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				stopAnalysis();
+
+				learner = new MicrophoneSoundLearner(LearnedSounds.getNewUnnamedSoundModel());
+
+				try {
+					learner.startCapturing();
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+				}
+
+			} else {
+
+				learner.stopCapturing();
+				try {
+					learner.extractFeatures();
+				} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
+						| UnsupportedAudioFileException e) {
+					e.printStackTrace();
+				}
+
+				recording = false;
+				try {
+					ledController.off(Led.LED_RECORDING);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				System.out.println("Stopped recording");
+
+				startAnalysis();
 			}
-			stopAnalysis();
-
-			// TODO: unnamed sounds
-			learner = new MicrophoneSoundLearner("Name");
-
-			try {
-				learner.startCapturing();
-			} catch (LineUnavailableException e) {
-				e.printStackTrace();
-			}
-
-		} else {
-
-			learner.stopCapturing();
-			try {
-				learner.extractFeatures();
-			} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
-					| UnsupportedAudioFileException e) {
-				e.printStackTrace();
-			}
-
-			recording = false;
-			try {
-				ledController.off(LEDS.LED_RECORDING);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			startAnalysis();
 		}
 	}
 }

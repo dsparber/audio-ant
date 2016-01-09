@@ -26,6 +26,8 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 	private long analysisTime;
 	private int count;
 
+	private boolean running;
+
 	public AudioStreamAnalyser() throws RserveException, IOException {
 		super();
 		startTime = System.currentTimeMillis();
@@ -37,10 +39,12 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		reader = new AudioStreamReader();
 		reader.addObserver(this);
 		reader.streamWindows();
+		running = true;
 	}
 
 	public void stop() {
 		reader.stop();
+		running = false;
 	}
 
 	@Override
@@ -79,4 +83,7 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		return (double) analysisTime / count;
 	}
 
+	public boolean isRunning() {
+		return running;
+	}
 }

@@ -1,31 +1,35 @@
 package com.audioant.io.raspberry;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Observable;
+import java.util.Observer;
 
-public class ButtonController extends Observable {
+import com.audioant.config.Parameters.Communication;
+import com.audioant.io.raspberry.hardware.Button;
+import com.audioant.io.raspberry.hardware.Hardware;
+
+public class ButtonController extends Observable implements Observer {
 
 	public ButtonController() throws IOException {
 
-		BufferedReader reader = RaspberryConnection.getReader();
+		RaspberryInputListener.getInsatce().addObserver(this);
+	}
 
-		Thread thread = new Thread(() -> {
+	@Override
+	public void update(Observable o, Object arg) {
 
-			String inputLine;
+		String data = (String) arg;
 
-			try {
-				while ((inputLine = reader.readLine()) != null) {
-					// TODO Handle input
-					setChanged();
-					notifyObservers(inputLine);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		String[] dataParts = data.split(Character.toString(Communication.VALUE_SEPERATOR));
 
-		});
-		thread.start();
+		if (dataParts[0].equals(Hardware.BUTTON.toString())) {
+
+			Button button = Button.valueOf(dataParts[1]);
+
+			setChanged();
+			notifyObservers(button);
+		}
+
 	}
 
 }

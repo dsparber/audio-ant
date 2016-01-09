@@ -13,6 +13,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
+import com.audioant.audio.model.SoundModel;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.test.FeatureTest;
 
@@ -105,7 +106,7 @@ public class CommandLineTool {
 		try {
 			System.out.print("Enter the name of the sound: ");
 
-			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(scanner.nextLine());
+			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(new SoundModel(scanner.nextLine()));
 
 			System.out.println("Hit return to start recording");
 			scanner.nextLine();

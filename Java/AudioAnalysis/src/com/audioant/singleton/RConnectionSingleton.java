@@ -24,10 +24,16 @@ public class RConnectionSingleton {
 
 		if (instance == null) {
 
+			// Test if rserve is running
 			try {
-				Runtime.getRuntime().exec("R CMD Rserve");
-			} catch (IOException e) {
-				System.err.println("Rserve could not be started");
+				new RConnection();
+			} catch (Exception e) {
+				try {
+					Runtime.getRuntime().exec("R CMD Rserve");
+				} catch (IOException e2) {
+					System.err.println("Rserve could not be started");
+					return null;
+				}
 			}
 
 			try {

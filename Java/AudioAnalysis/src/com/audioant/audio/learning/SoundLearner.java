@@ -39,9 +39,8 @@ public abstract class SoundLearner {
 	private EnergyLearner energyLearner;
 	private StrongestFrequencyLearner frequencyLearner;
 
-	public SoundLearner(String soundName) {
-
-		soundModel = new SoundModel(soundName);
+	public SoundLearner(SoundModel soundModel) {
+		this.soundModel = soundModel;
 
 		windowAnalyser = new WindowAnalyser();
 

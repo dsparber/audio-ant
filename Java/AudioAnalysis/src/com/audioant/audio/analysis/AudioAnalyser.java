@@ -1,6 +1,5 @@
 package com.audioant.audio.analysis;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +9,9 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.ResultModel;
 import com.audioant.audio.model.SoundModel;
-import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.microphone.AudioStreamReader;
 
 /**
@@ -35,14 +34,8 @@ public class AudioAnalyser extends Observable {
 
 		matchAnalysers = new ArrayList<MatchAnalyser>();
 
-		File[] learnedSounds = new File(WorkingDir.FOLDER_LEARNED_SOUNDS).listFiles();
-
-		for (File file : learnedSounds) {
-			if (file.isDirectory()) {
-
-				String soundName = file.getName();
-				matchAnalysers.add(new MatchAnalyser(soundName));
-			}
+		for (SoundModel soundModel : LearnedSounds.getSounds()) {
+			matchAnalysers.add(new MatchAnalyser(soundModel));
 		}
 	}
 

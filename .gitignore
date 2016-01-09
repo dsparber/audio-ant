@@ -18,3 +18,4 @@ JavaWorkspace/AudioAnalysis/res/testSounds
 **/log/**/*.log
 *.log.lck
 __pycache__
+**/res/learnedSounds/*

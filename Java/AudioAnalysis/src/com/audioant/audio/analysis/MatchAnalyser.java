@@ -33,7 +33,11 @@ public class MatchAnalyser extends Observable {
 
 	public MatchAnalyser(String soundName) throws RserveException, IOException {
 
-		soundModel = new SoundModel(soundName);
+		this(new SoundModel(soundName));
+	}
+
+	public MatchAnalyser(SoundModel soundModel) throws RserveException, IOException {
+		this.soundModel = soundModel;
 
 		srpAnalyser = new SrpMatchAnalyser(soundModel);
 		mfccAnalyser = new MfccMatchAnalyser(soundModel);
