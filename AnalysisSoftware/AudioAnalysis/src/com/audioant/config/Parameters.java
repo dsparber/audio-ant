@@ -40,7 +40,7 @@ public class Parameters {
 	// Python resources
 	public static class PythonResources {
 
-		public static final String FOLDER = "../../RaspberryWorkspace/HardwareController/";
+		public static final String FOLDER = "../HardwareController/";
 
 		public static final String EXECUTE = "sudo python3 ";
 		public static final String CONNECTION_PY = FOLDER + "connection.py";

@@ -1,10 +1,7 @@
-
-#!/usr/bin/env python
- 
 import socket
 import sys
 from _thread import *
-# import ledController as led
+import ledController as led
  
 HOST = ''		# Symbolic name meaning all available interfaces
 PORT = 4207
@@ -13,7 +10,6 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 serversocket.bind((HOST, PORT))
 serversocket.listen(5)
-
 
 def sendThread(clientsocket):
 	
@@ -39,13 +35,10 @@ def receiveThread(clientsocket):
 		options = data.split(';')[1:]
 		
 		if function == "LED":
-			
-			ledName = options[0]
-			ledOn = options[1] == "true"
+			led.ledByOptions(options)
 		
-			print(ledName)
-			print(ledOn)
-			# led(ledName, ledOn)
+		if function == "DISPLAY":
+			print("Display")
  
 while True:
 	#wait to accept a connection - blocking call
