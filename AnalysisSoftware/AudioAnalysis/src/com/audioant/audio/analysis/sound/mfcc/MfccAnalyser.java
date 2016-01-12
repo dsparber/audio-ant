@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis.features.energy;
+package com.audioant.audio.analysis.sound.mfcc;
 
 import java.io.IOException;
 
@@ -15,18 +15,18 @@ import com.audioant.audio.analysis.WindowAnalyser;
  *
  * @version 1.0
  */
-public class EnergyAnalyser {
+public class MfccAnalyser {
 
 	private WindowAnalyser analyser;
 
-	public EnergyAnalyser(WindowAnalyser analyser) throws RserveException, IOException {
+	public MfccAnalyser(WindowAnalyser analyser) throws RserveException, IOException {
 
 		this.analyser = analyser;
 	}
 
-	public double analyseSamples() throws REngineException, REXPMismatchException {
+	public double[] analyseSamples() throws REngineException, REXPMismatchException {
 
-		double value = analyser.getRmsEnergy();
+		double[] value = analyser.getMFCC();
 		return value;
 	}
 }

@@ -39,7 +39,7 @@ public class LearnedSounds {
 	}
 
 	public static void addSound(SoundModel soundModel) {
-		learnedSounds.sounds.add(soundModel);
+		getSounds().add(soundModel);
 	}
 
 	public static List<SoundModel> getSounds() {

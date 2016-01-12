@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis.features.spectralRolloffPoint;
+package com.audioant.audio.analysis.sound.srp;
 
 import java.io.IOException;
 

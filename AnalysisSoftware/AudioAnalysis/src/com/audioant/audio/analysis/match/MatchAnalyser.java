@@ -1,14 +1,14 @@
-package com.audioant.audio.analysis;
+package com.audioant.audio.analysis.match;
 
 import java.io.IOException;
 import java.util.Observable;
 
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.audioant.audio.analysis.features.energy.EnergyMatchAnalyser;
-import com.audioant.audio.analysis.features.mfcc.MfccMatchAnalyser;
-import com.audioant.audio.analysis.features.spectralRolloffPoint.SrpMatchAnalyser;
-import com.audioant.audio.analysis.features.strongestFrequency.FrequnecyMatchAnalyser;
+import com.audioant.audio.analysis.match.energy.EnergyMatchAnalyser;
+import com.audioant.audio.analysis.match.mfcc.MfccMatchAnalyser;
+import com.audioant.audio.analysis.match.srp.SrpMatchAnalyser;
+import com.audioant.audio.analysis.match.strongestFrequency.FrequnecyMatchAnalyser;
 import com.audioant.audio.model.ResultModel;
 import com.audioant.audio.model.SoundModel;
 import com.audioant.config.Parameters.Audio.Analysis;
@@ -52,7 +52,7 @@ public class MatchAnalyser extends Observable {
 		frequnecyAnalyser.addValue(resultModel.getStrongestFrequencies());
 	}
 
-	protected boolean isMatch() {
+	public boolean isMatch() {
 
 		// if (frequnecyAnalyser.getMatch() >=
 		// Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY / 4

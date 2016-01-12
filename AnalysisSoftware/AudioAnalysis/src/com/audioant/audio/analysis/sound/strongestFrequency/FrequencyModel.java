@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis.features.strongestFrequency;
+package com.audioant.audio.analysis.sound.strongestFrequency;
 
 import com.audioant.config.Parameters.Audio.Analysis;
 

@@ -9,6 +9,8 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.analysis.match.MatchAnalyser;
+import com.audioant.audio.analysis.sound.SoundAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.ResultModel;
 import com.audioant.audio.model.SoundModel;

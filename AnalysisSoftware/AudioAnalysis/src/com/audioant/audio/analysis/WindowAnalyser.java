@@ -5,8 +5,8 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.audioant.audio.analysis.features.strongestFrequency.FrequencyModel;
-import com.audioant.audio.analysis.features.strongestFrequency.StrongestFrequenciesModel;
+import com.audioant.audio.analysis.sound.strongestFrequency.FrequencyModel;
+import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.singleton.RConnectionSingleton;
 

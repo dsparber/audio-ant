@@ -11,7 +11,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
-import com.audioant.audio.analysis.features.strongestFrequency.StrongestFrequenciesModel;
+import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvWriter;

@@ -1,10 +1,12 @@
-package com.audioant.audio.analysis.features.strongestFrequency;
+package com.audioant.audio.analysis.match.strongestFrequency;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.analysis.sound.strongestFrequency.FrequencyModel;
+import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 import com.audioant.audio.model.SoundModel;
 import com.audioant.config.Parameters.Audio;
 import com.audioant.config.Parameters.Audio.Analysis;

@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis.features.strongestFrequency;
+package com.audioant.audio.analysis.sound.strongestFrequency;
 
 import java.util.ArrayList;
 import java.util.List;

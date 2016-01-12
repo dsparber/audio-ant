@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis;
+package com.audioant.audio.analysis.sound;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -7,10 +7,11 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.audioant.audio.analysis.features.energy.EnergyAnalyser;
-import com.audioant.audio.analysis.features.mfcc.MfccAnalyser;
-import com.audioant.audio.analysis.features.spectralRolloffPoint.SrpAnalyser;
-import com.audioant.audio.analysis.features.strongestFrequency.FrequnecyAnalyser;
+import com.audioant.audio.analysis.WindowAnalyser;
+import com.audioant.audio.analysis.sound.energy.EnergyAnalyser;
+import com.audioant.audio.analysis.sound.mfcc.MfccAnalyser;
+import com.audioant.audio.analysis.sound.srp.SrpAnalyser;
+import com.audioant.audio.analysis.sound.strongestFrequency.FrequnecyAnalyser;
 import com.audioant.audio.model.ResultModel;
 import com.audioant.io.microphone.AudioStreamReader;
 
@@ -42,8 +43,7 @@ public class SoundAnalyser extends Observable {
 		srpAnalyser = new SrpAnalyser(analyser);
 	}
 
-	protected ResultModel analyseSamples(int[] samples, float sampleRate)
-			throws REngineException, REXPMismatchException {
+	public ResultModel analyseSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
 
 		analyser.assignSamples(samples, sampleRate);
 		analyser.generateSpectrum();

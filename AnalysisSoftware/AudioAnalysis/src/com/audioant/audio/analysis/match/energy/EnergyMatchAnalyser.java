@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis.features.energy;
+package com.audioant.audio.analysis.match.energy;
 
 import java.io.IOException;
 import java.util.ArrayList;

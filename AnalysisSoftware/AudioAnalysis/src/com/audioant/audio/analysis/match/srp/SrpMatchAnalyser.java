@@ -1,12 +1,14 @@
-package com.audioant.audio.analysis.features.spectralRolloffPoint;
+package com.audioant.audio.analysis.match.srp;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.analysis.match.MatchFunctions;
 import com.audioant.audio.model.SoundModel;
-import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
@@ -36,52 +38,21 @@ public class SrpMatchAnalyser {
 
 	public double getMatch() {
 
-		double c1 = 0;
-		int count = 0;
-		for (double savedValue : savedValues) {
+		double recentArray[] = new double[recentValues.size()];
 
-			double max = 0;
-			for (double recentValue : recentValues) {
-
-				double tmp = getMatch(savedValue, recentValue);
-				if (tmp > max) {
-					max = tmp;
-				}
-			}
-			c1 += max;
-			count++;
-		}
-		c1 /= count;
-
-		double c2 = 0;
-		count = 0;
-		for (double recentValue : recentValues) {
-
-			double max = 0;
-			for (double savedValue : savedValues) {
-
-				double tmp = getMatch(recentValue, savedValue);
-				if (tmp > max) {
-					max = tmp;
-				}
-			}
-			c2 += max;
-			count++;
+		for (int i = 0; i < recentArray.length; i++) {
+			recentArray[i] = recentValues.get(i);
 		}
 
-		c2 /= count;
+		double result = 0;
 
-		double result = c1 * c2;
+		try {
+			result = Math.abs(MatchFunctions.getPearsonCoefficient(savedValues, recentArray));
+		} catch (REngineException | REXPMismatchException e) {
+			e.printStackTrace();
+		}
 
 		return result;
-	}
-
-	private double getMatch(double d1, double d2) {
-
-		double min = d1 * (1 - Analysis.SRP_TOLERANCE);
-		double max = d1 * (1 + Analysis.SRP_TOLERANCE);
-
-		return (d2 > min && d2 < max) ? 1 : 0;
 	}
 
 	private double[] loadCsvValues() throws IOException {

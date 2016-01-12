@@ -1,6 +1,6 @@
 package com.audioant.audio.model;
 
-import com.audioant.audio.analysis.features.strongestFrequency.StrongestFrequenciesModel;
+import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 
 public class ResultModel {
 

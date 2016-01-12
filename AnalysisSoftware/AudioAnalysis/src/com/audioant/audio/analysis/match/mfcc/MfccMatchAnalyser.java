@@ -1,4 +1,4 @@
-package com.audioant.audio.analysis.features.mfcc;
+package com.audioant.audio.analysis.match.mfcc;
 
 import java.io.IOException;
 import java.util.ArrayList;
