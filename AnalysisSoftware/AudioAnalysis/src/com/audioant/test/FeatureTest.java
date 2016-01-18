@@ -100,7 +100,7 @@ public class FeatureTest {
 	private void analyseFile(File file, SoundModel sound)
 			throws IOException, REngineException, REXPMismatchException, SQLException, UnsupportedAudioFileException {
 
-		SoundFileAnalyser analyser = new SoundFileAnalyser("", file.getAbsolutePath());
+		SoundFileAnalyser analyser = new SoundFileAnalyser(file.getAbsolutePath());
 		System.out.println(file.getAbsolutePath());
 		analyser.analyse();
 

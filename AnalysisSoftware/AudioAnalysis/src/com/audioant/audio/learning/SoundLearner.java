@@ -13,7 +13,7 @@ import com.audioant.audio.learning.features.energy.EnergyLearner;
 import com.audioant.audio.learning.features.mfcc.MfccLearner;
 import com.audioant.audio.learning.features.spectralRolloffPoint.SrpLearner;
 import com.audioant.audio.learning.features.strongestFrequency.StrongestFrequencyLearner;
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 import com.audioant.audio.windowing.Windowing;
 import com.audioant.config.Parameters.Audio;
 import com.audioant.io.audio.AudioFileReader;
@@ -30,7 +30,7 @@ import com.audioant.io.audio.AudioFileReaderFactory;
 public abstract class SoundLearner {
 
 	protected String soundfile;
-	protected SoundModel soundModel;
+	protected Sound soundModel;
 
 	private WindowAnalyser windowAnalyser;
 
@@ -39,15 +39,15 @@ public abstract class SoundLearner {
 	private EnergyLearner energyLearner;
 	private StrongestFrequencyLearner frequencyLearner;
 
-	public SoundLearner(SoundModel soundModel) {
+	public SoundLearner(Sound soundModel) {
 		this.soundModel = soundModel;
 
 		windowAnalyser = new WindowAnalyser();
 
-		srpLearner = new SrpLearner(windowAnalyser, soundModel.getFolder());
-		mfccLearner = new MfccLearner(windowAnalyser, soundModel.getFolder());
-		energyLearner = new EnergyLearner(windowAnalyser, soundModel.getFolder());
-		frequencyLearner = new StrongestFrequencyLearner(windowAnalyser, soundModel.getFolder());
+		srpLearner = new SrpLearner(windowAnalyser, soundModel.getPath());
+		mfccLearner = new MfccLearner(windowAnalyser, soundModel.getPath());
+		energyLearner = new EnergyLearner(windowAnalyser, soundModel.getPath());
+		frequencyLearner = new StrongestFrequencyLearner(windowAnalyser, soundModel.getPath());
 	}
 
 	public void extractFeatures() throws LineUnavailableException, IOException, REngineException, REXPMismatchException,

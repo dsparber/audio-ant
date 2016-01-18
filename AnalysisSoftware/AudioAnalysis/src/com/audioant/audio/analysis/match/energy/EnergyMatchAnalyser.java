@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvReader;
@@ -24,9 +24,9 @@ public class EnergyMatchAnalyser {
 	protected double[] savedValues;
 	protected ArrayList<Double> recentValues;
 
-	private SoundModel soundModel;
+	private Sound soundModel;
 
-	public EnergyMatchAnalyser(SoundModel soundModel) throws RserveException, IOException {
+	public EnergyMatchAnalyser(Sound soundModel) throws RserveException, IOException {
 
 		this.soundModel = soundModel;
 
@@ -73,7 +73,7 @@ public class EnergyMatchAnalyser {
 
 	private double[] loadCsvValues() throws IOException {
 
-		CsvReader reader = new CsvReader(soundModel.getFolder() + WorkingDir.POWER_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.POWER_CSV);
 		String[] csvValues = reader.readSingleCol(0);
 
 		double[] values = new double[csvValues.length];

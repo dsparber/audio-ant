@@ -2,14 +2,14 @@ package com.audioant.audio.model;
 
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 
-public class ResultModel {
+public class Result {
 
 	private StrongestFrequenciesModel strongestFrequencies;
 	private double spectralRolloffPoint;
 	private double energy;
 	private double[] mfcc;
 
-	public ResultModel(StrongestFrequenciesModel strongestFrequencies, double spectralRolloffPoint, double[] mfcc,
+	public Result(StrongestFrequenciesModel strongestFrequencies, double spectralRolloffPoint, double[] mfcc,
 			double energy) {
 		this.strongestFrequencies = strongestFrequencies;
 		this.spectralRolloffPoint = spectralRolloffPoint;

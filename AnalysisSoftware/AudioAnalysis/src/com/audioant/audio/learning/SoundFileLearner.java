@@ -2,7 +2,7 @@ package com.audioant.audio.learning;
 
 import java.io.File;
 
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 
 /**
  *
@@ -15,7 +15,7 @@ import com.audioant.audio.model.SoundModel;
 public class SoundFileLearner extends SoundLearner {
 
 	public SoundFileLearner(String pathname) {
-		super(new SoundModel(""));
+		super(new Sound());
 		super.soundfile = pathname;
 		File file = new File(pathname);
 		file.getParentFile().mkdirs();

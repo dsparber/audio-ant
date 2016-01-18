@@ -9,8 +9,8 @@ import com.audioant.audio.analysis.match.energy.EnergyMatchAnalyser;
 import com.audioant.audio.analysis.match.mfcc.MfccMatchAnalyser;
 import com.audioant.audio.analysis.match.srp.SrpMatchAnalyser;
 import com.audioant.audio.analysis.match.strongestFrequency.FrequnecyMatchAnalyser;
-import com.audioant.audio.model.ResultModel;
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Result;
+import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.Audio.Analysis;
 
 /**
@@ -24,19 +24,14 @@ public class MatchAnalyser extends Observable {
 
 	// private long time = System.currentTimeMillis();
 
-	private SoundModel soundModel;
+	private Sound soundModel;
 
 	private SrpMatchAnalyser srpAnalyser;
 	private MfccMatchAnalyser mfccAnalyser;
 	private EnergyMatchAnalyser energyAnalyser;
 	private FrequnecyMatchAnalyser frequnecyAnalyser;
 
-	public MatchAnalyser(String soundName) throws RserveException, IOException {
-
-		this(new SoundModel(soundName));
-	}
-
-	public MatchAnalyser(SoundModel soundModel) throws RserveException, IOException {
+	public MatchAnalyser(Sound soundModel) throws RserveException, IOException {
 		this.soundModel = soundModel;
 
 		srpAnalyser = new SrpMatchAnalyser(soundModel);
@@ -45,7 +40,7 @@ public class MatchAnalyser extends Observable {
 		frequnecyAnalyser = new FrequnecyMatchAnalyser(soundModel);
 	}
 
-	public void addAnalysisResult(ResultModel resultModel) {
+	public void addAnalysisResult(Result resultModel) {
 		srpAnalyser.addValue(resultModel.getSpectralRolloffPoint());
 		mfccAnalyser.addValue(resultModel.getMfcc());
 		energyAnalyser.addValue(resultModel.getEnergy());
@@ -105,7 +100,7 @@ public class MatchAnalyser extends Observable {
 		return energyAnalyser.getMatch();
 	}
 
-	public SoundModel getSoundModel() {
+	public Sound getSoundModel() {
 		return soundModel;
 	}
 }

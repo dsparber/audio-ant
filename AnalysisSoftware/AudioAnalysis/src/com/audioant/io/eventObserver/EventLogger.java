@@ -11,7 +11,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.DateFormat;
 import com.audioant.config.Parameters.Logging;
 import com.audioant.io.logging.LogFormatter;
@@ -45,17 +45,18 @@ public class EventLogger implements Observer {
 	public void update(Observable o, Object arg) {
 
 		@SuppressWarnings("unchecked")
-		List<SoundModel> matches = (List<SoundModel>) arg;
+		List<Sound> matches = (List<Sound>) arg;
 
 		StringBuilder msg = new StringBuilder();
 
 		msg.append(String.format("%d match(es): ", matches.size()));
 
-		for (SoundModel soundModel : matches) {
-			if (soundModel.isUnnamed()) {
-				msg.append(soundModel.getSoundNumber());
-			} else {
-				msg.append(soundModel.getSoundName());
+		for (Sound soundModel : matches) {
+			msg.append(soundModel.getNumber());
+			if (soundModel.isNamed()) {
+				msg.append(" (");
+				msg.append(soundModel.getName());
+				msg.append(")");
 			}
 			msg.append(", ");
 		}

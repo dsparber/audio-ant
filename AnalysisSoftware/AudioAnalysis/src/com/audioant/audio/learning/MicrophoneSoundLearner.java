@@ -2,7 +2,7 @@ package com.audioant.audio.learning;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.microphone.AudioRecorder;
 
@@ -18,9 +18,9 @@ public class MicrophoneSoundLearner extends SoundLearner {
 
 	private AudioRecorder recordAudio;
 
-	public MicrophoneSoundLearner(SoundModel soundModel) {
+	public MicrophoneSoundLearner(Sound soundModel) {
 		super(soundModel);
-		super.soundfile = super.soundModel.getFolder() + WorkingDir.AUDIO_FILE;
+		super.soundfile = super.soundModel.getPath() + WorkingDir.AUDIO_FILE;
 		recordAudio = new AudioRecorder(super.soundfile);
 
 		LearnedSounds.addSound(soundModel);

@@ -7,7 +7,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.sound.strongestFrequency.FrequencyModel;
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.Audio;
 import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
@@ -26,11 +26,11 @@ public class FrequnecyMatchAnalyser {
 	protected StrongestFrequenciesModel[] savedFreqs;
 	protected ArrayList<StrongestFrequenciesModel> recentFreqs;
 
-	private SoundModel soundModel;
+	private Sound soundModel;
 
 	private static double max = 0, min = Audio.SAMPLE_RATE;
 
-	public FrequnecyMatchAnalyser(SoundModel soundModel) throws RserveException, IOException {
+	public FrequnecyMatchAnalyser(Sound soundModel) throws RserveException, IOException {
 
 		this.soundModel = soundModel;
 
@@ -84,7 +84,7 @@ public class FrequnecyMatchAnalyser {
 
 		StrongestFrequenciesModel[] savedFreqs;
 
-		CsvReader reader = new CsvReader(soundModel.getFolder() + WorkingDir.FREQUENCIES_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.FREQUENCIES_CSV);
 		String[][] csvValues = reader.readMatrix();
 
 		savedFreqs = new StrongestFrequenciesModel[csvValues.length];

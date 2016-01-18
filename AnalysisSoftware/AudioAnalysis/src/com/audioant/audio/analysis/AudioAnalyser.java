@@ -12,8 +12,8 @@ import org.rosuda.REngine.Rserve.RserveException;
 import com.audioant.audio.analysis.match.MatchAnalyser;
 import com.audioant.audio.analysis.sound.SoundAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
-import com.audioant.audio.model.ResultModel;
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Result;
+import com.audioant.audio.model.Sound;
 import com.audioant.io.microphone.AudioStreamReader;
 
 /**
@@ -36,23 +36,23 @@ public class AudioAnalyser extends Observable {
 
 		matchAnalysers = new ArrayList<MatchAnalyser>();
 
-		for (SoundModel soundModel : LearnedSounds.getSounds()) {
+		for (Sound soundModel : LearnedSounds.getSounds()) {
 			matchAnalysers.add(new MatchAnalyser(soundModel));
 		}
 	}
 
 	protected void addSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
 
-		ResultModel resultModel = soundAnalyser.analyseSamples(samples, sampleRate);
+		Result resultModel = soundAnalyser.analyseSamples(samples, sampleRate);
 
 		for (MatchAnalyser analyser : matchAnalysers) {
 			analyser.addAnalysisResult(resultModel);
 		}
 	}
 
-	protected List<SoundModel> getMatches() {
+	protected List<Sound> getMatches() {
 
-		List<SoundModel> sounds = new ArrayList<SoundModel>();
+		List<Sound> sounds = new ArrayList<Sound>();
 
 		for (MatchAnalyser analyser : matchAnalysers) {
 			if (analyser.isMatch()) {

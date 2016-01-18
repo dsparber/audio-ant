@@ -12,7 +12,7 @@ import com.audioant.audio.analysis.sound.energy.EnergyAnalyser;
 import com.audioant.audio.analysis.sound.mfcc.MfccAnalyser;
 import com.audioant.audio.analysis.sound.srp.SrpAnalyser;
 import com.audioant.audio.analysis.sound.strongestFrequency.FrequnecyAnalyser;
-import com.audioant.audio.model.ResultModel;
+import com.audioant.audio.model.Result;
 import com.audioant.io.microphone.AudioStreamReader;
 
 /**
@@ -43,12 +43,12 @@ public class SoundAnalyser extends Observable {
 		srpAnalyser = new SrpAnalyser(analyser);
 	}
 
-	public ResultModel analyseSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
+	public Result analyseSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
 
 		analyser.assignSamples(samples, sampleRate);
 		analyser.generateSpectrum();
 
-		return new ResultModel(frequnecyAnalyser.analyseSamples(), srpAnalyser.analyseSamples(),
+		return new Result(frequnecyAnalyser.analyseSamples(), srpAnalyser.analyseSamples(),
 				mfccAnalyser.analyseSamples(), energyAnalyser.analyseSamples());
 	}
 }

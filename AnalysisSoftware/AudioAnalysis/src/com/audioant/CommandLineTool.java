@@ -6,14 +6,16 @@ import java.util.Scanner;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.AudioStreamAnalyser;
+import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
-import com.audioant.audio.model.SoundModel;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.test.FeatureTest;
 
@@ -106,7 +108,8 @@ public class CommandLineTool {
 		try {
 			System.out.print("Enter the name of the sound: ");
 
-			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(new SoundModel(scanner.nextLine()));
+			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(
+					LearnedSounds.getNewSound(scanner.nextLine()));
 
 			System.out.println("Hit return to start recording");
 			scanner.nextLine();
@@ -120,10 +123,12 @@ public class CommandLineTool {
 			System.out.print("Extracting features...");
 
 			learnSound.extractFeatures();
+
+			LearnedSounds.saveSounds();
 			System.out.println("done");
 
 		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
-				| UnsupportedAudioFileException e) {
+				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException e) {
 			e.printStackTrace();
 		}
 

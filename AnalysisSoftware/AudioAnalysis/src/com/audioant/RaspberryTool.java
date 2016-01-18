@@ -6,6 +6,8 @@ import java.util.Observer;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
@@ -92,7 +94,7 @@ public class RaspberryTool implements Observer {
 				}
 				stopAnalysis();
 
-				learner = new MicrophoneSoundLearner(LearnedSounds.getNewUnnamedSoundModel());
+				learner = new MicrophoneSoundLearner(LearnedSounds.getNewUnnamedSound());
 
 				try {
 					learner.startCapturing();
@@ -114,6 +116,12 @@ public class RaspberryTool implements Observer {
 				try {
 					ledController.off(Led.LED_RECORDING);
 				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					LearnedSounds.saveSounds();
+				} catch (ParserConfigurationException | TransformerException e) {
 					e.printStackTrace();
 				}
 

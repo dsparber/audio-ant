@@ -1,48 +1,39 @@
 package com.audioant.audio.learning;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
 import java.util.List;
 
-import com.audioant.audio.model.SoundModel;
-import com.audioant.config.Parameters.WorkingDir;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerException;
+
+import com.audioant.audio.model.Sound;
+import com.audioant.config.Parameters.SoundsXml;
+import com.audioant.io.xml.LearnedSoundsXml;
 
 public class LearnedSounds {
 
 	private static LearnedSounds learnedSounds;
 
-	private List<SoundModel> sounds;
+	private List<Sound> sounds;
+	private LearnedSoundsXml soundsXml;
 
 	public LearnedSounds() {
 
-		sounds = new ArrayList<SoundModel>();
+		soundsXml = new LearnedSoundsXml(SoundsXml.XML_FILE);
 
-		File[] learnedSounds = new File(WorkingDir.FOLDER_LEARNED_SOUNDS).listFiles();
-
-		for (File file : learnedSounds) {
-			if (file.isDirectory()) {
-
-				String soundName = file.getName();
-
-				SoundModel soundModel;
-
-				if (Character.isAlphabetic(soundName.charAt(0))) {
-					soundModel = new SoundModel(soundName);
-				} else {
-					int soundNumber = Integer.parseInt(soundName);
-					soundModel = new SoundModel(soundNumber);
-				}
-
-				sounds.add(soundModel);
-			}
+		try {
+			sounds = soundsXml.read();
+		} catch (FileNotFoundException | XMLStreamException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public static void addSound(SoundModel soundModel) {
+	public static void addSound(Sound soundModel) {
 		getSounds().add(soundModel);
 	}
 
-	public static List<SoundModel> getSounds() {
+	public static List<Sound> getSounds() {
 
 		if (learnedSounds == null) {
 			learnedSounds = new LearnedSounds();
@@ -50,19 +41,38 @@ public class LearnedSounds {
 		return learnedSounds.sounds;
 	}
 
-	public static SoundModel getNewUnnamedSoundModel() {
+	public static LearnedSoundsXml getSoundsXml() {
+
+		if (learnedSounds == null) {
+			learnedSounds = new LearnedSounds();
+		}
+		return learnedSounds.soundsXml;
+	}
+
+	public static int getNextNumber() {
 
 		int max = 0;
 
-		for (SoundModel soundModel : getSounds()) {
+		for (Sound soundModel : getSounds()) {
 			if (soundModel.isUnnamed()) {
-				if (soundModel.getSoundNumber() > max) {
-					max = soundModel.getSoundNumber();
+				if (soundModel.getNumber() > max) {
+					max = soundModel.getNumber();
 				}
 			}
 		}
 
-		return new SoundModel(max + 1);
+		return max + 1;
 	}
 
+	public static Sound getNewUnnamedSound() {
+		return new Sound(null, getNextNumber());
+	}
+
+	public static Sound getNewSound(String name) {
+		return new Sound(name, getNextNumber());
+	}
+
+	public static void saveSounds() throws ParserConfigurationException, TransformerException {
+		getSoundsXml().write(getSounds());
+	}
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.audioant.audio.model.SoundModel;
+import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.Audio.Analysis;
 import com.audioant.config.Parameters.WorkingDir;
 import com.audioant.io.csv.CsvReader;
@@ -25,9 +25,9 @@ public class MfccMatchAnalyser {
 
 	private double[] savedMeans;
 
-	private SoundModel soundModel;
+	private Sound soundModel;
 
-	public MfccMatchAnalyser(SoundModel soundModel) throws RserveException, IOException {
+	public MfccMatchAnalyser(Sound soundModel) throws RserveException, IOException {
 
 		this.soundModel = soundModel;
 
@@ -84,7 +84,7 @@ public class MfccMatchAnalyser {
 
 	private double[][] loadCsvValues() throws IOException {
 
-		CsvReader reader = new CsvReader(soundModel.getFolder() + WorkingDir.MFCC_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.MFCC_CSV);
 		String[][] csvValues = reader.readMatrix();
 
 		double[][] values = new double[csvValues.length][csvValues[0].length];

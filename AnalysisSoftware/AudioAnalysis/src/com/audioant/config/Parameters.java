@@ -150,4 +150,17 @@ public class Parameters {
 		public static final String NAME_PATTERN_SHOULD_BE_RECOGNISED = "true.*.(wav|mp3)";
 		public static final String NAME_PATTERN_REFERENCE_FILE = "00.*.(wav|mp3)";
 	}
+
+	// Learned Sounds XML
+	public static class SoundsXml {
+
+		public static final String XML_FILE = WorkingDir.FOLDER_LEARNED_SOUNDS + "sounds.xml";
+
+		public static final String RECORDED_SOUNDS = "recorded_sounds";
+		public static final String SOUND = "sound";
+		public static final String NAMED = "named";
+		public static final String NUMBER = "number";
+		public static final String NAME = "name";
+		public static final String PATH = "path";
+	}
 }
