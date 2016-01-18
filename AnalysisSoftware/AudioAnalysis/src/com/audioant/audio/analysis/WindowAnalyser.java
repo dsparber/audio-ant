@@ -90,7 +90,7 @@ public class WindowAnalyser {
 		rConnection.eval("current <- 0.0");
 		rConnection.eval("index <- 0");
 
-		rConnection.eval("while (current <= (0.6 * sum)){\n" + "index <- index + 1\n"
+		rConnection.eval("while (current <= (" + Analysis.SRP_BORDER + " * sum)){\n" + "index <- index + 1\n"
 				+ "current = current + spec[index, 2]\n" + "}");
 
 		return rConnection.eval("spec[index,1] * 1000").asDouble();

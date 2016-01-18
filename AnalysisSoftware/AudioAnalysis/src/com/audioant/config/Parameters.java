@@ -121,6 +121,7 @@ public class Parameters {
 			public static final double ENERGY_TOLERANCE = 0.12; // Percent
 
 			// For SRP analysis
+			public static final double SRP_BORDER = 0.55;
 			public static final double SRP_TOLERANCE = .2; // Percent
 
 			// Detection thresholds
