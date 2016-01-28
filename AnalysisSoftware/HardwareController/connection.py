@@ -2,6 +2,9 @@ import socket
 import sys
 from _thread import *
 import ledController as led
+import alertLightController as alert
+import outputManager as out
+import inputManager as input
  
 HOST = ''		# Symbolic name meaning all available interfaces
 PORT = 4207
@@ -12,15 +15,7 @@ serversocket.bind((HOST, PORT))
 serversocket.listen(5)
 
 def sendThread(clientsocket):
-	
-	while True:
-		text = input()
-		text = "BUTTON;BUTTON_RECORDING\r\n"
-		try:
-			if clientsocket.send(text.encode('utf-8')) == 0:
-				break
-		except (BrokenPipeError, IOError):
-			break
+	input.start(clientsocket)
 				
 def receiveThread(clientsocket):
 	while True:
@@ -34,11 +29,7 @@ def receiveThread(clientsocket):
 		function = data.split(';')[0]
 		options = data.split(';')[1:]
 		
-		if function == "LED":
-			led.ledByOptions(options)
-		
-		if function == "DISPLAY":
-			print("Display")
+		out.output(function, options)
  
 while True:
 	#wait to accept a connection - blocking call
