@@ -1,9 +1,9 @@
 import RPi.GPIO as GPIO; 
 import time
-lightPin = 36; 
+lightPin = 2; 
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(lightPin, GPIO.OUT)
 
 def blink():

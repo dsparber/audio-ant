@@ -1,6 +1,7 @@
 package com.audioant.audio.learning;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,12 +21,12 @@ public class LearnedSounds {
 
 	public LearnedSounds() {
 
-		soundsXml = new LearnedSoundsXml(SoundsXml.XML_FILE);
-
 		try {
+			soundsXml = new LearnedSoundsXml(SoundsXml.XML_FILE);
 			sounds = soundsXml.read();
 		} catch (FileNotFoundException | XMLStreamException e) {
-			e.printStackTrace();
+			soundsXml = new LearnedSoundsXml(SoundsXml.XML_FILE);
+			sounds = new ArrayList<Sound>();
 		}
 	}
 
@@ -54,10 +55,8 @@ public class LearnedSounds {
 		int max = 0;
 
 		for (Sound soundModel : getSounds()) {
-			if (soundModel.isUnnamed()) {
-				if (soundModel.getNumber() > max) {
-					max = soundModel.getNumber();
-				}
+			if (soundModel.getNumber() > max) {
+				max = soundModel.getNumber();
 			}
 		}
 

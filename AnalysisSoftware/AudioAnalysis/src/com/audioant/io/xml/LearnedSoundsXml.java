@@ -92,23 +92,27 @@ public class LearnedSoundsXml {
 
 				String name = event.asStartElement().getName().getLocalPart();
 
-				switch (name) {
-
-				case SoundsXml.SOUND:
+				if (name.equals(SoundsXml.SOUND)) {
 					sound = new Sound();
-					break;
+				} else {
+					switch (name) {
 
-				case SoundsXml.NAME:
-					sound.setName(event.asCharacters().getData());
-					break;
+					case SoundsXml.NAME:
+						if ((event = eventReader.nextEvent()).isCharacters()) {
+							sound.setName(event.asCharacters().getData());
+						}
+						break;
 
-				case SoundsXml.NUMBER:
-					sound.setNumber(Integer.parseInt(event.asCharacters().getData()));
-					break;
+					case SoundsXml.NUMBER:
+						event = eventReader.nextEvent();
+						sound.setNumber(Integer.parseInt(event.asCharacters().getData()));
+						break;
 
-				case SoundsXml.PATH:
-					sound.setPath(event.asCharacters().getData());
-					break;
+					case SoundsXml.PATH:
+						event = eventReader.nextEvent();
+						sound.setPath(event.asCharacters().getData());
+						break;
+					}
 				}
 			}
 			if (event.isEndElement()) {
