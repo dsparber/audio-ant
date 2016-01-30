@@ -1,10 +1,8 @@
 import socket
 import sys
 from _thread import *
-import ledController as led
-import alertLightController as alert
 import outputManager as out
-import inputManager as input
+import inputManager as inManager
  
 HOST = ''		# Symbolic name meaning all available interfaces
 PORT = 4207
@@ -15,8 +13,8 @@ serversocket.bind((HOST, PORT))
 serversocket.listen(5)
 
 def sendThread(clientsocket):
-	input.start(clientsocket)
-				
+	inManager.start(clientsocket)
+	
 def receiveThread(clientsocket):
 	while True:
 		data = clientsocket.recv(1024)

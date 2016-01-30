@@ -19,6 +19,7 @@ def ledRed(on):
     GPIO.output(LED_red, on)
 		
 def led(ledName, ledOn):
+	
 	if(ledName == "LED_BLUETOOTH_STATUS"):
 		ledYellow(ledOn)
 	elif(ledName == "LED_POWER_STATUS"):
@@ -31,4 +32,4 @@ def led(ledName, ledOn):
 		print ("LED not defined")				
         
 def ledByOptions(options):
-    led(options[0], options[1])
+    led(options[0], options[1] == "true")
