@@ -4,7 +4,7 @@ lightPin = 3;
 delay = 0.06
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(lightPin, GPIO.OUT)
 
 def blink():

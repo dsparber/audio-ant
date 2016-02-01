@@ -23,11 +23,11 @@ public class Sound {
 	}
 
 	public boolean isUnnamed() {
-		return name == null;
+		return name == null || name.trim().isEmpty();
 	}
 
 	public boolean isNamed() {
-		return name != null;
+		return !isUnnamed();
 	}
 
 	public int getNumber() {

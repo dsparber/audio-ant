@@ -16,6 +16,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
+import com.audioant.audio.model.Sound;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.test.FeatureTest;
 
@@ -108,8 +109,9 @@ public class CommandLineTool {
 		try {
 			System.out.print("Enter the name of the sound: ");
 
-			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(
-					LearnedSounds.getNewSound(scanner.nextLine()));
+			Sound sound = LearnedSounds.getNewSound(scanner.nextLine());
+
+			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(sound);
 
 			System.out.println("Hit return to start recording");
 			scanner.nextLine();
@@ -124,12 +126,14 @@ public class CommandLineTool {
 
 			learnSound.extractFeatures();
 
+			LearnedSounds.addSound(sound);
 			LearnedSounds.saveSounds();
 			System.out.println("done");
 
 		} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
-				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException e) {
-			e.printStackTrace();
+				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
+				| IndexOutOfBoundsException e) {
+			System.out.println("failed");
 		}
 
 	}

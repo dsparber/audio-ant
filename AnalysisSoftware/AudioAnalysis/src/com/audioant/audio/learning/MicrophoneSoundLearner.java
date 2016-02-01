@@ -22,8 +22,6 @@ public class MicrophoneSoundLearner extends SoundLearner {
 		super(soundModel);
 		super.soundfile = super.soundModel.getPath() + WorkingDir.AUDIO_FILE;
 		recordAudio = new AudioRecorder(super.soundfile);
-
-		LearnedSounds.addSound(soundModel);
 	}
 
 	public void startCapturing() throws LineUnavailableException {
