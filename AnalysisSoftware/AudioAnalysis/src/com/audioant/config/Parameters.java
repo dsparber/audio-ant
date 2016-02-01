@@ -32,8 +32,7 @@ public class Parameters {
 	public static class Communication {
 
 		public static final int RASPBERRY_SOCKET_PORT = 4207;
-		// public static final String RASPBERRY_HOST_NAME = "audiopi.local";
-		public static final String RASPBERRY_HOST_NAME = "localhost";
+		public static final String RASPBERRY_HOST_NAME = "audiopi.local";
 		public static final char VALUE_SEPERATOR = ';';
 	}
 

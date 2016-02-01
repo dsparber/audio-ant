@@ -16,6 +16,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
+import com.audioant.audio.model.Sound;
 import com.audioant.io.eventObserver.EventLights;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.io.raspberry.ButtonController;
@@ -32,6 +33,8 @@ public class RaspberryTool implements Observer {
 	private ButtonController buttonController;
 
 	private boolean recording = false;
+
+	private Sound newSound;
 
 	public RaspberryTool() throws IOException {
 
@@ -84,51 +87,60 @@ public class RaspberryTool implements Observer {
 		if (button == Button.BUTTON_RECORDING) {
 			if (!recording) {
 
-				System.out.println("Started recording");
-
-				recording = true;
-				try {
-					ledController.on(Led.LED_RECORDING);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				stopAnalysis();
 
-				learner = new MicrophoneSoundLearner(LearnedSounds.getNewUnnamedSound());
+				newSound = LearnedSounds.getNewUnnamedSound();
+
+				recording = true;
+				led(Led.LED_RECORDING, recording);
+
+				learner = new MicrophoneSoundLearner(newSound);
 
 				try {
 					learner.startCapturing();
 				} catch (LineUnavailableException e) {
 					e.printStackTrace();
+
+					recording = false;
+					led(Led.LED_RECORDING, recording);
+
+					startAnalysis();
 				}
 
 			} else {
 
-				learner.stopCapturing();
 				try {
+					learner.stopCapturing();
+
+					recording = false;
+					led(Led.LED_RECORDING, false);
+
 					learner.extractFeatures();
-				} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
-						| UnsupportedAudioFileException e) {
-					e.printStackTrace();
-				}
 
-				recording = false;
-				try {
-					ledController.off(Led.LED_RECORDING);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				try {
+					LearnedSounds.addSound(newSound);
 					LearnedSounds.saveSounds();
-				} catch (ParserConfigurationException | TransformerException e) {
-					e.printStackTrace();
+
+					startAnalysis();
+
+				} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
+						| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
+						| IndexOutOfBoundsException e) {
+
+					led(Led.LED_WARNING, true);
 				}
-
-				System.out.println("Stopped recording");
-
-				startAnalysis();
 			}
+		}
+	}
+
+	private void led(Led led, boolean on) {
+		try {
+			if (on) {
+				ledController.on(led);
+			} else {
+				ledController.off(led);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
