@@ -22,6 +22,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.ProcessingInstruction;
 
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Parameters.SoundsXml;
@@ -40,8 +41,15 @@ public class LearnedSoundsXml {
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
 		Document doc = docBuilder.newDocument();
+
 		Element rootElement = doc.createElement(SoundsXml.RECORDED_SOUNDS);
 		doc.appendChild(rootElement);
+
+		doc.setXmlStandalone(true);
+		ProcessingInstruction pi = doc.createProcessingInstruction("xml-stylesheet",
+				"type=\"text/xsl\" href=\"../../src/com/audioant/io/xml/sounds.xsl\"");
+
+		doc.insertBefore(pi, rootElement);
 
 		for (Sound model : soundModels) {
 
