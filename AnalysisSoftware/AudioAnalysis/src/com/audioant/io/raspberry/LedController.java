@@ -27,7 +27,7 @@ public class LedController {
 		set(led, number);
 	}
 
-	private void set(Led led, int option) throws IOException {
+	private synchronized void set(Led led, int option) throws IOException {
 
 		StringBuilder message = new StringBuilder();
 
@@ -36,6 +36,7 @@ public class LedController {
 		message.append(led);
 		message.append(Communication.VALUE_SEPERATOR);
 		message.append(option);
+		message.append(Communication.VALUE_SEPERATOR);
 
 		writer.write(message.toString());
 		writer.flush();
