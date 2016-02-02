@@ -16,14 +16,18 @@ public class LedController {
 	}
 
 	public void on(Led led) throws IOException {
-		set(led, true);
+		set(led, 1);
 	}
 
 	public void off(Led led) throws IOException {
-		set(led, false);
+		set(led, 0);
 	}
 
-	private void set(Led led, boolean on) throws IOException {
+	public void blink(Led led, int number) throws IOException {
+		set(led, number);
+	}
+
+	private void set(Led led, int option) throws IOException {
 
 		StringBuilder message = new StringBuilder();
 
@@ -31,7 +35,7 @@ public class LedController {
 		message.append(Communication.VALUE_SEPERATOR);
 		message.append(led);
 		message.append(Communication.VALUE_SEPERATOR);
-		message.append(on);
+		message.append(option);
 
 		writer.write(message.toString());
 		writer.flush();

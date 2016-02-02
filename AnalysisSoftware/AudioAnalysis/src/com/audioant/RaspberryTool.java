@@ -92,7 +92,7 @@ public class RaspberryTool implements Observer {
 				newSound = LearnedSounds.getNewUnnamedSound();
 
 				recording = true;
-				led(Led.LED_RECORDING, recording);
+				led(Led.LED_RECORDING, 1);
 
 				learner = new MicrophoneSoundLearner(newSound);
 
@@ -102,7 +102,7 @@ public class RaspberryTool implements Observer {
 					e.printStackTrace();
 
 					recording = false;
-					led(Led.LED_RECORDING, recording);
+					led(Led.LED_RECORDING, 0);
 
 					startAnalysis();
 				}
@@ -113,7 +113,7 @@ public class RaspberryTool implements Observer {
 					learner.stopCapturing();
 
 					recording = false;
-					led(Led.LED_RECORDING, false);
+					led(Led.LED_RECORDING, 0);
 
 					learner.extractFeatures();
 
@@ -126,15 +126,17 @@ public class RaspberryTool implements Observer {
 						| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
 						| IndexOutOfBoundsException e) {
 
-					led(Led.LED_WARNING, true);
+					led(Led.LED_WARNING, 5);
 				}
 			}
 		}
 	}
 
-	private void led(Led led, boolean on) {
+	private void led(Led led, int times) {
 		try {
-			if (on) {
+			if (times > 1) {
+				ledController.blink(led, times);
+			} else if (times == 1) {
 				ledController.on(led);
 			} else {
 				ledController.off(led);
