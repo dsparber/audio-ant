@@ -1,12 +1,17 @@
-import RPi.GPIO as GPIO; 
-LED_green = 36; 
-LED_yell = 38; 
-LED_red = 40; 
+import RPi.GPIO as GPIO 
+import time 
+delay = 0.2
+
+LED_green = 36 
+LED_yell = 38 
+LED_red = 40
+LED_warning = 7
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(LED_red, GPIO.OUT)
 GPIO.setup(LED_yell, GPIO.OUT)
+GPIO.setup(LED_warning, GPIO.OUT)
 GPIO.setup(LED_green, GPIO.OUT)
 
 def ledGreen(on): 
@@ -17,19 +22,35 @@ def ledYellow(on):
     
 def ledRed(on): 
     GPIO.output(LED_red, on)
+
+def ledWarning(on):
+    GPIO.output(LED_warning, on)
 		
-def led(ledName, ledOn):
+def led(ledName, option):
 	
-	if(ledName == "LED_BLUETOOTH_STATUS"):
-		ledYellow(ledOn)
-	elif(ledName == "LED_POWER_STATUS"):
-		ledGreen(ledOn)
-	elif(ledName == "LED_WIFI_STATUS"):
-		ledRed(ledOn)
-	elif (ledName == "LED_RECORDING"):
-		ledRed(ledOn)
-	else: 
-		print ("LED not defined")				
+	option = int(option)
+	
+	if option > 1:
+		for i in range(0,option):
+			led(ledName, 1)
+			time.sleep(delay)
+			led(ledName, 0)
+			time.sleep(delay)
+	else:
+		ledOn = option != 0
+
+		if(ledName == "LED_BLUETOOTH_STATUS"):
+			ledYellow(ledOn)
+		elif(ledName == "LED_POWER_STATUS"):
+			ledGreen(ledOn)
+		elif(ledName == "LED_WIFI_STATUS"):
+			ledRed(ledOn)
+		elif (ledName == "LED_RECORDING"):
+			ledRed(ledOn)
+		elif (ledName == "LED_WARNING"):
+			ledWarning(ledOn)
+		else: 
+			print ("LED not defined")				
         
 def ledByOptions(options):
-    led(options[0], options[1] == "true")
+    led(options[0], options[1])
