@@ -47,7 +47,7 @@ public class LearnedSoundsXml {
 
 		doc.setXmlStandalone(true);
 		ProcessingInstruction pi = doc.createProcessingInstruction("xml-stylesheet",
-				"type=\"text/xsl\" href=\"../../src/com/audioant/io/xml/sounds.xsl\"");
+				"type=\"text/xsl\" href=\"sounds.xsl\"");
 
 		doc.insertBefore(pi, rootElement);
 
