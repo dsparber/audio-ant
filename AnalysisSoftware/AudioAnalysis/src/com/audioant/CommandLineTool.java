@@ -37,7 +37,7 @@ public class CommandLineTool {
 
 	private static AudioStreamAnalyser analyser;
 
-	public static void main(String[] args) {
+	public static void start() {
 
 		printUsage();
 
