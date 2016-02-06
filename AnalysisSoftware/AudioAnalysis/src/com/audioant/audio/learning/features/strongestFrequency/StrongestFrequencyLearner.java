@@ -12,8 +12,7 @@ import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
-import com.audioant.config.Parameters.Audio.Analysis;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvWriter;
 
 /**
@@ -34,7 +33,7 @@ public class StrongestFrequencyLearner {
 	public StrongestFrequencyLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
-		pathnameOut = pathname + WorkingDir.FREQUENCIES_CSV;
+		pathnameOut = pathname + Config.LEARNED_SOUNDS_FILE_FREQUENCIES;
 		results = new ArrayList<StrongestFrequenciesModel>();
 	}
 
@@ -69,7 +68,7 @@ public class StrongestFrequencyLearner {
 	public boolean shouldBeAnalysed() {
 		StrongestFrequenciesModel strongestFreq = analyser.getStrongestFrequencies();
 
-		return strongestFreq.size() > 0 && strongestFreq.size() <= Analysis.MAX_PEAK_COUNT;
+		return strongestFreq.size() > 0 && strongestFreq.size() <= Config.AUDIO_ANALYSIS_FREQUENCY_MAX_PEAK_COUNT;
 	}
 
 	public void analyseWindow() throws REngineException, REXPMismatchException {

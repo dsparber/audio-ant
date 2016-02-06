@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.audioant.config.Parameters.Csv;
+import com.audioant.config.Config;
 
 /**
  * @author Daniel Sparber
@@ -39,7 +39,7 @@ public class CsvReader {
 		while ((line = reader.readLine()) != null) {
 
 			line = line.substring(1, line.length() - 1);
-			String[] lineArray = line.split(Csv.SEPERATOR);
+			String[] lineArray = line.split(Config.CSV_SEPERATOR);
 			lines.add(lineArray);
 		}
 		reader.close();

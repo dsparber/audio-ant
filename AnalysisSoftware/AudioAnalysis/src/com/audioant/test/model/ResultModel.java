@@ -1,6 +1,6 @@
 package com.audioant.test.model;
 
-import com.audioant.config.Parameters.AutomatedTest;
+import com.audioant.config.Config;
 
 /**
  *
@@ -27,7 +27,7 @@ public class ResultModel {
 		this.fileName = fileName;
 		this.wasRecognised = wasRecognised;
 
-		shouldBeRecognised = fileName.matches(AutomatedTest.NAME_PATTERN_SHOULD_BE_RECOGNISED);
+		shouldBeRecognised = fileName.matches(Config.AUTOTEST_PATTERN_TRUE);
 
 		correctRecognition = (this.wasRecognised == shouldBeRecognised);
 	}

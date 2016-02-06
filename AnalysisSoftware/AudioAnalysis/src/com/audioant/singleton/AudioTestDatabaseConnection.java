@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.audioant.config.Parameters.Database;
+import com.audioant.config.Config;
 
 /**
  *
@@ -26,8 +26,9 @@ public class AudioTestDatabaseConnection {
 		if (instance == null) {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
-				instance = DriverManager.getConnection("jdbc:mysql://" + Database.HOST + '/' + Database.DATABASE_TEST,
-						Database.USER, Database.PASSWORD);
+				instance = DriverManager.getConnection(
+						"jdbc:mysql://" + Config.DATABASE_HOST + '/' + Config.DATABASE_TEST, Config.DATABASE_USER,
+						Config.DATABASE_PASSWORD);
 			} catch (ClassNotFoundException | SQLException e) {
 				System.err.println("Database connection failed.");
 			}

@@ -8,11 +8,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine.Info;
-
-import com.audioant.config.Parameters.Audio;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
+
+import com.audioant.config.Config;
 
 /**
  * @author Daniel Sparber
@@ -33,7 +32,7 @@ public class AudioRecorder {
 	}
 
 	public void startCapturing() throws LineUnavailableException {
-		audioFormat = Audio.AUDIO_FORMAT;
+		audioFormat = Config.AUDIO_FORMAT;
 
 		Info dataLineInfo = new Info(TargetDataLine.class, audioFormat);
 
@@ -51,7 +50,7 @@ public class AudioRecorder {
 	private class CaptureThread extends Thread {
 		@Override
 		public void run() {
-			Type fileType = Audio.FILE_TYPE;
+			Type fileType = Config.AUDIO_TYPE;
 
 			try {
 				targetDataLine.open(audioFormat);

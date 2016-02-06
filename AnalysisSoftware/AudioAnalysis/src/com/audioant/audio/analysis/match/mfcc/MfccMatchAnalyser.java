@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.Audio.Analysis;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
 
@@ -71,8 +70,8 @@ public class MfccMatchAnalyser {
 
 		for (int i = 0; i < d1.length; i++) {
 
-			if (Analysis.MFCC_COEFFICIENT_USED[i]) {
-				if (Math.abs(d1[i] - d2[i]) <= Analysis.MFCC_TOLERANCE[i]) {
+			if (Config.AUDIO_ANALYSIS_MFCC_COEFFICIENT_USED[i]) {
+				if (Math.abs(d1[i] - d2[i]) <= Config.AUDIO_ANALYSIS_MFCC_TOLERANCE[i]) {
 					countTrue++;
 				}
 				count++;
@@ -84,7 +83,7 @@ public class MfccMatchAnalyser {
 
 	private double[][] loadCsvValues() throws IOException {
 
-		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.MFCC_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + Config.LEARNED_SOUNDS_FILE_MFCC);
 		String[][] csvValues = reader.readMatrix();
 
 		double[][] values = new double[csvValues.length][csvValues[0].length];

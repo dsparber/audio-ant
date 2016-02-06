@@ -12,7 +12,7 @@ import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.SoundFileAnalyser;
 import com.audioant.audio.learning.SoundFileLearner;
-import com.audioant.config.Parameters.AutomatedTest;
+import com.audioant.config.Config;
 import com.audioant.io.sql.AutomatedTestDatabaseManager;
 import com.audioant.test.model.FeatureMatchModel;
 import com.audioant.test.model.ResultModel;
@@ -61,7 +61,7 @@ public class FeatureTest {
 	}
 
 	private boolean fileShouldBeAnalysed(String fileName) {
-		return !fileName.matches(AutomatedTest.NAME_PATTERN_REFERENCE_FILE);
+		return !fileName.matches(Config.AUTOTEST_PATTERN_REF);
 	}
 
 	private void analyseSound(File soundDir) throws LineUnavailableException, IOException, REngineException,
@@ -75,7 +75,7 @@ public class FeatureTest {
 		// Learn sound
 		for (File file : soundDir.listFiles()) {
 
-			if (file.getName().matches(AutomatedTest.NAME_PATTERN_REFERENCE_FILE)) {
+			if (file.getName().matches(Config.AUTOTEST_PATTERN_REF)) {
 
 				SoundFileLearner learner = new SoundFileLearner(file.getAbsolutePath());
 				learner.extractFeatures();
@@ -90,7 +90,7 @@ public class FeatureTest {
 			String fileName = file.getName();
 
 			if (fileShouldBeAnalysed(fileName)) {
-				if (file.getName().matches(AutomatedTest.NAME_PATTERN_SOUND_FILE)) {
+				if (file.getName().matches(Config.AUTOTEST_PATTERN_TRUE)) {
 					analyseFile(file, sound);
 				}
 			}

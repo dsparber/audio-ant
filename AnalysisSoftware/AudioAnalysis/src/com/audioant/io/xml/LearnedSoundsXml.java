@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.ProcessingInstruction;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.SoundsXml;
+import com.audioant.config.Config;
 
 public class LearnedSoundsXml {
 
@@ -42,7 +42,7 @@ public class LearnedSoundsXml {
 
 		Document doc = docBuilder.newDocument();
 
-		Element rootElement = doc.createElement(SoundsXml.RECORDED_SOUNDS);
+		Element rootElement = doc.createElement(Config.LEARNED_SOUNDS_XML_ROOT);
 		doc.appendChild(rootElement);
 
 		doc.setXmlStandalone(true);
@@ -53,22 +53,22 @@ public class LearnedSoundsXml {
 
 		for (Sound model : soundModels) {
 
-			Element sound = doc.createElement(SoundsXml.SOUND);
+			Element sound = doc.createElement(Config.LEARNED_SOUNDS_XML_SOUND);
 			rootElement.appendChild(sound);
 
-			Element named = doc.createElement(SoundsXml.NAMED);
+			Element named = doc.createElement(Config.LEARNED_SOUNDS_XML_NAMED);
 			named.appendChild(doc.createTextNode(Boolean.toString(model.isNamed())));
 			sound.appendChild(named);
 
-			Element number = doc.createElement(SoundsXml.NUMBER);
+			Element number = doc.createElement(Config.LEARNED_SOUNDS_XML_NUMBER);
 			number.appendChild(doc.createTextNode(Integer.toString(model.getNumber())));
 			sound.appendChild(number);
 
-			Element name = doc.createElement(SoundsXml.NAME);
+			Element name = doc.createElement(Config.LEARNED_SOUNDS_XML_NAME);
 			name.appendChild(doc.createTextNode(model.getNameNotNull()));
 			sound.appendChild(name);
 
-			Element path = doc.createElement(SoundsXml.PATH);
+			Element path = doc.createElement(Config.LEARNED_SOUNDS_XML_PATH);
 			path.appendChild(doc.createTextNode(model.getPath()));
 			sound.appendChild(path);
 		}
@@ -100,31 +100,27 @@ public class LearnedSoundsXml {
 
 				String name = event.asStartElement().getName().getLocalPart();
 
-				if (name.equals(SoundsXml.SOUND)) {
+				if (name.equals(Config.LEARNED_SOUNDS_XML_SOUND)) {
 					sound = new Sound();
 				} else {
-					switch (name) {
 
-					case SoundsXml.NAME:
-						if ((event = eventReader.nextEvent()).isCharacters()) {
-							sound.setName(event.asCharacters().getData());
+					if ((event = eventReader.nextEvent()).isCharacters()) {
+						String data = event.asCharacters().getData();
+
+						if (name.equals(Config.LEARNED_SOUNDS_XML_NAME)) {
+							sound.setName(data);
 						}
-						break;
-
-					case SoundsXml.NUMBER:
-						event = eventReader.nextEvent();
-						sound.setNumber(Integer.parseInt(event.asCharacters().getData()));
-						break;
-
-					case SoundsXml.PATH:
-						event = eventReader.nextEvent();
-						sound.setPath(event.asCharacters().getData());
-						break;
+						if (name.equals(Config.LEARNED_SOUNDS_XML_NUMBER)) {
+							sound.setNumber(Integer.parseInt(data));
+						}
+						if (name.equals(Config.LEARNED_SOUNDS_XML_PATH)) {
+							sound.setPath(data);
+						}
 					}
 				}
 			}
 			if (event.isEndElement()) {
-				if (event.asEndElement().getName().getLocalPart().equals(SoundsXml.SOUND)) {
+				if (event.asEndElement().getName().getLocalPart().equals(Config.LEARNED_SOUNDS_XML_SOUND)) {
 					sounds.add(sound);
 				}
 			}

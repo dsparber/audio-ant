@@ -34,11 +34,7 @@ public class AudioAnalyser extends Observable {
 
 		soundAnalyser = new SoundAnalyser();
 
-		matchAnalysers = new ArrayList<MatchAnalyser>();
-
-		for (Sound soundModel : LearnedSounds.getSounds()) {
-			matchAnalysers.add(new MatchAnalyser(soundModel));
-		}
+		reloadLearnedSounds();
 	}
 
 	protected void addSamples(int[] samples, float sampleRate) throws REngineException, REXPMismatchException {
@@ -61,5 +57,14 @@ public class AudioAnalyser extends Observable {
 		}
 
 		return sounds;
+	}
+
+	public void reloadLearnedSounds() throws RserveException, IOException {
+		matchAnalysers = null;
+		matchAnalysers = new ArrayList<MatchAnalyser>();
+
+		for (Sound soundModel : LearnedSounds.getSounds()) {
+			matchAnalysers.add(new MatchAnalyser(soundModel));
+		}
 	}
 }

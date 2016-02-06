@@ -3,7 +3,7 @@ package com.audioant.audio.analysis.sound.strongestFrequency;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.config.Config;
 
 /**
  *
@@ -22,7 +22,8 @@ public class StrongestFrequenciesModel {
 
 	public void addFrequency(FrequencyModel model) {
 
-		if (model.getFrequency() >= Analysis.MIN_FREQ && model.getFrequency() <= Analysis.MAX_FREQ) {
+		if (model.getFrequency() >= Config.AUDIO_ANALYSIS_FREQUENCY_MIN
+				&& model.getFrequency() <= Config.AUDIO_ANALYSIS_FREQUENCY_MAX) {
 			strongestFrequencies.add(model);
 		}
 	}

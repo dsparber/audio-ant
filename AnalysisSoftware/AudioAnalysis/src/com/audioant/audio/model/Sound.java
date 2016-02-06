@@ -1,6 +1,6 @@
 package com.audioant.audio.model;
 
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 
 public class Sound {
 
@@ -15,7 +15,7 @@ public class Sound {
 		this.name = name;
 		this.number = number;
 
-		path = WorkingDir.FOLDER_LEARNED_SOUNDS + number + '/';
+		path = Config.WORKING_FOLDER + Config.LEARNED_SOUNDS_FOLDER + number + '/';
 	}
 
 	public String getNameNotNull() {

@@ -13,7 +13,7 @@ import com.audioant.audio.analysis.sound.SoundAnalyser;
 import com.audioant.audio.model.Result;
 import com.audioant.audio.model.Sound;
 import com.audioant.audio.windowing.Windowing;
-import com.audioant.config.Parameters.Audio;
+import com.audioant.config.Config;
 import com.audioant.io.audio.AudioFileReader;
 import com.audioant.io.audio.AudioFileReaderFactory;
 
@@ -44,7 +44,7 @@ public class SoundFileAnalyser extends SoundAnalyser {
 
 		float sampleRate = reader.getSampleRate();
 
-		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
+		int[][] windows = Windowing.createWindows(reader.readData(), Config.AUDIO_WINDOW_SIZE, 0f);
 
 		boolean match = false;
 		double maxSrp = 0;

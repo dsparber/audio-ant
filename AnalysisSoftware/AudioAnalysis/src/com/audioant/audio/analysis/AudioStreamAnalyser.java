@@ -10,7 +10,7 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.Audio;
+import com.audioant.config.Config;
 import com.audioant.io.microphone.AudioStreamReader;
 
 /**
@@ -53,7 +53,7 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		long timeStart = System.currentTimeMillis();
 
 		try {
-			addSamples((int[]) arg, Audio.SAMPLE_RATE);
+			addSamples((int[]) arg, Config.AUDIO_SAMPLE_RATE);
 
 			List<Sound> matches = getMatches();
 

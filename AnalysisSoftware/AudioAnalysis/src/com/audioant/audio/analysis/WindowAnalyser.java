@@ -7,7 +7,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.sound.strongestFrequency.FrequencyModel;
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
-import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.config.Config;
 import com.audioant.singleton.RConnectionSingleton;
 
 public class WindowAnalyser {
@@ -44,7 +44,8 @@ public class WindowAnalyser {
 
 		try {
 			rConnection.eval("peaks = spec[findPeaks(spec[,2]) -1,]");
-			rConnection.eval("strongest = peaks[peaks[,2] >=" + Analysis.AMPLITUDE_THRESHOLD + ", ]");
+			rConnection.eval(
+					"strongest = peaks[peaks[,2] >=" + Config.AUDIO_ANALYSIS_FREQUENCY_THRESHOLD_AMPLITUDE + ", ]");
 
 			StrongestFrequenciesModel model = new StrongestFrequenciesModel();
 
@@ -90,8 +91,8 @@ public class WindowAnalyser {
 		rConnection.eval("current <- 0.0");
 		rConnection.eval("index <- 0");
 
-		rConnection.eval("while (current <= (" + Analysis.SRP_BORDER + " * sum)){\n" + "index <- index + 1\n"
-				+ "current = current + spec[index, 2]\n" + "}");
+		rConnection.eval("while (current <= (" + Config.AUDIO_ANALYSIS_SRP_BORDER + " * sum)){\n"
+				+ "index <- index + 1\n" + "current = current + spec[index, 2]\n" + "}");
 
 		return rConnection.eval("spec[index,1] * 1000").asDouble();
 	}

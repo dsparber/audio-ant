@@ -3,7 +3,7 @@ package com.audioant.io.raspberry;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
-import com.audioant.config.Parameters.Communication;
+import com.audioant.config.Config;
 import com.audioant.io.raspberry.hardware.Hardware;
 import com.audioant.io.raspberry.hardware.Led;
 
@@ -32,11 +32,11 @@ public class LedController {
 		StringBuilder message = new StringBuilder();
 
 		message.append(Hardware.LED);
-		message.append(Communication.VALUE_SEPERATOR);
+		message.append(Config.HW_CONTROLLER_SEP);
 		message.append(led);
-		message.append(Communication.VALUE_SEPERATOR);
+		message.append(Config.HW_CONTROLLER_SEP);
 		message.append(option);
-		message.append(Communication.VALUE_SEPERATOR);
+		message.append(Config.HW_CONTROLLER_SEP);
 
 		writer.write(message.toString());
 		writer.flush();

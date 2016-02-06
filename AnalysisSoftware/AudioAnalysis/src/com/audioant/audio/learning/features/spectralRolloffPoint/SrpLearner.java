@@ -11,7 +11,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvWriter;
 
 /**
@@ -33,7 +33,7 @@ public class SrpLearner {
 	public SrpLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
-		pathnameOut = pathname + WorkingDir.SRP_CSV;
+		pathnameOut = pathname + Config.LEARNED_SOUNDS_FILE_SRP;
 		results = new ArrayList<Double>();
 	}
 

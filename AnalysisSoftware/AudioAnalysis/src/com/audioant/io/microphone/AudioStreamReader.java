@@ -10,7 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
-import com.audioant.config.Parameters.Audio;
+import com.audioant.config.Config;
 import com.audioant.tools.LittleEndian;
 
 /**
@@ -32,7 +32,7 @@ public class AudioStreamReader extends Observable {
 
 	public AudioStreamReader() {
 
-		format = Audio.AUDIO_FORMAT;
+		format = Config.AUDIO_FORMAT;
 		info = new DataLine.Info(TargetDataLine.class, format);
 
 		try {
@@ -65,7 +65,7 @@ public class AudioStreamReader extends Observable {
 
 				byte[] inBytes = new byte[line.getFormat().getSampleSizeInBits() / 8];
 
-				int[] windows = new int[Audio.WINDOW_SIZE];
+				int[] windows = new int[Config.AUDIO_WINDOW_SIZE];
 
 				int i = 0;
 				while (stream.read(inBytes) > 0) {

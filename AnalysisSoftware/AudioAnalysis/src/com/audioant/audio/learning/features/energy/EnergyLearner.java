@@ -12,8 +12,7 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
-import com.audioant.config.Parameters.Audio.Analysis;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvWriter;
 
 /**
@@ -35,7 +34,7 @@ public class EnergyLearner {
 	public EnergyLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
-		pathnameOut = pathname + WorkingDir.POWER_CSV;
+		pathnameOut = pathname + Config.LEARNED_SOUNDS_FILE_POWER;
 		results = new ArrayList<Double>();
 	}
 
@@ -63,7 +62,7 @@ public class EnergyLearner {
 	}
 
 	public boolean shouldBeAnalysed() throws RserveException, REXPMismatchException {
-		return analyser.getRmsEnergy() >= Analysis.MIN_RMS_ENERGY;
+		return analyser.getRmsEnergy() >= Config.AUDIO_ANALYSIS_POWER_MIN_RMS;
 	}
 
 	public void analyseWindow() throws REngineException, REXPMismatchException {

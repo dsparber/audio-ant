@@ -8,9 +8,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 import com.audioant.audio.analysis.sound.strongestFrequency.FrequencyModel;
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.Audio;
-import com.audioant.config.Parameters.Audio.Analysis;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
 
@@ -28,7 +26,7 @@ public class FrequnecyMatchAnalyser {
 
 	private Sound soundModel;
 
-	private static double max = 0, min = Audio.SAMPLE_RATE;
+	private static double max = 0, min = Config.AUDIO_SAMPLE_RATE;
 
 	public FrequnecyMatchAnalyser(Sound soundModel) throws RserveException, IOException {
 
@@ -84,7 +82,7 @@ public class FrequnecyMatchAnalyser {
 
 		StrongestFrequenciesModel[] savedFreqs;
 
-		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.FREQUENCIES_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + Config.LEARNED_SOUNDS_FILE_FREQUENCIES);
 		String[][] csvValues = reader.readMatrix();
 
 		savedFreqs = new StrongestFrequenciesModel[csvValues.length];
@@ -117,10 +115,10 @@ public class FrequnecyMatchAnalyser {
 	}
 
 	public static double getMax() {
-		return max + Analysis.BANDPASS_DELTA;
+		return max + Config.AUDIO_ANALYSIS_BANDPASS_DELTA;
 	}
 
 	public static double getMin() {
-		return min - Analysis.BANDPASS_DELTA;
+		return min - Config.AUDIO_ANALYSIS_BANDPASS_DELTA;
 	}
 }

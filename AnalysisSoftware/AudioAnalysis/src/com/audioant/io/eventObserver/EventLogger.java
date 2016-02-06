@@ -12,8 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.DateFormat;
-import com.audioant.config.Parameters.Logging;
+import com.audioant.config.Config;
 import com.audioant.io.logging.LogFormatter;
 
 public class EventLogger implements Observer {
@@ -23,9 +22,9 @@ public class EventLogger implements Observer {
 	public EventLogger() {
 		try {
 
-			String date = DateFormat.FULL_DATE.format(new Date(System.currentTimeMillis()));
+			String date = Config.DATE_FORMAT_FULL_NO_SPACE.format(new Date(System.currentTimeMillis()));
 
-			String fileName = Logging.LOG_FOLDER_EVENTS + date + Logging.LOG_SUFFIX;
+			String fileName = Config.LOG_FOLDER_EVENTS + date + Config.LOG_SUFFIX;
 
 			new File(fileName).getParentFile().mkdirs();
 

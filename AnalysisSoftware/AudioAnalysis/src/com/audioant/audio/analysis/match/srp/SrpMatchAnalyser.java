@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.Audio.Analysis;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
 
@@ -78,15 +77,15 @@ public class SrpMatchAnalyser {
 
 	private double getMatch(double d1, double d2) {
 
-		double min = d1 * (1 - Analysis.SRP_TOLERANCE);
-		double max = d1 * (1 + Analysis.SRP_TOLERANCE);
+		double min = d1 * (1 - Config.AUDIO_ANALYSIS_SRP_TOLERANCE);
+		double max = d1 * (1 + Config.AUDIO_ANALYSIS_SRP_TOLERANCE);
 
 		return (d2 > min && d2 < max) ? 1 : 0;
 	}
 
 	private double[] loadCsvValues() throws IOException {
 
-		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.SRP_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + Config.LEARNED_SOUNDS_FILE_SRP);
 		String[] csvValues = reader.readSingleCol(0);
 
 		double[] values = new double[csvValues.length];

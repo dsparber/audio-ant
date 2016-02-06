@@ -1,6 +1,6 @@
 package com.audioant.audio.analysis.sound.strongestFrequency;
 
-import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.config.Config;
 
 /**
  *
@@ -43,8 +43,8 @@ public class FrequencyModel {
 	public boolean equals(Object obj) {
 		FrequencyModel model = (FrequencyModel) obj;
 
-		double min = frequency - Analysis.DETECTION_THRESHOLD;
-		double max = frequency + Analysis.DETECTION_THRESHOLD;
+		double min = frequency - Config.AUDIO_ANALYSIS_FREQUENCY_THRESHOLD;
+		double max = frequency + Config.AUDIO_ANALYSIS_FREQUENCY_THRESHOLD;
 
 		return model.frequency >= min && model.frequency <= max;
 	}

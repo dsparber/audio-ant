@@ -11,7 +11,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
 import com.audioant.audio.analysis.WindowAnalyser;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvWriter;
 
 /**
@@ -33,7 +33,7 @@ public class MfccLearner {
 	public MfccLearner(WindowAnalyser analyser, String pathname) {
 		this.analyser = analyser;
 
-		pathnameOut = pathname + WorkingDir.MFCC_CSV;
+		pathnameOut = pathname + Config.LEARNED_SOUNDS_FILE_MFCC;
 		results = new ArrayList<double[]>();
 	}
 

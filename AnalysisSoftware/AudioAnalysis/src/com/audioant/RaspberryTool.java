@@ -66,6 +66,7 @@ public class RaspberryTool implements Observer {
 			}
 			if (!analyser.isRunning()) {
 				analyser.start();
+				analyser.reloadLearnedSounds();
 			}
 
 		} catch (RserveException | IOException e) {

@@ -7,8 +7,7 @@ import java.util.List;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.Audio.Analysis;
-import com.audioant.config.Parameters.WorkingDir;
+import com.audioant.config.Config;
 import com.audioant.io.csv.CsvReader;
 import com.audioant.tools.MaxSizeArrayList;
 
@@ -52,7 +51,7 @@ public class EnergyMatchAnalyser {
 		int startIndex = 0;
 		for (Double d : recentValues) {
 
-			if (Math.abs(savedValues[0] - d) <= Analysis.ENERGY_TOLERANCE) {
+			if (Math.abs(savedValues[0] - d) <= Config.AUDIO_ANALYSIS_ENERGY_TOLERANCE) {
 				break;
 			}
 			startIndex++;
@@ -63,7 +62,7 @@ public class EnergyMatchAnalyser {
 		int count = 0;
 		for (int i = 0; i < sublist.size(); i++) {
 
-			if (Math.abs(savedValues[i] - sublist.get(i)) <= Analysis.ENERGY_TOLERANCE) {
+			if (Math.abs(savedValues[i] - sublist.get(i)) <= Config.AUDIO_ANALYSIS_ENERGY_TOLERANCE) {
 				count++;
 			}
 		}
@@ -73,7 +72,7 @@ public class EnergyMatchAnalyser {
 
 	private double[] loadCsvValues() throws IOException {
 
-		CsvReader reader = new CsvReader(soundModel.getPath() + WorkingDir.POWER_CSV);
+		CsvReader reader = new CsvReader(soundModel.getPath() + Config.LEARNED_SOUNDS_FILE_POWER);
 		String[] csvValues = reader.readSingleCol(0);
 
 		double[] values = new double[csvValues.length];

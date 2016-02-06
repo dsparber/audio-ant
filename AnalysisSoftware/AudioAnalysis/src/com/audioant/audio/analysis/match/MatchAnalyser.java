@@ -11,7 +11,7 @@ import com.audioant.audio.analysis.match.srp.SrpMatchAnalyser;
 import com.audioant.audio.analysis.match.strongestFrequency.FrequnecyMatchAnalyser;
 import com.audioant.audio.model.Result;
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.Audio.Analysis;
+import com.audioant.config.Config;
 
 /**
  *
@@ -78,10 +78,10 @@ public class MatchAnalyser extends Observable {
 		// System.out.println();
 		// }
 
-		return frequnecyAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY
-				&& mfccAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_MFCC
-				&& srpAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_SRP
-				&& energyAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_ENERGY;
+		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
+				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
+				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
+				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY;
 	}
 
 	public double getSrpMatch() {

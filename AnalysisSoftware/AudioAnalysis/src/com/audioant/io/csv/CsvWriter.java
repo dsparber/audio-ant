@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.audioant.config.Parameters.Csv;
+import com.audioant.config.Config;
 
 /**
  * @author Daniel Sparber
@@ -34,12 +34,12 @@ public class CsvWriter {
 		for (Object[] objects : matrix) {
 			for (int i = 0; i < objects.length; i++) {
 
-				writer.append(Csv.TEXT_SEPERATOR);
+				writer.append(Config.CSV_SEPERATOR_TEXT);
 				writer.write(objects[i].toString());
-				writer.append(Csv.TEXT_SEPERATOR);
+				writer.append(Config.CSV_SEPERATOR_TEXT);
 
 				if (i < objects.length - 1) {
-					writer.append(Csv.VALUE_SEPERATOR);
+					writer.append(Config.CSV_SEPERATOR_VALUE);
 				}
 			}
 			writer.append('\n');

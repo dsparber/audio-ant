@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.audioant.config.Parameters.Communication;
+import com.audioant.config.Config;
 import com.audioant.io.raspberry.hardware.Button;
 import com.audioant.io.raspberry.hardware.Hardware;
 
@@ -20,7 +20,7 @@ public class ButtonController extends Observable implements Observer {
 
 		String data = (String) arg;
 
-		String[] dataParts = data.split(Character.toString(Communication.VALUE_SEPERATOR));
+		String[] dataParts = data.split(Character.toString(Config.HW_CONTROLLER_SEP));
 
 		if (dataParts[0].equals(Hardware.BUTTON.toString())) {
 

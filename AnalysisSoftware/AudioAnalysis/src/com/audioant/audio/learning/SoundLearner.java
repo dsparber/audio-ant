@@ -15,7 +15,7 @@ import com.audioant.audio.learning.features.spectralRolloffPoint.SrpLearner;
 import com.audioant.audio.learning.features.strongestFrequency.StrongestFrequencyLearner;
 import com.audioant.audio.model.Sound;
 import com.audioant.audio.windowing.Windowing;
-import com.audioant.config.Parameters.Audio;
+import com.audioant.config.Config;
 import com.audioant.io.audio.AudioFileReader;
 import com.audioant.io.audio.AudioFileReaderFactory;
 
@@ -55,7 +55,7 @@ public abstract class SoundLearner {
 
 		AudioFileReader reader = AudioFileReaderFactory.getFileReader(soundfile);
 
-		int[][] windows = Windowing.createWindows(reader.readData(), Audio.WINDOW_SIZE, 0f);
+		int[][] windows = Windowing.createWindows(reader.readData(), Config.AUDIO_WINDOW_SIZE, 0f);
 		float sampleRate = reader.getSampleRate();
 
 		for (int samples[] : windows) {

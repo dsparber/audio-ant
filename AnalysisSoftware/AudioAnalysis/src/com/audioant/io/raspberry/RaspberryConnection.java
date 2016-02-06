@@ -7,8 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import com.audioant.config.Parameters.Communication;
-import com.audioant.config.Parameters.PythonResources;
+import com.audioant.config.Config;
 
 public class RaspberryConnection {
 
@@ -21,9 +20,9 @@ public class RaspberryConnection {
 		if (socket == null) {
 
 			// Starting the counter side socket
-			Runtime.getRuntime().exec(PythonResources.EXECUTE + PythonResources.CONNECTION_PY);
+			Runtime.getRuntime().exec(Config.HW_CONTROLLER_EXECUTE);
 
-			socket = new Socket(Communication.RASPBERRY_HOST_NAME, Communication.RASPBERRY_SOCKET_PORT);
+			socket = new Socket(Config.HW_CONTROLLER_HOST, Config.HW_CONTROLLER_PORT);
 			socket.setKeepAlive(true);
 		}
 		return socket;

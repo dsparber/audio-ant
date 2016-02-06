@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Parameters.SoundsXml;
+import com.audioant.config.Config;
 import com.audioant.io.xml.LearnedSoundsXml;
 
 public class LearnedSounds {
@@ -22,10 +22,10 @@ public class LearnedSounds {
 	public LearnedSounds() {
 
 		try {
-			soundsXml = new LearnedSoundsXml(SoundsXml.XML_FILE);
+			soundsXml = new LearnedSoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
 			sounds = soundsXml.read();
 		} catch (FileNotFoundException | XMLStreamException e) {
-			soundsXml = new LearnedSoundsXml(SoundsXml.XML_FILE);
+			soundsXml = new LearnedSoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
 			sounds = new ArrayList<Sound>();
 		}
 	}
