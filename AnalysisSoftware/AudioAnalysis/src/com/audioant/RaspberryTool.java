@@ -122,6 +122,7 @@ public class RaspberryTool implements Observer {
 					LearnedSounds.saveSounds();
 
 					startAnalysis();
+					led(Led.LED_SUCCESS, 5);
 
 				} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
 						| UnsupportedAudioFileException | ParserConfigurationException | TransformerException

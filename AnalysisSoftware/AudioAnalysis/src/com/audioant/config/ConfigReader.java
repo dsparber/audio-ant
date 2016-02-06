@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class ConfigReader {
 
-	private static final String CONFIG_FILE = "src/com/audioant/config.properties";
+	private static final String CONFIG_FILE = "config.properties";
 
 	private Properties properties;
 
@@ -22,7 +22,12 @@ public class ConfigReader {
 	public ConfigReader() throws IOException {
 		properties = new Properties();
 
+		// If the config file is within a jar
+		// BufferedInputStream stream = new
+		// BufferedInputStream(this.getClass().getResourceAsStream(CONFIG_FILE));
+
 		BufferedInputStream stream = new BufferedInputStream(new FileInputStream(CONFIG_FILE));
+
 		properties.load(stream);
 
 		stream.close();
