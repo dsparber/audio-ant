@@ -24,7 +24,7 @@ public class EventLogger implements Observer {
 
 			String date = Config.DATE_FORMAT_FULL_NO_SPACE.format(new Date(System.currentTimeMillis()));
 
-			String fileName = Config.LOG_FOLDER_EVENTS + date + Config.LOG_SUFFIX;
+			String fileName = Config.LOG_FOLDER_EVENTS_PATH + date + Config.LOG_SUFFIX;
 
 			new File(fileName).getParentFile().mkdirs();
 
