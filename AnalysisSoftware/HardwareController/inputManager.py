@@ -1,6 +1,9 @@
 from _thread import *
 import RPi.GPIO as GPIO  
+
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
+
 GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
 
 def send(text, socket):

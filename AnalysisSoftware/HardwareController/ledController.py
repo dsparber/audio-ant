@@ -1,18 +1,25 @@
 import RPi.GPIO as GPIO 
 import time 
-delay = 0.2
+delay = 0.15
 
 LED_green = 36 
 LED_yell = 38 
 LED_red = 40
+
 LED_warning = 7
+LED_recording = 8
+LED_success = 10
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
+
 GPIO.setup(LED_red, GPIO.OUT)
 GPIO.setup(LED_yell, GPIO.OUT)
-GPIO.setup(LED_warning, GPIO.OUT)
 GPIO.setup(LED_green, GPIO.OUT)
+
+GPIO.setup(LED_warning, GPIO.OUT)
+GPIO.setup(LED_recording, GPIO.OUT)
+GPIO.setup(LED_success, GPIO.OUT)
 
 def ledGreen(on): 
     GPIO.output(LED_green, on)
@@ -25,6 +32,12 @@ def ledRed(on):
 
 def ledWarning(on):
     GPIO.output(LED_warning, on)
+		
+def ledRecording(on):
+    GPIO.output(LED_recording, on)
+		
+def ledSuccess(on):
+    GPIO.output(LED_success, on)
 		
 def led(ledName, option):
 	
@@ -46,9 +59,11 @@ def led(ledName, option):
 		elif(ledName == "LED_WIFI_STATUS"):
 			ledRed(ledOn)
 		elif (ledName == "LED_RECORDING"):
-			ledRed(ledOn)
+			ledRecording(ledOn)
 		elif (ledName == "LED_WARNING"):
 			ledWarning(ledOn)
+		elif (ledName == "LED_SUCCESS"):
+			ledSuccess(ledOn)
 		else: 
 			print ("LED not defined")				
         
