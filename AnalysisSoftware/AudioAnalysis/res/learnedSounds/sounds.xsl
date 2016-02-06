@@ -34,7 +34,7 @@
 								<td class="left sound">
 									<xsl:variable name="folder" select="path" />
 									<audio controls="controls">
-										<source src="../../{$folder}learnedSound.wav" type="audio/wav" />
+										<source src="../../{$folder}sound.wav" type="audio/wav" />
 									</audio>
 								</td>
 							</tr>

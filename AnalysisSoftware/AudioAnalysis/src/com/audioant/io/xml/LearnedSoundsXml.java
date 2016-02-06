@@ -104,19 +104,20 @@ public class LearnedSoundsXml {
 					sound = new Sound();
 				} else {
 
-					if ((event = eventReader.nextEvent()).isCharacters()) {
-						String data = event.asCharacters().getData();
-
-						if (name.equals(Config.LEARNED_SOUNDS_XML_NAME)) {
-							sound.setName(data);
-						}
-						if (name.equals(Config.LEARNED_SOUNDS_XML_NUMBER)) {
-							sound.setNumber(Integer.parseInt(data));
-						}
-						if (name.equals(Config.LEARNED_SOUNDS_XML_PATH)) {
-							sound.setPath(data);
+					if (name.equals(Config.LEARNED_SOUNDS_XML_NAME)) {
+						if ((event = eventReader.nextEvent()).isCharacters()) {
+							sound.setName(event.asCharacters().getData());
 						}
 					}
+					if (name.equals(Config.LEARNED_SOUNDS_XML_NUMBER)) {
+						event = eventReader.nextEvent();
+						sound.setNumber(Integer.parseInt(event.asCharacters().getData()));
+					}
+					if (name.equals(Config.LEARNED_SOUNDS_XML_PATH)) {
+						event = eventReader.nextEvent();
+						sound.setPath(event.asCharacters().getData());
+					}
+
 				}
 			}
 			if (event.isEndElement()) {

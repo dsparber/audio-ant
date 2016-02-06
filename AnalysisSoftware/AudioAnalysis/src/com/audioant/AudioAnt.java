@@ -1,4 +1,5 @@
 package com.audioant;
+
 /**
  *
  * @author Daniel Sparber
@@ -10,9 +11,7 @@ public class AudioAnt {
 
 	public static void main(String[] args) {
 
-		String option = args[0];
-
-		if (option.equals("cmd")) {
+		if (args.length > 0 && args[0].equals("cmd")) {
 			CommandLineTool.start();
 		} else {
 			RaspberryTool.start();

@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class ConfigReader {
 
-	private static final String CONFIG_FILE = "com/audioant/config.properties";
+	private static final String CONFIG_FILE = "src/com/audioant/config.properties";
 
 	private Properties properties;
 
@@ -58,7 +58,7 @@ public class ConfigReader {
 	}
 
 	public static boolean getPropertyAsBoolean(String key) {
-		return getProperty(key) == "true";
+		return getProperty(key).equalsIgnoreCase("true");
 	}
 
 	public static char getPropertyAsChar(String key) {

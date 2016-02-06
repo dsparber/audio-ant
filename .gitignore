@@ -15,9 +15,9 @@ JavaWorkspace/JAudioWithMicrophoneTryouts/out
 JavaWorkspace/AudioAnalysis/res/**/*.csv
 JavaWorkspace/AudioAnalysis/res/**/*.wav
 JavaWorkspace/AudioAnalysis/res/testSounds
-**/log/**/*.log
 *.log.lck
 __pycache__
 **/res/learnedSounds/**/*.wav
 **/res/learnedSounds/**/*.csv
 **/res/learnedSounds/**/*.xml
+*.log

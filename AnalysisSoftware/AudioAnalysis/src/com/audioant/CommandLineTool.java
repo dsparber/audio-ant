@@ -134,6 +134,7 @@ public class CommandLineTool {
 				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
 				| IndexOutOfBoundsException e) {
 			System.out.println("failed");
+			e.printStackTrace();
 		}
 
 	}
