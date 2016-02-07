@@ -22,66 +22,35 @@ import com.audioant.config.Config;
  */
 public class MatchAnalyser extends Observable {
 
-	// private long time = System.currentTimeMillis();
-
-	private Sound soundModel;
+	private Sound sound;
 
 	private SrpMatchAnalyser srpAnalyser;
 	private MfccMatchAnalyser mfccAnalyser;
 	private EnergyMatchAnalyser energyAnalyser;
 	private FrequnecyMatchAnalyser frequnecyAnalyser;
 
-	public MatchAnalyser(Sound soundModel) throws RserveException, IOException {
-		this.soundModel = soundModel;
+	public MatchAnalyser(Sound sound) throws RserveException, IOException {
+		this.sound = sound;
 
-		srpAnalyser = new SrpMatchAnalyser(soundModel);
-		mfccAnalyser = new MfccMatchAnalyser(soundModel);
-		energyAnalyser = new EnergyMatchAnalyser(soundModel);
-		frequnecyAnalyser = new FrequnecyMatchAnalyser(soundModel);
+		srpAnalyser = new SrpMatchAnalyser(sound);
+		mfccAnalyser = new MfccMatchAnalyser(sound);
+		energyAnalyser = new EnergyMatchAnalyser(sound);
+		frequnecyAnalyser = new FrequnecyMatchAnalyser(sound);
 	}
 
-	public void addAnalysisResult(Result resultModel) {
-		srpAnalyser.addValue(resultModel.getSpectralRolloffPoint());
-		mfccAnalyser.addValue(resultModel.getMfcc());
-		energyAnalyser.addValue(resultModel.getEnergy());
-		frequnecyAnalyser.addValue(resultModel.getStrongestFrequencies());
+	public void addAnalysisResult(Result result) {
+		srpAnalyser.addValue(result.getSpectralRolloffPoint());
+		mfccAnalyser.addValue(result.getMfcc());
+		energyAnalyser.addValue(result.getEnergy());
+		frequnecyAnalyser.addValue(result.getStrongestFrequencies());
 	}
 
 	public boolean isMatch() {
+		return isMinThresholdReached() && isMatchByWeightedSum();
+	}
 
-		// if (frequnecyAnalyser.getMatch() >=
-		// Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY / 4
-		// && mfccAnalyser.getMatch() >= Analysis.MATCH_THRESHOLD_MFCC / 4) {
-		// if (System.currentTimeMillis() - time > 350) {
-		// System.out.println();
-		// }
-		// time = System.currentTimeMillis();
-		//
-		// System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\t",
-		// frequnecyAnalyser.getMatch(), srpAnalyser.getMatch(),
-		// mfccAnalyser.getMatch(), energyAnalyser.getMatch());
-		//
-		// if (frequnecyAnalyser.getMatch() <
-		// Analysis.MATCH_THRESHOLD_STRONGEST_FREQUENCY) {
-		// System.out.print("f");
-		// }
-		// if (srpAnalyser.getMatch() < Analysis.MATCH_THRESHOLD_SRP) {
-		// System.out.print("s");
-		// }
-		// if (mfccAnalyser.getMatch() < Analysis.MATCH_THRESHOLD_MFCC) {
-		// System.out.print("m");
-		// }
-		// if (energyAnalyser.getMatch() < Analysis.MATCH_THRESHOLD_ENERGY) {
-		// System.out.print("e");
-		// }
-		//
-		// System.out.println();
-		// }
-
-		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
-				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
-				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
-				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY;
+	public boolean isSureMatch() {
+		return isMatchByWeightedSum() && isMatchByThresholds();
 	}
 
 	public double getSrpMatch() {
@@ -101,6 +70,36 @@ public class MatchAnalyser extends Observable {
 	}
 
 	public Sound getSoundModel() {
-		return soundModel;
+		return sound;
+	}
+
+	private double getWeightedSum() {
+		return (frequnecyAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_FREQUENCY
+				+ srpAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_SRP
+				+ mfccAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_MFCC
+				+ energyAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_ENERGY)
+				/ Config.AUDIO_ANALYSIS_MATCH_WEIGHT_THRESHOLD;
+	}
+
+	private boolean isMatchByWeightedSum() {
+		return getWeightedSum() >= 1;
+	}
+
+	private boolean isMatchByThresholds() {
+		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
+				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
+				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
+				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY;
+	}
+
+	private boolean isMinThresholdReached() {
+		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
+				* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
+				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
+						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
+				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
+						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
+				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY
+						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD;
 	}
 }
