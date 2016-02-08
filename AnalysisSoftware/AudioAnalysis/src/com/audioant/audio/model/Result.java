@@ -2,6 +2,13 @@ package com.audioant.audio.model;
 
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2016
+ *
+ * @version 1.0
+ */
 public class Result {
 
 	private StrongestFrequenciesModel strongestFrequencies;

@@ -9,6 +9,7 @@ import com.audioant.audio.analysis.match.energy.EnergyMatchAnalyser;
 import com.audioant.audio.analysis.match.mfcc.MfccMatchAnalyser;
 import com.audioant.audio.analysis.match.srp.SrpMatchAnalyser;
 import com.audioant.audio.analysis.match.strongestFrequency.FrequnecyMatchAnalyser;
+import com.audioant.audio.model.MatchResult;
 import com.audioant.audio.model.Result;
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
@@ -73,7 +74,7 @@ public class MatchAnalyser extends Observable {
 		return sound;
 	}
 
-	private double getWeightedSum() {
+	public double getWeightedSum() {
 		return (frequnecyAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_FREQUENCY
 				+ srpAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_SRP
 				+ mfccAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_MFCC
@@ -81,18 +82,18 @@ public class MatchAnalyser extends Observable {
 				/ Config.AUDIO_ANALYSIS_MATCH_WEIGHT_THRESHOLD;
 	}
 
-	private boolean isMatchByWeightedSum() {
+	public boolean isMatchByWeightedSum() {
 		return getWeightedSum() >= 1;
 	}
 
-	private boolean isMatchByThresholds() {
+	public boolean isMatchByThresholds() {
 		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
 				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
 				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
 				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY;
 	}
 
-	private boolean isMinThresholdReached() {
+	public boolean isMinThresholdReached() {
 		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
 				* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
 				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
@@ -101,5 +102,11 @@ public class MatchAnalyser extends Observable {
 						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
 				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY
 						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD;
+	}
+
+	public MatchResult getMatchResult() {
+		return new MatchResult(isMatch(), isSureMatch(), isMatchByWeightedSum(), isMatchByThresholds(),
+				isMinThresholdReached(), getWeightedSum(), getFrequencyMatch(), getEnergyMatch(), getMfccMatch(),
+				getSrpMatch(), getSoundModel());
 	}
 }

@@ -12,6 +12,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 import com.audioant.audio.analysis.match.MatchAnalyser;
 import com.audioant.audio.analysis.sound.SoundAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
+import com.audioant.audio.model.MatchResult;
 import com.audioant.audio.model.Result;
 import com.audioant.audio.model.Sound;
 import com.audioant.io.microphone.AudioStreamReader;
@@ -46,17 +47,41 @@ public class AudioAnalyser extends Observable {
 		}
 	}
 
-	protected List<Sound> getMatches() {
+	protected List<Sound> getMatches(List<MatchResult> matchResults) {
 
 		List<Sound> sounds = new ArrayList<Sound>();
 
-		for (MatchAnalyser analyser : matchAnalysers) {
-			if (analyser.isMatch()) {
-				sounds.add(analyser.getSoundModel());
+		for (MatchResult result : matchResults) {
+			if (result.isMatch()) {
+				sounds.add(result.getSound());
 			}
 		}
 
 		return sounds;
+	}
+
+	protected List<MatchResult> getMatchResults() {
+
+		List<MatchResult> matchResults = new ArrayList<MatchResult>();
+
+		for (MatchAnalyser analyser : matchAnalysers) {
+			matchResults.add(analyser.getMatchResult());
+		}
+
+		return matchResults;
+	}
+
+	protected List<MatchResult> getMatchResultsMinThreshold(List<MatchResult> matchResults) {
+
+		List<MatchResult> matchResults2 = new ArrayList<MatchResult>();
+
+		for (MatchResult result : matchResults) {
+			if (result.isMinThresholdReached()) {
+				matchResults2.add(result);
+			}
+		}
+
+		return matchResults2;
 	}
 
 	public void reloadLearnedSounds() throws RserveException, IOException {

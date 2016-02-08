@@ -17,6 +17,7 @@ import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.audio.model.Sound;
+import com.audioant.io.eventObserver.DetailLogger;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.test.FeatureTest;
 
@@ -82,9 +83,9 @@ public class CommandLineTool {
 
 	private static void analyseStream() {
 		try {
-			EventLogger logger = new EventLogger();
 			analyser = new AudioStreamAnalyser();
-			analyser.addObserver(logger);
+			analyser.addObserver(new EventLogger());
+			analyser.addObserver(new DetailLogger());
 			analyser.start();
 			System.out.println("Analysing stream");
 		} catch (RserveException | IOException e) {

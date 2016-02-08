@@ -177,7 +177,9 @@ public class Config {
 	// Logging
 	public static final String LOG_FOLDER = ConfigReader.getProperty("logFolder");
 	public static final String LOG_FOLDER_EVENTS = ConfigReader.getProperty("logFolderEvents");
+	public static final String LOG_FOLDER_DETAIL = ConfigReader.getProperty("logFolderDetail");
 	public static final String LOG_FOLDER_EVENTS_PATH = WORKING_FOLDER + LOG_FOLDER + LOG_FOLDER_EVENTS;
+	public static final String LOG_FOLDER_DETAIL_PATH = WORKING_FOLDER + LOG_FOLDER + LOG_FOLDER_DETAIL;
 	public static final String LOG_SUFFIX = ConfigReader.getProperty("logSuffix");
 
 	// String formats

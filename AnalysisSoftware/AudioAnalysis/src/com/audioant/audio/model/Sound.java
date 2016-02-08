@@ -18,6 +18,21 @@ public class Sound {
 		path = Config.WORKING_FOLDER + Config.LEARNED_SOUNDS_FOLDER + number + '/';
 	}
 
+	@Override
+	public String toString() {
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(getNumber());
+		if (isNamed()) {
+			sb.append(" (");
+			sb.append(getName());
+			sb.append(")");
+		}
+
+		return sb.toString();
+	}
+
 	public String getNameNotNull() {
 		return isNamed() ? name : "";
 	}
