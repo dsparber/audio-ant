@@ -137,8 +137,15 @@ public class Config {
 			.getPropertyAsDouble("audioAnalysisMatchThresholdEnergy");
 	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY = ConfigReader
 			.getPropertyAsDouble("audioAnalysisMatchThresholdFrequency");
-	public static final double AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD = ConfigReader
-			.getPropertyAsDouble("audioAnalysisMatchMinThreshold");
+
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_SRP = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinSrp");
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_MFCC = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinMfcc");
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_ENERGY = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinEnergy");
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_FREQUENCY = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinFrequency");
 
 	// Detetion weigths
 	public static final double AUDIO_ANALYSIS_MATCH_WEIGHT_SRP = ConfigReader

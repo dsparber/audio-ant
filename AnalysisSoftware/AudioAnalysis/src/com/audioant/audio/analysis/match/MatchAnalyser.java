@@ -94,14 +94,10 @@ public class MatchAnalyser extends Observable {
 	}
 
 	public boolean isMinThresholdReached() {
-		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
-				* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
-				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
-						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
-				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
-						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD
-				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY
-						* Config.AUDIO_ANALYSIS_MATCH_MIN_THRESHOLD;
+		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_FREQUENCY
+				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_MFCC
+				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_SRP
+				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_ENERGY;
 	}
 
 	public MatchResult getMatchResult() {
