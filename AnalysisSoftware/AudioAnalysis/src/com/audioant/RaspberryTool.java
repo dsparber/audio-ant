@@ -131,6 +131,8 @@ public class RaspberryTool implements Observer {
 						| IndexOutOfBoundsException e) {
 
 					led(Led.LED_WARNING, 5);
+
+					e.printStackTrace();
 				}
 			}
 		}
