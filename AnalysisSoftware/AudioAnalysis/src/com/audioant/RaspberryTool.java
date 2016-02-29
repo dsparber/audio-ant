@@ -17,6 +17,7 @@ import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.audio.model.Sound;
+import com.audioant.io.eventObserver.DetailLogger;
 import com.audioant.io.eventObserver.EventLights;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.io.raspberry.ButtonController;
@@ -62,6 +63,7 @@ public class RaspberryTool implements Observer {
 
 				analyser = new AudioStreamAnalyser();
 				analyser.addObserver(new EventLogger());
+				analyser.addObserver(new DetailLogger());
 				analyser.addObserver(new EventLights());
 			}
 			if (!analyser.isRunning()) {
@@ -129,6 +131,8 @@ public class RaspberryTool implements Observer {
 						| IndexOutOfBoundsException e) {
 
 					led(Led.LED_WARNING, 5);
+
+					e.printStackTrace();
 				}
 			}
 		}

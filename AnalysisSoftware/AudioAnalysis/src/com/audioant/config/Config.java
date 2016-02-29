@@ -138,6 +138,27 @@ public class Config {
 	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY = ConfigReader
 			.getPropertyAsDouble("audioAnalysisMatchThresholdFrequency");
 
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_SRP = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinSrp");
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_MFCC = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinMfcc");
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_ENERGY = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinEnergy");
+	public static final double AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_FREQUENCY = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchThresholdMinFrequency");
+
+	// Detetion weigths
+	public static final double AUDIO_ANALYSIS_MATCH_WEIGHT_SRP = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchWeightSrp");
+	public static final double AUDIO_ANALYSIS_MATCH_WEIGHT_MFCC = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchWeightMfcc");
+	public static final double AUDIO_ANALYSIS_MATCH_WEIGHT_ENERGY = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchWeightEnergy");
+	public static final double AUDIO_ANALYSIS_MATCH_WEIGHT_FREQUENCY = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchWeightFrequency");
+	public static final double AUDIO_ANALYSIS_MATCH_WEIGHT_THRESHOLD = ConfigReader
+			.getPropertyAsDouble("audioAnalysisMatchWeightThreshold");
+
 	// Automated test
 	public static final String AUTOTEST_PATTERN_TRUE = ConfigReader.getProperty("automatedTestFilePatternTrue");
 	public static final String AUTOTEST_PATTERN_REF = ConfigReader.getProperty("automatedTestFilePatternReference");
@@ -163,6 +184,11 @@ public class Config {
 	// Logging
 	public static final String LOG_FOLDER = ConfigReader.getProperty("logFolder");
 	public static final String LOG_FOLDER_EVENTS = ConfigReader.getProperty("logFolderEvents");
+	public static final String LOG_FOLDER_DETAIL = ConfigReader.getProperty("logFolderDetail");
+	public static final String LOG_FOLDER_ERROR = ConfigReader.getProperty("logFolderError");
+	public static final String LOG_FOLDER_EVENTS_PATH = WORKING_FOLDER + LOG_FOLDER + LOG_FOLDER_EVENTS;
+	public static final String LOG_FOLDER_DETAIL_PATH = WORKING_FOLDER + LOG_FOLDER + LOG_FOLDER_DETAIL;
+	public static final String LOG_FOLDER_ERROR_PATH = WORKING_FOLDER + LOG_FOLDER + LOG_FOLDER_ERROR;
 	public static final String LOG_SUFFIX = ConfigReader.getProperty("logSuffix");
 
 	// String formats

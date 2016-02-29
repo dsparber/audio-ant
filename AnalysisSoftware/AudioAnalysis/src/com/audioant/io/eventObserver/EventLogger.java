@@ -15,6 +15,13 @@ import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
 import com.audioant.io.logging.LogFormatter;
 
+/**
+ *
+ * @author Daniel Sparber
+ * @year 2016
+ *
+ * @version 1.0
+ */
 public class EventLogger implements Observer {
 
 	private static Logger logger = Logger.getLogger(EventLogger.class.getName());
@@ -24,7 +31,7 @@ public class EventLogger implements Observer {
 
 			String date = Config.DATE_FORMAT_FULL_NO_SPACE.format(new Date(System.currentTimeMillis()));
 
-			String fileName = Config.LOG_FOLDER_EVENTS + date + Config.LOG_SUFFIX;
+			String fileName = Config.LOG_FOLDER_EVENTS_PATH + date + Config.LOG_SUFFIX;
 
 			new File(fileName).getParentFile().mkdirs();
 
@@ -43,23 +50,21 @@ public class EventLogger implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		@SuppressWarnings("unchecked")
-		List<Sound> matches = (List<Sound>) arg;
+		if (arg instanceof List<?> && ((List<?>) arg).get(0) instanceof Sound) {
 
-		StringBuilder msg = new StringBuilder();
+			@SuppressWarnings("unchecked")
+			List<Sound> matches = (List<Sound>) arg;
 
-		msg.append(String.format("%d match(es): ", matches.size()));
+			StringBuilder msg = new StringBuilder();
 
-		for (Sound soundModel : matches) {
-			msg.append(soundModel.getNumber());
-			if (soundModel.isNamed()) {
-				msg.append(" (");
-				msg.append(soundModel.getName());
-				msg.append(")");
+			msg.append(String.format("%d match(es): ", matches.size()));
+
+			for (Sound soundModel : matches) {
+				msg.append(soundModel.toString());
+				msg.append(", ");
 			}
-			msg.append(", ");
-		}
 
-		logger.info(msg.toString().substring(0, msg.length() - 2));
+			logger.info(msg.toString().substring(0, msg.length() - 2));
+		}
 	}
 }

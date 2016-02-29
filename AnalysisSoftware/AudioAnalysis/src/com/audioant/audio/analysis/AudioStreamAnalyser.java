@@ -9,6 +9,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import com.audioant.audio.model.MatchResult;
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
 import com.audioant.io.microphone.AudioStreamReader;
@@ -55,7 +56,16 @@ public class AudioStreamAnalyser extends AudioAnalyser implements Observer {
 		try {
 			addSamples((int[]) arg, Config.AUDIO_SAMPLE_RATE);
 
-			List<Sound> matches = getMatches();
+			List<MatchResult> matchResults = getMatchResults();
+
+			List<MatchResult> matchResultsMin = getMatchResultsMinThreshold(matchResults);
+
+			if (!matchResultsMin.isEmpty()) {
+				setChanged();
+				notifyObservers(matchResultsMin);
+			}
+
+			List<Sound> matches = getMatches(matchResults);
 
 			if (!matches.isEmpty()) {
 				setChanged();
