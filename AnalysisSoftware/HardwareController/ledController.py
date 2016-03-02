@@ -56,9 +56,9 @@ def led(ledName, option):
 			ledRecording(ledOn)
 		elif (ledName == "LED_RECORDING_FAILED"):
 			ledRecordingFailed(ledOn)
-        elif (ledName == "LED_RECORDING_SUCCESS"):
-            ledRecordingSuccess(ledOn)
-		else: 
+		elif (ledName == "LED_RECORDING_SUCCESS"):
+			ledRecordingSuccess(ledOn)
+		else:
 			print ("LED not defined")				
         
 def ledByOptions(options):
