@@ -16,3 +16,9 @@ buttonWifi = 5
 buttonBluetooth = 7
 buttonHotspot = 8
 buttonConfirm = 10
+
+DisplayBL = 18
+DisplayDC = 23
+DisplayRST = 24
+DisplaySPI_PORT = 0
+DisplaySPI_DEVICE = 0
