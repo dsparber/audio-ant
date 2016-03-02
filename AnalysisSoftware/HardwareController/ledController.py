@@ -1,43 +1,35 @@
 import RPi.GPIO as GPIO 
 import time 
-delay = 0.15
-
-LED_green = 36 
-LED_yell = 38 
-LED_red = 40
-
-LED_warning = 7
-LED_recording = 8
-LED_success = 10
+import CONFIG
+import PINS
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(LED_red, GPIO.OUT)
-GPIO.setup(LED_yell, GPIO.OUT)
-GPIO.setup(LED_green, GPIO.OUT)
+GPIO.setup(PINS.ledWifi, GPIO.OUT)
+GPIO.setup(PINS.ledBluetooth, GPIO.OUT)
+GPIO.setup(PINS.ledHotspot, GPIO.OUT)
 
-GPIO.setup(LED_warning, GPIO.OUT)
-GPIO.setup(LED_recording, GPIO.OUT)
-GPIO.setup(LED_success, GPIO.OUT)
+GPIO.setup(PINS.ledRunning, GPIO.OUT)
+GPIO.setup(PINS.ledRecording, GPIO.OUT)
+GPIO.setup(PINS.ledRecordingFailed, GPIO.OUT)
+GPIO.setup(PINS.ledRecordingSuccess, GPIO.OUT)
 
-def ledGreen(on): 
-    GPIO.output(LED_green, on)
+def ledWifi(on): 
+    GPIO.output(PINS.ledWifi, on)
+def ledBluetooth(on): 
+    GPIO.output(PINS.ledBluetooth, on)
+def ledHotspot(on): 
+    GPIO.output(PINS.ledHotspot, on)
 
-def ledYellow(on): 
-    GPIO.output(LED_yell, on)
-    
-def ledRed(on): 
-    GPIO.output(LED_red, on)
-
-def ledWarning(on):
-    GPIO.output(LED_warning, on)
-		
+def ledRunning(on):
+    GPIO.output(PINS.ledRunning, on)	
 def ledRecording(on):
-    GPIO.output(LED_recording, on)
-		
-def ledSuccess(on):
-    GPIO.output(LED_success, on)
+    GPIO.output(PINS.ledRecording, on)    
+def ledRecordingFailed(on):
+    GPIO.output(PINS.ledRecordingFailed, on)	
+def ledRecordingSuccess(on):
+    GPIO.output(PINS.ledRecordingSuccess, on)
 		
 def led(ledName, option):
 	
@@ -46,24 +38,26 @@ def led(ledName, option):
 	if option > 1:
 		for i in range(0,option):
 			led(ledName, 1)
-			time.sleep(delay)
+			time.sleep(CONFIG.ledBlinkDelay)
 			led(ledName, 0)
-			time.sleep(delay)
+			time.sleep(CONFIG.ledBlinkDelay)
 	else:
 		ledOn = option != 0
 
-		if(ledName == "LED_BLUETOOTH_STATUS"):
-			ledYellow(ledOn)
-		elif(ledName == "LED_POWER_STATUS"):
-			ledGreen(ledOn)
-		elif(ledName == "LED_WIFI_STATUS"):
-			ledRed(ledOn)
+		if(ledName == "LED_BLUETOOTH"):
+			ledBluetooth(ledOn)
+		elif(ledName == "LED_WIFI"):
+			ledWifi(ledOn)
+		elif(ledName == "LED_HOTSPOT"):
+			ledHotspot(ledOn)
+		elif (ledName == "LED_RUNNING"):
+			ledRunning(ledOn)
 		elif (ledName == "LED_RECORDING"):
 			ledRecording(ledOn)
-		elif (ledName == "LED_WARNING"):
-			ledWarning(ledOn)
-		elif (ledName == "LED_SUCCESS"):
-			ledSuccess(ledOn)
+		elif (ledName == "LED_RECORDING_FAILED"):
+			ledRecordingFailed(ledOn)
+        elif (ledName == "LED_RECORDING_SUCCESS"):
+            ledRecordingSuccess(ledOn)
 		else: 
 			print ("LED not defined")				
         

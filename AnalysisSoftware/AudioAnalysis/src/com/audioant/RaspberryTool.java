@@ -124,13 +124,13 @@ public class RaspberryTool implements Observer {
 					LearnedSounds.saveSounds();
 
 					startAnalysis();
-					led(Led.LED_SUCCESS, 5);
+					led(Led.LED_RECORDING_SUCCESS, 5);
 
 				} catch (LineUnavailableException | IOException | REngineException | REXPMismatchException
 						| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
 						| IndexOutOfBoundsException e) {
 
-					led(Led.LED_WARNING, 5);
+					led(Led.LED_RECORDING_FAILED, 5);
 
 					e.printStackTrace();
 				}
