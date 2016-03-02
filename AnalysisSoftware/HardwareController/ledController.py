@@ -4,7 +4,7 @@ import CONFIG
 import PINS
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
 GPIO.setup(PINS.ledWifi, GPIO.OUT)
 GPIO.setup(PINS.ledBluetooth, GPIO.OUT)

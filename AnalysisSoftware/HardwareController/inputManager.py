@@ -1,14 +1,14 @@
-from _thread import *
+from thread import *
 import RPi.GPIO as GPIO  
 import PINS
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
 def send(text, socket):
 	text = text + "\r\n"
 	if socket.send(text.encode('utf-8')) == 0:
-		print("Sending failed (" + text + ")")
+		print "Sending failed (" + text + ")"
 
 def sendThread(buttonname, pin, socket):
 	GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP) 

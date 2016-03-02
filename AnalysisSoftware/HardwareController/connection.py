@@ -1,11 +1,13 @@
 import socket
 import sys
-from _thread import *
+from thread import *
 import outputManager as out
 import inputManager as inManager
+
+from display import Display
  
 HOST = ''		# Symbolic name meaning all available interfaces
-PORT = 4207
+PORT = 4208
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

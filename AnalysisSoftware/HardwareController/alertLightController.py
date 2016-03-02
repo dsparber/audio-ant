@@ -4,7 +4,7 @@ import PINS
 import CONFIG
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(PINS.alertLight, GPIO.OUT)
 
 def blink():
