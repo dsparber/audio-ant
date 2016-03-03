@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.List_files"/>
+      <point      
+        x = "2888"      
+        y = "312"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.RecordActivity"/>
+      <point      
+        x = "2464"      
+        y = "132"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.AudioAntSettings"/>
+      <point      
+        x = "1296"      
+        y = "1516"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.Record"/>
+      <point      
+        x = "1996"      
+        y = "8"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.SettingsActivity"/>
+      <point      
+        x = "1536"      
+        y = "60"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.MainActivity"/>
+      <point      
+        x = "240"      
+        y = "188"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "diplomarbeit.audioant.ListActivity"/>
+      <point      
+        x = "3428"      
+        y = "708"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>
