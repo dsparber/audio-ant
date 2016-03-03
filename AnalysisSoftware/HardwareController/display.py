@@ -1,4 +1,5 @@
 import time
+import datetime
  
 import Adafruit_Nokia_LCD as LCD
 import Adafruit_GPIO.SPI as SPI
@@ -33,6 +34,12 @@ class Display:
     def light(self, on):
         GPIO.output(PINS.DisplayBL, on)
         
+    def displayClock(self):
+        while not self.displayingText:
+            currentTime = datetime.datetime.time(datetime.datetime.now())
+            text = currentTime.hour + ":" + currentTime.minute
+            write(self, text, 4, 40)
+            time.sleep(CONFIG.displaySleepTime)
         
     def write(self, text, y, size):
         self.displayingText = False
@@ -70,4 +77,4 @@ class Display:
         self.draw.text((x,y), text, font=self.font)
         
         self.disp.image(self.image)
-        self.disp.display()      
+        self.disp.display()

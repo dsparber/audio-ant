@@ -1,24 +1,24 @@
-# Layout: Board
-alertLight = 3
+# Layout: BCM
+alertLight = 6
 
-ledWifi = 36
-ledBluetooth = 37 
-ledHotspot = 38
+ledWifi = 16
+ledBluetooth = 26 
+ledHotspot = 20
 
-ledRunning = 40
-ledRecording = 35
-ledRecordingFailed =  33
-ledRecordingSuccess = 32
+ledRunning = 21
+ledRecording = 19
+ledRecordingFailed =  13
+ledRecordingSuccess = 12
 
 
-buttonRecording = 3
-buttonWifi = 5
-buttonBluetooth = 7
-buttonHotspot = 8
-buttonConfirm = 10
+buttonRecording = 2
+buttonWifi = 3
+buttonBluetooth = 4
+buttonHotspot = 14
+buttonConfirm = 15
 
-DisplayBL = 18
-DisplayDC = 23
-DisplayRST = 24
+DisplayBL = 24
+DisplayDC = 22
+DisplayRST = 23
 DisplaySPI_PORT = 0
 DisplaySPI_DEVICE = 0
