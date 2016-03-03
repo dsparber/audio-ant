@@ -15,7 +15,7 @@ def blink():
         time.sleep(CONFIG.alertLightDelay)
 
 def on():
-    GPIO.output(lightPin, True)
+    GPIO.output(PINS.alertLight, True)
 
 def off():
-    GPIO.output(lightPin, False)
+    GPIO.output(PINS.alertLight, False)

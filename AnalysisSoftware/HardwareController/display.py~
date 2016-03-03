@@ -42,10 +42,7 @@ class Display:
         while self.showClock:
             currentTime = datetime.datetime.time(datetime.datetime.now())
             text = str(currentTime.hour) + ":" + str(currentTime.minute)
-	    self.font = ImageFont.truetype(CONFIG.displayFont, 30)
-            maxwidth, height = self.draw.textsize(text, font=self.font)
-	    self.draw.rectangle((0,0,84,48), outline=255, fill=255)
-	    self.displayText(text, (84-maxwidth)/2, (48-height)/2, 30)
+	    self.displayText(text, 0, 4, 20)
             time.sleep(CONFIG.displaySleepTime)
         
     def write(self, text, y, size):

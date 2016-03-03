@@ -7,8 +7,8 @@ ledHotspot = 20
 
 ledRunning = 21
 ledRecording = 19
-ledRecordingFailed =  13
-ledRecordingSuccess = 12
+ledRecordingFailed =  12
+ledRecordingSuccess = 13
 
 
 buttonRecording = 2
