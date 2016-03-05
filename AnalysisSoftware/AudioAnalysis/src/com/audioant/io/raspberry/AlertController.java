@@ -15,7 +15,7 @@ public class AlertController {
 
 	public void blink() throws IOException {
 
-		writer.write(Hardware.ALERT_LIGHT.toString());
+		writer.write(Hardware.ALERT_LIGHT.toString() + "\r\n");
 		writer.flush();
 	}
 }

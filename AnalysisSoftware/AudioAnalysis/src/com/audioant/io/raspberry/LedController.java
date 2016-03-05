@@ -37,6 +37,7 @@ public class LedController {
 		message.append(Config.HW_CONTROLLER_SEP);
 		message.append(option);
 		message.append(Config.HW_CONTROLLER_SEP);
+		message.append("\r\n");
 
 		writer.write(message.toString());
 		writer.flush();
