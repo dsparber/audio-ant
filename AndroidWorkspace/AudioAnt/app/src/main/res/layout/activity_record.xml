@@ -9,49 +9,97 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Activities.RecordActivity">
 
-    <RelativeLayout
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="100sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.06"
+        android:drawableLeft="@drawable/ic_mic_24dp"
+        android:elevation="2dp"
+        android:text="Aufnahme starten"
+        android:textSize="16sp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout"
-        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_below="@+id/button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:id="@+id/linearLayout2">
+
+
+        <Button
+            android:id="@+id/button_abspielen"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:drawableLeft="@drawable/ic_play_arrow_24dp"
+            android:singleLine="true"
+            android:text="Abspielen"
+            android:textSize="16sp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textView_aufnahme_dauer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="00:00"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/info_record"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_info_black_24dp"
+                android:onClick="showRecordingHelp"
+                android:layout_weight="0.01" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/seperator_bottom"
+        android:paddingTop="8dp"
+        android:onClick="showNotificationDialog">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="00:00"
-            android:id="@+id/textView3"
-            android:layout_marginLeft="42dp"
-            android:layout_marginStart="42dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/button"
-            android:layout_toEndOf="@+id/button" />
+            android:text="Benachrichtigungston"
+            android:id="@+id/textView3" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="60sp"
-            android:textSize="16sp"
-            android:text="Aufnahme starten"
-            android:id="@+id/button"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.06"
-            android:elevation="2dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:background="@drawable/ic_info_black_24dp"
-            android:layout_alignTop="@+id/textView3"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="showRecordingHelp" />
-
-    </RelativeLayout>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Beispielton"
+            android:id="@+id/textView4" />
+    </LinearLayout>
 
 </RelativeLayout>

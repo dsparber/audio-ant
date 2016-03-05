@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">AudioAnt</string>
+
+    <string name="recording_description">Um ein Geräusch aufzunehmen befolgen Sie die folgenden Schritte:
+        \n\n1. Drücken Sie auf die \"Aufnahme starten\" Schaltfläche um die Aufnahme auf ihrem Gerät zu starten.
+        \n2. Verursachen Sie das Geräusch das gelernt werden soll, zum Beispiel durch drücken der Türklingel.
+        \n3. Betätigen Sie die Schaltfläche erneut um die Aufnahme zu beenden.
+        \n\nWenn sie das Geräusch erneut aufnehmen wollen können Sie das auf die gleiche Weise machen,
+        die alte Aufnahme wird automatisch überschrieben.
+    </string>
+    <string name="recording_description_header">Aufnahmahinweise</string>
+
     <string name="title_activity_settings">Settings</string>
+    <string name="notification_choose_header">Benachrichtigungston Auswählen</string>
 
     <!-- Strings related to Settings -->
 
