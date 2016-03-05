@@ -17,7 +17,7 @@ import com.audioant.io.raspberry.AlertController;
  */
 public class EventLights implements Observer {
 
-	private static final int SLEEP_MILLIS = 1000;
+	private static final int SLEEP_MILLIS = 2000;
 
 	private long time;
 
@@ -31,6 +31,8 @@ public class EventLights implements Observer {
 		if (arg instanceof List<?> && ((List<?>) arg).get(0) instanceof Sound) {
 
 			if (System.currentTimeMillis() - time >= SLEEP_MILLIS) {
+
+				time = System.currentTimeMillis();
 
 				try {
 					AlertController alertController = new AlertController();

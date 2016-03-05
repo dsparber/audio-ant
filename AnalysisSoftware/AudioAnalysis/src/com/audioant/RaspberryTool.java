@@ -69,16 +69,19 @@ public class RaspberryTool implements Observer {
 			if (!analyser.isRunning()) {
 				analyser.start();
 				analyser.reloadLearnedSounds();
+				led(Led.LED_RUNNING, 1);
 			}
 
 		} catch (RserveException | IOException e) {
 			e.printStackTrace();
+			led(Led.LED_RUNNING, 0);
 		}
 	}
 
 	private void stopAnalysis() {
 		if (analyser != null && analyser.isRunning()) {
 			analyser.stop();
+			led(Led.LED_RUNNING, 0);
 		}
 	}
 
@@ -130,8 +133,8 @@ public class RaspberryTool implements Observer {
 						| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
 						| IndexOutOfBoundsException e) {
 
+					startAnalysis();
 					led(Led.LED_RECORDING_FAILED, 5);
-
 					e.printStackTrace();
 				}
 			}
