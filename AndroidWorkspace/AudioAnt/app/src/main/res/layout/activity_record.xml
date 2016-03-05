@@ -7,6 +7,51 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".RecordActivity">
+    tools:context=".Activities.RecordActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="00:00"
+            android:id="@+id/textView3"
+            android:layout_marginLeft="42dp"
+            android:layout_marginStart="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/button"
+            android:layout_toEndOf="@+id/button" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="60sp"
+            android:textSize="16sp"
+            android:text="Aufnahme starten"
+            android:id="@+id/button"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.06"
+            android:elevation="2dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:background="@drawable/ic_info_black_24dp"
+            android:layout_alignTop="@+id/textView3"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="showRecordingHelp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

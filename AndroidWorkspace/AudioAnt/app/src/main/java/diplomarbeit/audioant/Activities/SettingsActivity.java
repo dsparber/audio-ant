@@ -1,4 +1,4 @@
-package diplomarbeit.audioant;
+package diplomarbeit.audioant.Activities;
 
 
 import android.annotation.TargetApi;
@@ -21,6 +21,8 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import diplomarbeit.audioant.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -134,6 +136,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            int SUCCESS_RESULT=1;
+            setResult(SUCCESS_RESULT, new Intent());
+            finish();  //return to caller
+            return true;
+        }
+        return false;
+    }
 
     /**
      * {@inheritDoc}
