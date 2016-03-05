@@ -1,6 +1,7 @@
 from thread import *
 import RPi.GPIO as GPIO  
 import PINS
+import time
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -15,6 +16,7 @@ def sendThread(buttonname, pin, socket):
 	while True:	
 		try:
 			GPIO.wait_for_edge(pin, GPIO.FALLING) 
+			time.sleep(0.1)
 			GPIO.wait_for_edge(pin, GPIO.RISING)
 			
 			send("BUTTON;" + buttonname, socket)

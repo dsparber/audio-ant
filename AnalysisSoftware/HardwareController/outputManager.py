@@ -2,6 +2,7 @@ import ledController as led
 import alertLightController as alert
 
 def output(function, options):
+
 	if function == "LED":
 		led.ledByOptions(options)
 	

@@ -33,8 +33,8 @@ def ledRecordingSuccess(on):
 		
 def led(ledName, option):
 	
-	option = int(option)
-	
+	option = int(option)	
+		
 	if option > 1:
 		for i in range(0,option):
 			led(ledName, 1)

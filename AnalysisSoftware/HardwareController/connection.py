@@ -7,7 +7,7 @@ import inputManager as inManager
 from display import Display
  
 HOST = ''		# Symbolic name meaning all available interfaces
-PORT = 4208
+PORT = input()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,16 +23,24 @@ def receiveThread(clientsocket):
 		
 		if not data: 
 			break
+		
+		data = str(data)
+		
+		for line in data.split("\r\n"):
 
-		data = str(data)[2:-1]
+			function = line.split(';')[0]
+			options = line.split(';')[1:]
 		
-		function = data.split(';')[0]
-		options = data.split(';')[1:]
-		
-		out.output(function, options)
+			out.output(function, options)
  
+def displayClock():
+        d = Display()
+        d.light(True)
+        d.displayClock()
+
 while True:
 	#wait to accept a connection - blocking call
 	(clientsocket, address) = serversocket.accept()
 	start_new_thread(receiveThread ,(clientsocket,))
 	start_new_thread(sendThread ,(clientsocket,))
+	start_new_thread(displayClock ,())
