@@ -36,28 +36,11 @@ public class EnergyMatchAnalyser {
 
 	public double getMatch() {
 
-		List<Double> recentValues = new ArrayList<Double>();
+		List<Double> valuesNormalised = getNormalisedValues(recentValues);
 
-		double max = 0;
-		for (Double d : this.recentValues) {
-			if (d > max) {
-				max = d;
-			}
-		}
-		for (int i = 0; i < this.recentValues.size(); i++) {
-			recentValues.add((this.recentValues.get(i) / max));
-		}
+		int startIndex = getStartIndex(valuesNormalised);
 
-		int startIndex = 0;
-		for (Double d : recentValues) {
-
-			if (Math.abs(savedValues[0] - d) <= Config.AUDIO_ANALYSIS_ENERGY_TOLERANCE) {
-				break;
-			}
-			startIndex++;
-		}
-
-		List<Double> sublist = recentValues.subList(startIndex, recentValues.size());
+		List<Double> sublist = valuesNormalised.subList(startIndex, valuesNormalised.size());
 
 		int count = 0;
 		for (int i = 0; i < sublist.size(); i++) {
@@ -68,6 +51,34 @@ public class EnergyMatchAnalyser {
 		}
 
 		return (double) count / savedValues.length;
+	}
+
+	private List<Double> getNormalisedValues(List<Double> values) {
+
+		double max = 0;
+		for (Double d : values) {
+			if (d > max) {
+				max = d;
+			}
+		}
+
+		List<Double> valuesNormalised = new ArrayList<Double>();
+
+		for (int i = 0; i < values.size(); i++) {
+			valuesNormalised.add((values.get(i) / max));
+		}
+		return valuesNormalised;
+	}
+
+	private int getStartIndex(List<Double> values) {
+		int startIndex = 0;
+		for (Double d : values) {
+			if (Math.abs(savedValues[0] - d) <= Config.AUDIO_ANALYSIS_ENERGY_TOLERANCE) {
+				break;
+			}
+			startIndex++;
+		}
+		return startIndex;
 	}
 
 	private double[] loadCsvValues() throws IOException {
