@@ -19,7 +19,8 @@
         <activity
             android:name=".Activities.RecordActivity"
             android:label="Geräusch lernen"
-            android:parentActivityName=".Activities.MainActivity">
+            android:parentActivityName=".Activities.MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.MainActivity" />

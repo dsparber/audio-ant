@@ -10,102 +10,98 @@
     tools:context=".Activities.MainActivity">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:weightSum="1"
-        android:id="@+id/linearLayout">
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_mic_48dp"
-            android:textSize="16sp"
-            android:text="Geräusch lernen"
             android:id="@+id/button_lernen"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height_medium"
+            android:textSize="@dimen/text_size_normal"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
-            android:elevation="2dp" />
+            android:drawableLeft="@drawable/ic_mic_48dp"
+            android:text="Geräusch lernen" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:drawableLeft="@drawable/ic_toc_48dp"
-            android:text="Alle Geräusche anzeigen"
+            android:layout_height="@dimen/button_height_medium"
+            android:textSize="@dimen/text_size_normal"
             android:id="@+id/button_alle_zeigen"
+            android:layout_width="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
-            android:elevation="2dp" />
+            android:drawableLeft="@drawable/ic_toc_48dp"
+            android:text="Alle Geräusche anzeigen" />
 
         <Button
+            android:id="@+id/button_app_einstellungen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_settings_48dp"
             android:text="Android gerät Einstellungen"
-            android:id="@+id/button_app_einstellungen"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.06"
-            android:elevation="2dp" />
+            android:layout_height="@dimen/button_height_medium"
+            android:textSize="@dimen/text_size_normal" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:drawableLeft="@drawable/ic_audioant_48dp"
-            android:text="AudioAnt Einstellungen"
             android:id="@+id/button_einstellungen_audioant"
+            android:layout_width="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
-            android:elevation="2dp"
+            android:drawableLeft="@drawable/ic_audioant_48dp"
             android:enabled="true"
-            android:fadeScrollbars="false" />
+            android:fadeScrollbars="false"
+            android:text="AudioAnt Einstellungen"
+            android:layout_height="@dimen/button_height_medium"
+            android:textSize="@dimen/text_size_normal" />
 
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/ic_verbunden"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:id="@+id/ic_verbunden"
-        android:background="@drawable/ic_wifi_not_connected_24dp"
         android:layout_above="@+id/imageView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/ic_wifi_not_connected_24dp" />
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="AudioAnt nicht verbunden"
-        android:id="@+id/textView"
+        android:layout_above="@+id/textView2"
         android:layout_alignTop="@+id/ic_verbunden"
-        android:layout_toRightOf="@+id/ic_verbunden"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:layout_above="@+id/textView2" />
+        android:layout_toRightOf="@+id/ic_verbunden"
+        android:text="AudioAnt nicht verbunden"
+        android:textSize="@dimen/text_size_medium" />
 
     <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:id="@+id/imageView2"
-        android:background="@drawable/ic_range_extend_off_36dp"
         android:layout_alignBottom="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_range_extend_off_36dp" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Reichweitenvergrößerung nicht aktiviert"
-        android:id="@+id/textView2"
-        android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/textView"
+        android:text="Smartphone wird nicht als Mikrofon verwendet"
+        android:textSize="@dimen/text_size_medium" />
 
 </RelativeLayout>
