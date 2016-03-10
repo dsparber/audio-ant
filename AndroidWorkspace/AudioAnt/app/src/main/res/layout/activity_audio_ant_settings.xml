@@ -9,53 +9,176 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Activities.AudioAntSettings">
 
-    <TextView
-        android:id="@+id/textView3"
+
+    <ScrollView
+        android:id="@+id/scrollView_record_activity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/seperator_bottom_normal"
-        android:text="Drahtloses Internet"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="24sp" />
+        android:layout_height="match_parent"
+        android:fillViewport="false">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_alignEnd="@+id/textView3"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_below="@+id/textView3"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="-50dp"
-        android:background="@drawable/ic_info_black_24dp"
-        android:onClick="showWlanHelp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/button_height_normal"
-        android:layout_alignEnd="@+id/textView3"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_below="@+id/textView3"
-        android:layout_marginLeft="16sp"
-        android:text="Wlan Einstellungen öffnen"
-        android:textSize="@dimen/text_size_normal" />
+            <TextView
+                android:id="@+id/textView_drahtloses_internet_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:text="@string/audioant_settings_label_drahtloses_internet"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/button_height_normal"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/button2"
-        android:layout_marginLeft="16sp"
-        android:text="Wlan informationen senden"
-        android:textSize="@dimen/text_size_normal" />
+            <ImageView
+                android:id="@+id/info_wlan_importance"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignEnd="@+id/textView_drahtloses_internet_label"
+                android:layout_alignRight="@+id/textView_drahtloses_internet_label"
+                android:layout_below="@+id/textView_drahtloses_internet_label"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="-50dp"
+                android:background="@drawable/ic_info_black_24dp"
+                android:onClick="showWlanHelp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:textSize="@dimen/text_size_medium"
+                android:hint="@string/audioant_settings_editText_wifi_name"
+                android:id="@+id/editText_wifi_name"
+                android:layout_below="@+id/info_wlan_importance"
+                android:layout_alignLeft="@+id/button_wlan_einstellungen_öffnen"
+                android:layout_alignStart="@+id/button_wlan_einstellungen_öffnen" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:textSize="@dimen/text_size_medium"
+                android:hint="@string/audioant_settings_editText_wifi_password"
+                android:id="@+id/editText_wifi_password"
+                android:layout_below="@+id/editText_wifi_name"
+                android:layout_alignLeft="@+id/button_wlan_einstellungen_öffnen"
+                android:layout_alignStart="@+id/button_wlan_einstellungen_öffnen" />
+
+
+            <Button
+                android:id="@+id/button_wlan_einstellungen_öffnen"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button_height_normal"
+                android:layout_alignEnd="@+id/textView_drahtloses_internet_label"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignRight="@+id/textView_drahtloses_internet_label"
+                android:layout_below="@+id/editText_wifi_password"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:onClick="buttonClicked"
+                android:text="@string/audioant_settings_button_einstellungen_öffnen"
+                android:textSize="@dimen/text_size_normal" />
+
+            <Button
+                android:id="@+id/button_wlan_infos_senden"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button_height_normal"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button_wlan_einstellungen_öffnen"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:onClick="buttonClicked"
+                android:text="@string/audioant_settings_button_wlan_info_senden"
+                android:textSize="@dimen/text_size_normal" />
+
+            <TextView
+                android:id="@+id/textView_benachrichtigungen_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button_wlan_infos_senden"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/margin_medium"
+                android:text="@string/audioant_settings_label_bnachrichtigungen"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/seekBar_lautstärke"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textView_lautstärke_label"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginTop="5dp" />
+
+            <ImageView
+                android:id="@+id/info_audioant_notifications"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignEnd="@+id/textView_benachrichtigungen_label"
+                android:layout_alignRight="@+id/textView_benachrichtigungen_label"
+                android:layout_below="@+id/textView_benachrichtigungen_label"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="-50dp"
+                android:background="@drawable/ic_info_black_24dp"
+                android:onClick="showWlanHelp" />
+
+            <CheckBox
+                android:id="@+id/checkBox_lichtsignale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button_wlan_infos_senden"
+                android:layout_alignStart="@+id/button_wlan_infos_senden"
+                android:layout_below="@+id/textView_benachrichtigungen_label"
+                android:checked="false"
+                android:onClick="checkBoxClicked"
+                android:text="@string/audioant_settings_checkbox_lichtsignale"
+                android:textSize="@dimen/text_size_medium" />
+
+            <CheckBox
+                android:id="@+id/checkBox_audiosignale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button_wlan_infos_senden"
+                android:layout_below="@+id/checkBox_lichtsignale"
+                android:layout_marginTop="@dimen/margin_small"
+                android:checked="false"
+                android:onClick="checkBoxClicked"
+                android:text="@string/audioant_settings_checkbox_audiosignale"
+                android:textSize="@dimen/text_size_medium" />
+
+            <TextView
+                android:id="@+id/textView_lautstärke_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/checkBox_audiosignale"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="@string/audioant_settings_label_lautstärke"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/text_size_medium" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>

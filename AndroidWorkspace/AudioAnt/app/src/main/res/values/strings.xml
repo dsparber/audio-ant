@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">AudioAnt</string>
 
+    <!--Info AlertDialog Strings-->
     <string name="recording_description">Um ein Geräusch aufzunehmen befolgen Sie die folgenden Schritte:
         \n\n1. Drücken Sie auf die \"Aufnahme starten\" Schaltfläche um die Aufnahme auf ihrem Gerät zu starten.
         \n2. Verursachen Sie das Geräusch das gelernt werden soll, zum Beispiel durch drücken der Türklingel.
@@ -13,13 +14,33 @@
 
     <string name="wlan_description">Um die AudioAnt effektiver mit dem Smartphone zu verbinden
         und um das Benutzen des im Smartphone eingebauten Mikrofons zu ermöglichen
-        können AudioAnt und Smartphone über Wlan verbunden werden.
+        können AudioAnt und Smartphone über Wlan (drahtloses Internet) verbunden werden.
         \n\nStellen Sie sicher dass ihr Smartphone mit dem Gewünschten WLAN verbunden ist (über den Button
         \"Wlan Einstellungen öffnen\" können Sie dies tun) und drücken Sie \"Wlan informationen senden\"
         um die Informationen zur AudioAnt zu senden (dies erfolgt über Bluetooth).
     </string>
-
     <string name="wlan_description_header">Wofür wird Wlan benötigt?</string>
+
+    <string name="audioant_benachrichtigungen_description">
+        Mit den optionen unterhalb können Sie festlegen wie die AudioAnt auf ein eingehendes Signal
+        reagieren soll.
+        \n\nWenn Sie die Lautstärke verändern wird sofort ein Beispielton zur Kontrolle abgespielt.
+
+    </string>
+    <string name="audioant_benachrichtigungen_description_header">AudioAnt Benachrichtigungen</string>
+
+    <!-- -->
+
+    <!-- AudioAnt Settings Activity-->
+    <string name="audioant_settings_label_drahtloses_internet">Wlan der AudioAnt</string>
+    <string name="audioant_settings_label_bnachrichtigungen">Benachrichtigungen</string>
+    <string name="audioant_settings_button_einstellungen_öffnen">Wlan Einstellungen öffnen</string>
+    <string name="audioant_settings_button_wlan_info_senden">Wlan informationen senden</string>
+    <string name="audioant_settings_checkbox_lichtsignale">Lichtsignale aktivieren</string>
+    <string name="audioant_settings_checkbox_audiosignale">Audiosignale aktivieren</string>
+    <string name="audioant_settings_label_lautstärke">Lautstärke der Signaltöne</string>
+    <string name="audioant_settings_editText_wifi_name">Name des Wlans</string>
+    <string name="audioant_settings_editText_wifi_password">Passwort</string>
 
 
     <string name="title_activity_settings">Settings</string>
