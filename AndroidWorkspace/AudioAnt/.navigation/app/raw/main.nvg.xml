@@ -38,14 +38,6 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "diplomarbeit.audioant.Activities.SettingsActivity"/>
-      <point      
-        x = "1536"      
-        y = "60"/>
-    </statePointEntry>
-    <statePointEntry>
-      <state      
-        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
         className = "diplomarbeit.audioant.Activities.MainActivity"/>
       <point      
         x = "240"      

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="diplomarbeit.audioant.Activities.SettingsActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView_record_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:text="@string/audioant_settings_label_bnachrichtigungen"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/info_wlan_importance"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignEnd="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_alignRight="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_below="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="-50dp"
+                android:background="@drawable/ic_info_black_24dp"
+                android:onClick="showInfo" />
+
+            <CheckBox
+                android:id="@+id/settings_checkBox_led"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/settings_textView_benachrichtigungen_label_"
+                android:layout_alignStart="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_below="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:checked="false"
+                android:onClick="checkBoxClicked"
+                android:text="@string/settings_checkbox_led"
+                android:textSize="@dimen/text_size_medium" />
+
+            <CheckBox
+                android:id="@+id/settings_checkBox_signalton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/settings_checkBox_led"
+                android:layout_alignStart="@+id/settings_checkBox_led"
+                android:layout_below="@+id/settings_checkBox_led"
+                android:layout_marginTop="@dimen/margin_small"
+                android:onClick="checkBoxClicked"
+                android:text="@string/settings_checkbox_notifications"
+                android:textSize="@dimen/text_size_medium" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/settings_checkBox_signalton"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/seperator_bottom"
+                android:onClick="showNotificationDialog"
+                android:orientation="vertical"
+                android:id="@+id/settings_linearlayout_choose_notification">
+
+                <TextView
+                    android:id="@+id/settings_textView_ton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/record_label_notification_sound"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/settings_textView_ton_gewählt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/record_label_sound_chosen"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

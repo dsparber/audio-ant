@@ -15,17 +15,19 @@
     <string name="wlan_description">Um die AudioAnt effektiver mit dem Smartphone zu verbinden
         und um das Benutzen des im Smartphone eingebauten Mikrofons zu ermöglichen
         können AudioAnt und Smartphone über Wlan (drahtloses Internet) verbunden werden.
-        \n\nStellen Sie sicher dass ihr Smartphone mit dem Gewünschten WLAN verbunden ist (über den Button
-        \"Wlan Einstellungen öffnen\" können Sie dies tun) und drücken Sie \"Wlan informationen senden\"
-        um die Informationen zur AudioAnt zu senden (dies erfolgt über Bluetooth).
+        \n\nSie können den Namen des Wlans selbst eingeben oder über \"Aktuellen Wlan Namen einfügen\"
+        den Namen des Wlans, mit dem das Gerät zurzeit verbunden ist automatisch einfügen lassen.
+        \n\nNachdem das Passwort eingegeben wurde können die Daten über Bluetooth an die AudioAnt
+        gesendet werden.
+        \n\nNach dem Senden erhalten Sie eine Informationsmeldung ob die AudioAnt nun mit dem Wlan
+        verbunden ist.
     </string>
     <string name="wlan_description_header">Wofür wird Wlan benötigt?</string>
 
     <string name="audioant_benachrichtigungen_description">
-        Mit den optionen unterhalb können Sie festlegen wie die AudioAnt auf ein eingehendes Signal
+        Mit den Optionen unterhalb können Sie festlegen wie die AudioAnt auf ein eingehendes Signal
         reagieren soll.
         \n\nWenn Sie die Lautstärke verändern wird sofort ein Beispielton zur Kontrolle abgespielt.
-
     </string>
     <string name="audioant_benachrichtigungen_description_header">AudioAnt Benachrichtigungen</string>
 
@@ -34,7 +36,7 @@
     <!-- AudioAnt Settings Activity-->
     <string name="audioant_settings_label_drahtloses_internet">Wlan der AudioAnt</string>
     <string name="audioant_settings_label_bnachrichtigungen">Benachrichtigungen</string>
-    <string name="audioant_settings_button_einstellungen_öffnen">Wlan Einstellungen öffnen</string>
+    <string name="audioant_settings_button_namen_übernehmen">aktuellen Wlan namen einfügen</string>
     <string name="audioant_settings_button_wlan_info_senden">Wlan informationen senden</string>
     <string name="audioant_settings_checkbox_lichtsignale">Lichtsignale aktivieren</string>
     <string name="audioant_settings_checkbox_audiosignale">Audiosignale aktivieren</string>
@@ -43,8 +45,21 @@
     <string name="audioant_settings_editText_wifi_password">Passwort</string>
 
 
-    <string name="title_activity_settings">Settings</string>
-    <string name="notification_choose_header">Benachrichtigungston Auswählen</string>
+    <!-- Smartphone Settings Activity-->
+    <string name="settings_notifications_description">
+        Hier können Sie festlegen, was auf ihrem Smartphone geschehen soll sobald ein Geräusch
+        von der AudioAnt erkannt wird.
+    </string>
+    <string name="settings_notifications_description_header">Benachrichtigungen</string>
+    <string name="settings_checkbox_led">LED Blitz verwenden</string>
+    <string name="settings_checkbox_notifications">Warnton am Handy ausgeben</string>
+
+
+    <!-- Record Activity-->
+    <string name="notification_choose_header">Benachrichtigungston auswählen</string>
+    <string name="record_label_notification_sound">Benachrichtigungston</string>
+    <string name="record_label_sound_chosen">Beispielton</string>
+    <string name="title_activity_asdfasdfasdf">asdfasdfasdf</string>
 
     <!-- Strings related to Settings -->
 
@@ -103,4 +118,5 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
 </resources>

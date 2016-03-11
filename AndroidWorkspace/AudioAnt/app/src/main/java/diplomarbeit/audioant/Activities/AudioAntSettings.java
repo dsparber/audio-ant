@@ -1,14 +1,13 @@
 package diplomarbeit.audioant.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
@@ -22,6 +21,7 @@ public class AudioAntSettings extends AppCompatActivity {
     private SeekBar seekBar_lautstärke;
     private WifiHelper wifiHelper;
     private EditText wlanName;
+    private TextView textView_lautstärke;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +51,19 @@ public class AudioAntSettings extends AppCompatActivity {
 
         wifiHelper = new WifiHelper(this);
         wlanName = (EditText) findViewById(R.id.editText_wifi_name);
-        wlanName.setText(wifiHelper.getSSID());
-        //continue here
+
+        textView_lautstärke = (TextView) findViewById(R.id.textView_lautstärke_label);
 
     }
 
     public void buttonClicked(View v) {
         Button button = (Button) v;
         switch (button.getId()) {
-            case R.id.button_wlan_einstellungen_öffnen:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                break;
             case R.id.button_wlan_infos_senden:
                 Toast.makeText(getApplicationContext(), wifiHelper.getSSID(), Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.button_wlan_namen_einfügen:
+                wlanName.setText(wifiHelper.getSSID());
         }
     }
 
@@ -73,7 +72,13 @@ public class AudioAntSettings extends AppCompatActivity {
         CheckBox checkBox = (CheckBox) v;
         switch (checkBox.getId()) {
             case R.id.checkBox_audiosignale:
-                Toast.makeText(getApplicationContext(), ("Audiosignale " + checkBox.isChecked()), Toast.LENGTH_SHORT).show();
+                if (checkBox.isChecked()) {
+                    seekBar_lautstärke.setVisibility(View.VISIBLE);
+                    textView_lautstärke.setVisibility(View.VISIBLE);
+                } else {
+                    seekBar_lautstärke.setVisibility(View.GONE);
+                    textView_lautstärke.setVisibility(View.GONE);
+                }
                 break;
             case R.id.checkBox_lichtsignale:
                 Toast.makeText(getApplicationContext(), ("Lichtsignale: " + checkBox.isChecked()), Toast.LENGTH_SHORT).show();

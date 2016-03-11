@@ -87,6 +87,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayout_benachrichtigung"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -95,8 +96,7 @@
                 android:background="@drawable/seperator_bottom"
                 android:onClick="showNotificationDialog"
                 android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:id="@+id/linearLayout_benachrichtigung">
+                android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/textView_ton"
@@ -125,18 +125,18 @@
                 android:textSize="24sp" />
 
             <Button
+                android:id="@+id/button_geräusch_speichern"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height_large"
-                android:text="Geräusch Speichern"
+                android:layout_below="@id/linearLayout_benachrichtigung"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/button_senden"
-                android:id="@+id/button_geräusch_speichern"
-                android:textSize="@dimen/text_size_large"
-                android:layout_below="@id/linearLayout_benachrichtigung"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:enabled="false" />
+                android:background="@drawable/button_senden"
+                android:enabled="false"
+                android:text="Geräusch Speichern"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_large" />
 
         </RelativeLayout>
     </ScrollView>

@@ -47,34 +47,34 @@
                 android:onClick="showWlanHelp" />
 
             <EditText
+                android:id="@+id/editText_wifi_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:textSize="@dimen/text_size_medium"
-                android:hint="@string/audioant_settings_editText_wifi_name"
-                android:id="@+id/editText_wifi_name"
+                android:layout_alignLeft="@+id/button_wlan_namen_einfügen"
+                android:layout_alignStart="@+id/button_wlan_namen_einfügen"
                 android:layout_below="@+id/info_wlan_importance"
-                android:layout_alignLeft="@+id/button_wlan_einstellungen_öffnen"
-                android:layout_alignStart="@+id/button_wlan_einstellungen_öffnen" />
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:hint="@string/audioant_settings_editText_wifi_name"
+                android:inputType="textPersonName"
+                android:textSize="@dimen/text_size_medium" />
 
             <EditText
+                android:id="@+id/editText_wifi_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:textSize="@dimen/text_size_medium"
-                android:hint="@string/audioant_settings_editText_wifi_password"
-                android:id="@+id/editText_wifi_password"
+                android:layout_alignLeft="@+id/button_wlan_namen_einfügen"
+                android:layout_alignStart="@+id/button_wlan_namen_einfügen"
                 android:layout_below="@+id/editText_wifi_name"
-                android:layout_alignLeft="@+id/button_wlan_einstellungen_öffnen"
-                android:layout_alignStart="@+id/button_wlan_einstellungen_öffnen" />
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:hint="@string/audioant_settings_editText_wifi_password"
+                android:inputType="textPassword"
+                android:textSize="@dimen/text_size_medium" />
 
 
             <Button
-                android:id="@+id/button_wlan_einstellungen_öffnen"
+                android:id="@+id/button_wlan_namen_einfügen"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height_normal"
                 android:layout_alignEnd="@+id/textView_drahtloses_internet_label"
@@ -85,7 +85,7 @@
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:onClick="buttonClicked"
-                android:text="@string/audioant_settings_button_einstellungen_öffnen"
+                android:text="@string/audioant_settings_button_namen_übernehmen"
                 android:textSize="@dimen/text_size_normal" />
 
             <Button
@@ -96,7 +96,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/button_wlan_einstellungen_öffnen"
+                android:layout_below="@+id/button_wlan_namen_einfügen"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:onClick="buttonClicked"
@@ -147,7 +147,7 @@
                 android:layout_alignLeft="@+id/button_wlan_infos_senden"
                 android:layout_alignStart="@+id/button_wlan_infos_senden"
                 android:layout_below="@+id/textView_benachrichtigungen_label"
-                android:checked="false"
+                android:checked="true"
                 android:onClick="checkBoxClicked"
                 android:text="@string/audioant_settings_checkbox_lichtsignale"
                 android:textSize="@dimen/text_size_medium" />
@@ -159,7 +159,7 @@
                 android:layout_alignLeft="@+id/button_wlan_infos_senden"
                 android:layout_below="@+id/checkBox_lichtsignale"
                 android:layout_marginTop="@dimen/margin_small"
-                android:checked="false"
+                android:checked="true"
                 android:onClick="checkBoxClicked"
                 android:text="@string/audioant_settings_checkbox_audiosignale"
                 android:textSize="@dimen/text_size_medium" />
