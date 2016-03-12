@@ -2,29 +2,57 @@ package diplomarbeit.audioant.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.io.File;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
+import diplomarbeit.audioant.Model.Helper.Settings;
+import diplomarbeit.audioant.Model.Services.RecordSignalService;
 import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {
-    String recordingHelpText;
-    String recordingHelpTextHeader;
+    private String recordingHelpText;
+    private String recordingHelpTextHeader;
+    private Settings settings;
+    private TextView textView_chosen_sound;
+    private Uri uri_sound;
+    private Button button_record;
+    private Button button_play;
+    private MediaPlayer player;
+    private String TAG = "FDBCK_REPLAY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_record);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recordingHelpText = getResources().getString(R.string.recording_description);
         recordingHelpTextHeader = getResources().getString(R.string.recording_description_header);
 
-        setContentView(R.layout.activity_record);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        settings = new Settings(this);
+        textView_chosen_sound = (TextView) findViewById(R.id.record_textView_sound_chosen);
+        setChosenSoundToTextView(settings.getCurrentSound());
+        button_record = (Button) findViewById(R.id.record_button_start_recording);
+        button_play = (Button) findViewById(R.id.record_button_replay);
+    }
+
+
+    public void setChosenSoundToTextView(Uri uri) {
+        Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
+        String title = ringtone.getTitle(this);
+        textView_chosen_sound.setText(title);
     }
 
     public void showRecordingHelp(View v) {
@@ -34,11 +62,82 @@ public class RecordActivity extends AppCompatActivity {
         textAlert.show(getFragmentManager(), "recording help");
     }
 
+    public void recordButtonClicked(View v) {
+        if (button_record.getText().equals(getResources().getString(R.string.record_button_start_recording))) {
+            startService(new Intent(RecordActivity.this, RecordSignalService.class));
+        } else {
+            stopService(new Intent(RecordActivity.this, RecordSignalService.class));
+        }
+        changeButtonText(button_record);
+    }
+
+    public void playButtonClicked(View v) {
+        if (button_play.getText().equals(getResources().getString(R.string.record_button_start_replay))) {
+            changeButtonText(button_play);
+            player = new MediaPlayer();
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer player) {
+                    try {
+                        player.release();
+                        player = null;
+                        changeButtonText(button_play);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //Der player wurde bereits händisch geschlossen
+                    }
+                }
+            });
+
+            try {
+                player.setDataSource(getAbsoluteFileLocation());
+                player.prepare();
+                player.start();
+            } catch (Exception e) {
+                Log.e(TAG, "could not play audio", e);
+            }
+        } else {
+            try {
+                changeButtonText(button_play);
+                player.release();
+                player = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Der Player wurde automatisch wieder geschlossen
+            }
+
+        }
+    }
+
+    public void changeButtonText(Button b) {
+        switch (b.getId()) {
+            case R.id.record_button_start_recording:
+                if (b.getText().equals(getResources().getString(R.string.record_button_start_recording))) {
+                    b.setText(getResources().getString(R.string.record_button_stop_recording));
+                } else b.setText(getResources().getString(R.string.record_button_start_recording));
+                break;
+            case R.id.record_button_replay:
+                if (b.getText().equals(getResources().getString(R.string.record_button_start_replay))) {
+                    b.setText(getResources().getString(R.string.record_button_stop_replay));
+                } else b.setText(getResources().getString(R.string.record_button_start_replay));
+                break;
+        }
+    }
+
+    public String getAbsoluteFileLocation() {
+        File dir = new File(Environment.getExternalStorageDirectory(), ".AudioAnt");
+        return dir.getAbsolutePath() + "/Signalton.mp3";
+
+    }
+
     public void showNotificationDialog(View v) {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Benachrichtigungston auswählen");
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+        if (uri_sound != null) {
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri_sound);
+        } else {
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, settings.getCurrentSound());
+        }
         this.startActivityForResult(intent, 1);
     }
 
@@ -47,7 +146,8 @@ public class RecordActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK && requestCode == 1) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (uri != null) {
-                Toast.makeText(this, uri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+                uri_sound = uri;
+                setChosenSoundToTextView(uri);
             }
         }
     }

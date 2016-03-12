@@ -21,7 +21,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/record_button_start_recording"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height_large"
                 android:layout_alignParentEnd="true"
@@ -32,8 +32,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.06"
                 android:drawableLeft="@drawable/ic_mic_24dp"
-                android:text="Aufnahme starten"
-                android:textSize="@dimen/text_size_normal" />
+                android:text="@string/record_button_start_recording"
+                android:textSize="@dimen/text_size_normal"
+                android:onClick="recordButtonClicked" />
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -41,12 +42,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/button"
+                android:layout_below="@+id/record_button_start_recording"
                 android:orientation="horizontal">
 
 
                 <Button
-                    android:id="@+id/button_abspielen"
+                    android:id="@+id/record_button_replay"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height_normal"
                     android:layout_alignParentLeft="true"
@@ -56,7 +57,8 @@
                     android:drawableLeft="@drawable/ic_play_arrow_24dp"
                     android:singleLine="true"
                     android:text="Abspielen"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_normal"
+                    android:onClick="playButtonClicked" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -65,7 +67,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textView_aufnahme_dauer"
+                        android:id="@+id/settings_textView_aufnahme_dauer"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -92,21 +94,21 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/editText_geräuschname"
+                android:layout_below="@+id/record_editText_geräuschname"
                 android:background="@drawable/seperator_bottom"
                 android:onClick="showNotificationDialog"
                 android:orientation="vertical"
                 android:paddingTop="8dp">
 
                 <TextView
-                    android:id="@+id/textView_ton"
+                    android:id="@+id/record_textView_ton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Benachrichtigungston"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
-                    android:id="@+id/textView_ton_gewählt"
+                    android:id="@+id/record_textView_sound_chosen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Beispielton"
@@ -114,7 +116,7 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/editText_geräuschname"
+                android:id="@+id/record_editText_geräuschname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"

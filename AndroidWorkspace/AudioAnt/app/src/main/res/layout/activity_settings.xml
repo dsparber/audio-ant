@@ -92,11 +92,11 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
-                    android:id="@+id/settings_textView_ton_gewählt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/record_label_sound_chosen"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/settings_textView_sound_chosen" />
             </LinearLayout>
 
 

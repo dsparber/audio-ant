@@ -2,6 +2,7 @@ package diplomarbeit.audioant.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +19,6 @@ import diplomarbeit.audioant.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
-
-//    Next change name of notification
 
     private LinearLayout linearLayout_choose_notification;
     private Settings settings;
@@ -44,15 +43,21 @@ public class SettingsActivity extends AppCompatActivity {
         settings = new Settings(this);
         checkBox_audio = (CheckBox) findViewById(R.id.settings_checkBox_signalton);
         checkBox_led = (CheckBox) findViewById(R.id.settings_checkBox_led);
-        textView_chosen_sound = (TextView) findViewById(R.id.settings_textView_ton_gewählt);
+        textView_chosen_sound = (TextView) findViewById(R.id.settings_textView_sound_chosen);
     }
 
     public void initValuesFromSettings() {
         checkBox_audio.setChecked(settings.getUseAudioSignal());
         checkBox_led.setChecked(settings.getUseFlash());
         if (!settings.getCurrentSound().toString().equals("")) {
-            textView_chosen_sound.setText((settings.getCurrentSound().toString()));
+            setChosenSoundToTextView();
         }
+    }
+
+    public void setChosenSoundToTextView() {
+        Ringtone ringtone = RingtoneManager.getRingtone(this, settings.getCurrentSound());
+        String title = ringtone.getTitle(this);
+        textView_chosen_sound.setText(title);
     }
 
     public void hideElementsIfNecessary() {
@@ -88,11 +93,13 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+
     public void showNotificationDialog(View v) {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Benachrichtigungston auswählen");
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, settings.getCurrentSound());
+
         this.startActivityForResult(intent, 1);
     }
 
@@ -103,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (uri != null) {
                 settings.setSound(uri);
-                Toast.makeText(this, uri.getLastPathSegment(), Toast.LENGTH_SHORT).show();
+                setChosenSoundToTextView();
             }
         }
     }
