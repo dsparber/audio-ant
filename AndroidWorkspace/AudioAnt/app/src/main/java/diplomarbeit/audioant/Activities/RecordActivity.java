@@ -9,9 +9,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
@@ -29,8 +32,10 @@ public class RecordActivity extends AppCompatActivity {
     private Uri uri_sound;
     private Button button_record;
     private Button button_play;
+    private Button button_save;
     private MediaPlayer player;
     private String TAG = "FDBCK_REPLAY";
+    private EditText geräuschName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +43,39 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        initElements();
+    }
+
+    public void initElements() {
         recordingHelpText = getResources().getString(R.string.recording_description);
         recordingHelpTextHeader = getResources().getString(R.string.recording_description_header);
-
         settings = new Settings(this);
         textView_chosen_sound = (TextView) findViewById(R.id.record_textView_sound_chosen);
         setChosenSoundToTextView(settings.getCurrentSound());
         button_record = (Button) findViewById(R.id.record_button_start_recording);
         button_play = (Button) findViewById(R.id.record_button_replay);
+        geräuschName = (EditText) findViewById(R.id.record_editText_geräuschname);
+        button_save = (Button) findViewById(R.id.button_geräusch_speichern);
+
+        geräuschName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!geräuschName.equals("")) button_save.setEnabled(true);
+                else button_save.setEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
     }
 
 
@@ -83,7 +113,7 @@ public class RecordActivity extends AppCompatActivity {
                         changeButtonText(button_play);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        //Der player wurde bereits händisch geschlossen
+                        //Der MediaPlayer wurde bereits händisch geschlossen
                     }
                 }
             });
@@ -102,7 +132,7 @@ public class RecordActivity extends AppCompatActivity {
                 player = null;
             } catch (Exception e) {
                 e.printStackTrace();
-                //Der Player wurde automatisch wieder geschlossen
+                //Der MediaPlayer wurde automatisch wieder geschlossen
             }
 
         }

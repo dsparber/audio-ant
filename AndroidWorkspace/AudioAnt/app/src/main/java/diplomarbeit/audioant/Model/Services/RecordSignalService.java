@@ -36,13 +36,6 @@ public class RecordSignalService extends Service {
                 @Override
                 public void run() {
                     File f = recordToFile();
-                    try {
-                        Thread.sleep(10000);
-                        stopRecording();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
                 }
             };
             Thread thread = new Thread(r);
