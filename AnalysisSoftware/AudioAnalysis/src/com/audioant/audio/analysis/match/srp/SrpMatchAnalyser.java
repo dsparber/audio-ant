@@ -35,52 +35,40 @@ public class SrpMatchAnalyser {
 
 	public double getMatch() {
 
-		double c1 = 0;
-		int count = 0;
+		int c1 = 0;
 		for (double savedValue : savedValues) {
 
-			double max = 0;
 			for (double recentValue : recentValues) {
 
-				double tmp = getMatch(savedValue, recentValue);
-				if (tmp > max) {
-					max = tmp;
+				if (isMatch(savedValue, recentValue)) {
+					c1++;
+					break;
 				}
 			}
-			c1 += max;
-			count++;
 		}
-		c1 /= count;
 
-		double c2 = 0;
-		count = 0;
+		int c2 = 0;
 		for (double recentValue : recentValues) {
 
-			double max = 0;
 			for (double savedValue : savedValues) {
 
-				double tmp = getMatch(recentValue, savedValue);
-				if (tmp > max) {
-					max = tmp;
+				if (isMatch(recentValue, savedValue)) {
+					c2++;
 				}
 			}
-			c2 += max;
-			count++;
 		}
 
-		c2 /= count;
-
-		double result = c1 * c2;
+		double result = (double) c1 / savedValues.length * c2 / recentValues.size();
 
 		return result;
 	}
 
-	private double getMatch(double d1, double d2) {
+	private boolean isMatch(double d1, double d2) {
 
 		double min = d1 * (1 - Config.AUDIO_ANALYSIS_SRP_TOLERANCE);
 		double max = d1 * (1 + Config.AUDIO_ANALYSIS_SRP_TOLERANCE);
 
-		return (d2 > min && d2 < max) ? 1 : 0;
+		return d2 > min && d2 < max;
 	}
 
 	private double[] loadCsvValues() throws IOException {
