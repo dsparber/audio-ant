@@ -55,7 +55,9 @@ public class RecordSignalService extends Service {
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setAudioEncodingBitRate(16);
+        recorder.setAudioSamplingRate(44100);
         File f = new File(getBaseDir() + "/Signalton.mp3");
         if (f.exists()) {
             f.delete();

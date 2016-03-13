@@ -28,7 +28,8 @@ public class RecordActivity extends AppCompatActivity {
     private String recordingHelpText;
     private String recordingHelpTextHeader;
     private Settings settings;
-    private TextView textView_chosen_sound;
+    private TextView textView_ChosenSound;
+    private TextView textView_displayTime;
     private Uri uri_sound;
     private Button button_record;
     private Button button_play;
@@ -36,6 +37,8 @@ public class RecordActivity extends AppCompatActivity {
     private MediaPlayer player;
     private String TAG = "FDBCK_REPLAY";
     private EditText geräuschName;
+    private Thread timeThread;
+    private boolean geräuschSchonAufgenommen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,39 +53,76 @@ public class RecordActivity extends AppCompatActivity {
         recordingHelpText = getResources().getString(R.string.recording_description);
         recordingHelpTextHeader = getResources().getString(R.string.recording_description_header);
         settings = new Settings(this);
-        textView_chosen_sound = (TextView) findViewById(R.id.record_textView_sound_chosen);
+        textView_ChosenSound = (TextView) findViewById(R.id.record_textView_sound_chosen);
         setChosenSoundToTextView(settings.getCurrentSound());
         button_record = (Button) findViewById(R.id.record_button_start_recording);
         button_play = (Button) findViewById(R.id.record_button_replay);
         geräuschName = (EditText) findViewById(R.id.record_editText_geräuschname);
         button_save = (Button) findViewById(R.id.button_geräusch_speichern);
+        textView_displayTime = (TextView) findViewById(R.id.record_textView_aufnahme_dauer);
 
         geräuschName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!geräuschName.equals("")) button_save.setEnabled(true);
+                if (!geräuschName.getText().equals("") && geräuschSchonAufgenommen == true)
+                    button_save.setEnabled(true);
                 else button_save.setEnabled(false);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
-
-
     }
 
+    public void startTimeThread() {
+        timeThread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateTextViewTime();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        timeThread.start();
+    }
+
+    public void updateTextViewTime() {
+        String unformattedTime = (String) textView_displayTime.getText();
+        int minutes = Integer.parseInt(unformattedTime.split(":")[0]);
+        int seconds = Integer.parseInt(unformattedTime.split(":")[1]) + 1;
+        int time = minutes * 60 + seconds;
+        minutes = time / 60;
+        seconds = time % 60;
+        String min = "" + minutes;
+        String sec = "" + seconds;
+        if (minutes < 10) min = "0" + min;
+        if (seconds < 10) sec = "0" + sec;
+        textView_displayTime.setText(min + ":" + sec);
+    }
+
+    public void resetTimeOfTextView() {
+        textView_displayTime.setText("00:00");
+    }
 
     public void setChosenSoundToTextView(Uri uri) {
         Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
         String title = ringtone.getTitle(this);
-        textView_chosen_sound.setText(title);
+        textView_ChosenSound.setText(title);
     }
 
     public void showRecordingHelp(View v) {
@@ -93,10 +133,14 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void recordButtonClicked(View v) {
+        geräuschSchonAufgenommen = true;
         if (button_record.getText().equals(getResources().getString(R.string.record_button_start_recording))) {
+            resetTimeOfTextView();
+            startTimeThread();
             startService(new Intent(RecordActivity.this, RecordSignalService.class));
         } else {
             stopService(new Intent(RecordActivity.this, RecordSignalService.class));
+            timeThread.interrupt();
         }
         changeButtonText(button_record);
     }
@@ -104,6 +148,8 @@ public class RecordActivity extends AppCompatActivity {
     public void playButtonClicked(View v) {
         if (button_play.getText().equals(getResources().getString(R.string.record_button_start_replay))) {
             changeButtonText(button_play);
+            resetTimeOfTextView();
+            startTimeThread();
             player = new MediaPlayer();
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer player) {
@@ -111,6 +157,7 @@ public class RecordActivity extends AppCompatActivity {
                         player.release();
                         player = null;
                         changeButtonText(button_play);
+                        timeThread.interrupt();
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Der MediaPlayer wurde bereits händisch geschlossen
@@ -130,6 +177,7 @@ public class RecordActivity extends AppCompatActivity {
                 changeButtonText(button_play);
                 player.release();
                 player = null;
+                timeThread.interrupt();
             } catch (Exception e) {
                 e.printStackTrace();
                 //Der MediaPlayer wurde automatisch wieder geschlossen
