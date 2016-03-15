@@ -6,17 +6,13 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by benni on 12.3.2016.
- */
 public class RecordSignalService extends Service {
     private MediaRecorder recorder;
-    private String TAG = "RECORDER";
+    private String TAG = "SERVICE_RECORD";
     private boolean alreadyStarted = false;
 
     @Override
@@ -26,32 +22,19 @@ public class RecordSignalService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("SERVICE", "GESTARTET");
+
+//      Check if the service is already running
         if (alreadyStarted) {
-            Toast.makeText(this, "Der Service läuft bereits!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Die Aufnahme laeuft bereits");
         } else {
             alreadyStarted = true;
-            Toast.makeText(RecordSignalService.this, "The service was started", Toast.LENGTH_SHORT).show();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    File f = recordToFile();
-                }
-            };
-            Thread thread = new Thread(r);
-            thread.start();
+            recordToFile();
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopRecording();
-        Toast.makeText(RecordSignalService.this, "The service was destroyed", Toast.LENGTH_SHORT).show();
-    }
-
-    public File recordToFile() {
+    public void recordToFile() {
+//      Initialising the MediaRecorder and specifying recording properties
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -65,24 +48,34 @@ public class RecordSignalService extends Service {
         try {
             f.createNewFile();
             recorder.setOutputFile(f.getAbsolutePath());
+//          Start recording and save to file
             recorder.prepare();
             recorder.start();
-            return f;
+            Log.d(TAG, "Der Service laeuft bereits!");
         } catch (IOException e) {
-            Log.e(TAG, "could not start recording", e);
+            Log.e(TAG, "Die Aufnahme konnte nicht gestartet werden", e);
         }
-        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+//      called when stopService(....) is invoked from any class
+        super.onDestroy();
+        stopRecording();
+        Log.d(TAG, "Die Aufnahme wurde angehalten!");
     }
 
     public void stopRecording() {
         recorder.stop();
         recorder.release();
         recorder = null;
+        Log.d(TAG, "Die Aufnahme wurde beendet");
     }
 
+//  returns the Directory the audio files are saved in as a file
     public static File getBaseDir() {
         File dir = new File(Environment.getExternalStorageDirectory(), ".AudioAnt");
-        // ggf. Verzeichnisse anlegen
+//      Create directory if necessary
         dir.mkdirs();
         return dir;
     }

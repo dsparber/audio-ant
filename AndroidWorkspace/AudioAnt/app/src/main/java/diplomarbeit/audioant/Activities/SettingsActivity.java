@@ -67,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void showInfo(View v) {
         ShowTextAlert textAlert = new ShowTextAlert();
         switch (v.getId()) {
-            case R.id.settings_textView_benachrichtigungen_label_:
+            case R.id.info_settings:
                 textAlert.setText(getResources().getString(R.string.settings_notifications_description));
                 textAlert.setHeader(getResources().getString(R.string.settings_notifications_description_header));
                 textAlert.show(getFragmentManager(), "notifications help");

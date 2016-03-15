@@ -64,6 +64,7 @@
     <string name="record_button_stop_recording">Aufnahme stoppen</string>
     <string name="record_button_start_replay">Abspielen</string>
     <string name="record_button_stop_replay">Stoppen</string>
+    <string name="main_label_not_connected">Nicht mit AudioAnt verbunden</string>
 
 
 </resources>

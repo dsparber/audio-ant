@@ -17,10 +17,11 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
 
             <TextView
-                android:id="@+id/settings_textView_benachrichtigungen_label_"
+                android:id="@+id/settings_textView_benachrichtigungen_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -34,12 +35,12 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/info_wlan_importance"
+                android:id="@+id/info_settings"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_alignEnd="@+id/settings_textView_benachrichtigungen_label_"
-                android:layout_alignRight="@+id/settings_textView_benachrichtigungen_label_"
-                android:layout_below="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_alignEnd="@+id/settings_textView_benachrichtigungen_label"
+                android:layout_alignRight="@+id/settings_textView_benachrichtigungen_label"
+                android:layout_below="@+id/settings_textView_benachrichtigungen_label"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="-50dp"
                 android:background="@drawable/ic_info_black_24dp"
@@ -49,9 +50,9 @@
                 android:id="@+id/settings_checkBox_led"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/settings_textView_benachrichtigungen_label_"
-                android:layout_alignStart="@+id/settings_textView_benachrichtigungen_label_"
-                android:layout_below="@+id/settings_textView_benachrichtigungen_label_"
+                android:layout_alignLeft="@id/settings_textView_benachrichtigungen_label"
+                android:layout_alignStart="@+id/settings_textView_benachrichtigungen_label"
+                android:layout_below="@+id/settings_textView_benachrichtigungen_label"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:checked="false"
                 android:onClick="checkBoxClicked"
