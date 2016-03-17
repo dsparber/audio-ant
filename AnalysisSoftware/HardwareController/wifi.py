@@ -1,32 +1,68 @@
 import subprocess
+import ledController as led
+import time
+
 
 class WifiController:
 
-	__init__(self):
-		self.essid = subprocess.check_output("./essid.sh")[:-1]
-		self.ap = subprocess.check_output("./ap.sh")[:-1]
-		self.up = subprocess.check_output("./ifup.sh")[:-1]
+	def __init__(self, outputManager):
+
+		self.outputManager = outputManager
+
+		self.essid = self.getNetwork()
+		self.ap = self.isHotspotOn()
+		self.up = self.isOn()
+
+		self.setLeds()
+
+	def setLeds(self):
+		led.ledHotspot(self.isHotspotOn())
+		led.ledWifi(self.isOn())
 
 	def getNetwork(self):
-		self.essid = subprocess.check_output("./essid.sh")[:-1]
+		self.essid = subprocess.check_output("scripts/essid.sh")[:-1]
 		return self.essid
 
 	def isOn(self):
-		self.up = subprocess.check_output("./ifup.sh")[:-1]
+		self.up = subprocess.check_output("scripts/ifup.sh")[:-1] == "True"
 		return self.up
 
 	def isHotspotOn(self):
-		self.ap = subprocess.check_output("./ap.sh")[:-1]
+		self.ap = subprocess.check_output("scripts/ap.sh")[:-1] == "active" and self.getNetwork() == "AudioAnt"
 		return self.ap
 
-	def on():
-		subprocess.call(["sudo ifup wlan0","sudo service hostapd restart"])
+	def toggle(self):
+		if self.isOn():
+			self.off()
+		else:
+			self.on()
+		self.setLeds()
 
-	def off():
-		subprocess.call("sudo ifdown wlan0")
+	def toggleHotspot(self):
+		if self.isOn():
+			if self.isHotspotOn():
+				self.hotspotOff()
+			else:
+				self.hotspotOn()
+			self.setLeds()
 
-	def hotspotOn():
-		subprocess.call("./enableHotspot.sh")
+	def on(self):
+		led.ledWifiBlink()
+		subprocess.check_output("scripts/wifiUp.sh")
+		time.sleep(10)
+		self.setLeds()
 
-	def hotspotOff():
-		subprocess.call("./disableHotspot.sh")
+	def off(self):
+		led.ledWifiBlink()
+		subprocess.check_output("scripts/wifiDown.sh")
+		self.setLeds()
+
+	def hotspotOn(self):
+		led.ledHotspotBlink()
+		subprocess.check_output("scripts/enableHotspot.sh")
+		self.setLeds()
+
+	def hotspotOff(self):
+		led.ledHotspotBlink()
+		subprocess.check_output("scripts/disableHotspot.sh")
+		self.setLeds()

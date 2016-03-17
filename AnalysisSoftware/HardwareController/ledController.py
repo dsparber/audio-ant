@@ -1,7 +1,8 @@
-import RPi.GPIO as GPIO 
-import time 
+import RPi.GPIO as GPIO
+import time
 import CONFIG
 import PINS
+from thread import *
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -15,26 +16,48 @@ GPIO.setup(PINS.ledRecording, GPIO.OUT)
 GPIO.setup(PINS.ledRecordingFailed, GPIO.OUT)
 GPIO.setup(PINS.ledRecordingSuccess, GPIO.OUT)
 
-def ledWifi(on): 
-    GPIO.output(PINS.ledWifi, on)
-def ledBluetooth(on): 
-    GPIO.output(PINS.ledBluetooth, on)
-def ledHotspot(on): 
-    GPIO.output(PINS.ledHotspot, on)
+ledBlinking = {}
+
+def setLed(pin, on):
+    ledBlinking[pin] = False
+    GPIO.output(pin, on)
+
+def ledBlink(pin):
+    ledBlinking[pin] = True
+    start_new_thread(ledBlinkThread ,(pin,))
+
+def ledBlinkThread(pin):
+    while ledBlinking[pin]:
+        GPIO.output(pin, True)
+        time.sleep(CONFIG.ledBlinkDelay)
+        GPIO.output(pin, False)
+        time.sleep(CONFIG.ledBlinkDelay)
+
+def ledWifi(on):
+    setLed(PINS.ledWifi, on)
+def ledBluetooth(on):
+    setLed(PINS.ledBluetooth, on)
+def ledHotspot(on):
+    setLed(PINS.ledHotspot, on)
+
+def ledWifiBlink():
+    ledBlink(PINS.ledWifi)
+def ledHotspotBlink():
+    ledBlink(PINS.ledHotspot)
 
 def ledRunning(on):
-    GPIO.output(PINS.ledRunning, on)	
+    setLed(PINS.ledRunning, on)
 def ledRecording(on):
-    GPIO.output(PINS.ledRecording, on)    
+    setLed(PINS.ledRecording, on)
 def ledRecordingFailed(on):
-    GPIO.output(PINS.ledRecordingFailed, on)	
+    setLed(PINS.ledRecordingFailed, on)
 def ledRecordingSuccess(on):
-    GPIO.output(PINS.ledRecordingSuccess, on)
-		
+    setLed(PINS.ledRecordingSuccess, on)
+
 def led(ledName, option):
-	
-	option = int(option)	
-		
+
+	option = int(option)
+
 	if option > 1:
 		for i in range(0,option):
 			led(ledName, 1)
@@ -59,7 +82,7 @@ def led(ledName, option):
 		elif (ledName == "LED_RECORDING_SUCCESS"):
 			ledRecordingSuccess(ledOn)
 		else:
-			print ("LED not defined")				
-        
+			print ("LED not defined")
+
 def ledByOptions(options):
     led(options[0], options[1])

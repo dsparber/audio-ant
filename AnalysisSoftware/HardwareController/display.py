@@ -1,5 +1,6 @@
 import time
 import datetime
+from thread import *
 
 import Adafruit_Nokia_LCD as LCD
 import Adafruit_GPIO.SPI as SPI
@@ -21,7 +22,7 @@ class Display:
         GPIO.setup(PINS.DisplayBL, GPIO.OUT)
 
         self.disp = LCD.PCD8544(PINS.DisplayDC, PINS.DisplayRST, spi=SPI.SpiDev(PINS.DisplaySPI_PORT, PINS.DisplaySPI_DEVICE, max_speed_hz=4000000))
-        self.disp.begin(contrast=60)
+        self.disp.begin(contrast=50)
         self.disp.clear()
         self.disp.display()
 
@@ -39,16 +40,22 @@ class Display:
     def displayClock(self):
         self.displayingText = False
         self.showClock = True
+        start_new_thread(self.clockThread ,())
+
+    def clockThread(self):
+
         while self.showClock:
+
             currentTime = datetime.datetime.time(datetime.datetime.now())
             text = "%02d" % (currentTime.hour,) + ":" + "%02d" % (currentTime.minute,)
-            self.disp.clear()
+
             self.font = ImageFont.truetype(CONFIG.displayFont, 30)
             maxwidth, height = self.draw.textsize(text, font=self.font)
+
             self.draw.rectangle((0,0,84,48), outline=255, fill=255)
             self.displayText(text, (84-maxwidth)/2, (48-height)/2, 30)
+
             time.sleep(CONFIG.displaySleepTime)
-            self.disp.display()
 
     def write(self, text, y, size):
 	self.showClock = False

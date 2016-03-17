@@ -3,9 +3,14 @@ import RPi.GPIO as GPIO
 import PINS
 import time
 
+current_milli_time = lambda: int(round(time.time() * 1000))
+
 class InputManager:
 
-	def __init__(self):
+	def __init__(self, outManager):
+
+		# Output manager
+		self.outManager = outManager
 
 		# Socket list
 		self.sockets = []
@@ -23,9 +28,20 @@ class InputManager:
 		self.addButton("BUTTON_HOTSPOT", PINS.buttonBluetooth)
 		self.addButton("BUTTON_BLUETOOTH", PINS.buttonHotspot)
 
+		self.lastWifi = current_milli_time()
+		self.lastHotspot = current_milli_time()
+
 	def buttonAction(self, name):
 		if name == "BUTTON_RECORDING":
 			self.send("BUTTON;" + name)
+		elif name == "BUTTON_WIFI":
+			if current_milli_time() - self.lastWifi > 750:
+				self.outManager.wifi.toggle()
+				self.lastWifi = current_milli_time()
+		elif name == "BUTTON_HOTSPOT":
+			if current_milli_time() - self.lastHotspot > 750:
+				self.outManager.wifi.toggleHotspot()
+				self.lastHotspot = current_milli_time()
 		else:
 			print name
 
