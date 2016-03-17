@@ -7,3 +7,5 @@ sudo ifdown wlan0
 sudo ifup wlan0
 sudo service hostapd restart
 sudo service isc-dhcp-server restart
+sudo update-rc.d hostapd enable
+sudo update-rc.d isc-dhcp-server enable
