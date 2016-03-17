@@ -12,15 +12,15 @@
     </string>
     <string name="recording_description_header">Aufnahmahinweise</string>
 
-    <string name="wlan_description">Um die AudioAnt effektiver mit dem Smartphone zu verbinden
-        und um das Benutzen des im Smartphone eingebauten Mikrofons zu ermöglichen
-        können AudioAnt und Smartphone über Wlan (drahtloses Internet) verbunden werden.
-        \n\nSie können den Namen des Wlans selbst eingeben oder über \"Aktuellen Wlan Namen einfügen\"
-        den Namen des Wlans, mit dem das Gerät zurzeit verbunden ist automatisch einfügen lassen.
-        \n\nNachdem das Passwort eingegeben wurde können die Daten über Bluetooth an die AudioAnt
-        gesendet werden.
+    <string name="wlan_description">
+        Um die AudioAnt mit dem Smartphone zu verbinden ohne den Internetzugriff zu verlieren kann
+        die AudioAnt mit einem bereits bestehenden Drahtlosen Netzwerk (WLAN) verbunden werden.
+        Geben sie hierfür die Daten ihres Heim-Wlans in die Textboxen ein und drücken Sie auf
+        \"Wlan Informationen senden\" umd die Daten zur AudioAnt zu senden.
+
         \n\nNach dem Senden erhalten Sie eine Informationsmeldung ob die AudioAnt nun mit dem Wlan
-        verbunden ist.
+        verbunden ist. War der Verbindungsversuch erfolgreich so verbindet sich ihr Smartphone
+        automatisch mit ihrem Heim-Wlan und Sie haben wieder zugriff auf das Internet.
     </string>
     <string name="wlan_description_header">Wofür wird Wlan benötigt?</string>
 
@@ -34,7 +34,7 @@
     <!-- -->
 
     <!-- AudioAnt Settings Activity-->
-    <string name="audioant_settings_label_drahtloses_internet">Wlan der AudioAnt</string>
+    <string name="audioant_settings_label_drahtloses_internet">Lokales Wlan</string>
     <string name="audioant_settings_label_bnachrichtigungen">Benachrichtigungen</string>
     <string name="audioant_settings_button_namen_übernehmen">aktuellen Wlan namen einfügen</string>
     <string name="audioant_settings_button_wlan_info_senden">Wlan informationen senden</string>
@@ -53,6 +53,7 @@
     <string name="settings_notifications_description_header">Benachrichtigungen</string>
     <string name="settings_checkbox_led">LED Blitz verwenden</string>
     <string name="settings_checkbox_notifications">Warnton am Handy ausgeben</string>
+    <string name="settings_checkbox_vibrations">Vibrieren</string>
 
 
     <!-- Record Activity-->

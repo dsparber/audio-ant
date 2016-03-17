@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Helper.Settings;
@@ -35,7 +39,7 @@ public class RecordActivity extends AppCompatActivity {
     private Button button_play;
     private Button button_save;
     private MediaPlayer player;
-    private String TAG = "FDBCK_REPLAY";
+    private String TAG = "RECORDING_ACTIVITY";
     private EditText geräuschName;
     private Thread timeThread;
     private boolean geräuschSchonAufgenommen = false;
@@ -147,9 +151,6 @@ public class RecordActivity extends AppCompatActivity {
 
     public void playButtonClicked(View v) {
         if (button_play.getText().equals(getResources().getString(R.string.record_button_start_replay))) {
-            changeButtonText(button_play);
-            resetTimeOfTextView();
-            startTimeThread();
             player = new MediaPlayer();
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer player) {
@@ -169,6 +170,10 @@ public class RecordActivity extends AppCompatActivity {
                 player.setDataSource(getAbsoluteFileLocation());
                 player.prepare();
                 player.start();
+
+                changeButtonText(button_play);
+                resetTimeOfTextView();
+                startTimeThread();
             } catch (Exception e) {
                 Log.e(TAG, "could not play audio", e);
             }
@@ -184,6 +189,28 @@ public class RecordActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public void sendButtonClicked(View v) {
+
+    }
+
+    public String fileToString(File file) {
+
+//      Converts the audio File to a byte array
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        try {
+            FileInputStream fs = new FileInputStream(file);
+            fs.read(bytes);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "Die datei zum umwandeln existiert nicht");
+        } catch (IOException e) {
+            Log.d(TAG, "Die Datei konnte nicht als byte[] gespeichert werden");
+        }
+
+//      Decodes the byteArray into a String and returns it
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
     public void changeButtonText(Button b) {

@@ -138,7 +138,8 @@
                 android:enabled="false"
                 android:text="Geräusch Speichern"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_large" />
+                android:textSize="@dimen/text_size_large"
+                android:onClick="sendButtonClicked" />
 
         </RelativeLayout>
     </ScrollView>

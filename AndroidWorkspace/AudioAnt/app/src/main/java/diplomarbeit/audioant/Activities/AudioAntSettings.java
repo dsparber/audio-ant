@@ -62,8 +62,6 @@ public class AudioAntSettings extends AppCompatActivity {
             case R.id.button_wlan_infos_senden:
                 Toast.makeText(getApplicationContext(), wifiHelper.getSSID(), Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.button_wlan_namen_einfügen:
-                wlanName.setText(wifiHelper.getSSID());
         }
     }
 
