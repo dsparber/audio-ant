@@ -2,8 +2,8 @@
 alertLight = 6
 
 ledWifi = 16
-ledBluetooth = 26 
-ledHotspot = 20
+ledBluetooth = 20 
+ledHotspot = 26
 
 ledRunning = 21
 ledRecording = 19

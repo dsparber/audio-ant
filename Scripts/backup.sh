@@ -14,18 +14,18 @@ echo "Copying contents..."
 mkdir $backupName
 
 # copying files
-cp -r /etc/ $backupName
-cp -r /home/ $backupName
+sudo cp -r /etc/ $backupName
+sudo cp -r /home/ $backupName
 
 # creating and copying package list
 mkdir $backupName/$packageLists
 dpkg --get-selections > $backupName/$packageLists/package.list
-cp /etc/apt/sources.list $backupName/$packageLists/sources.list
+sudo cp /etc/apt/sources.list $backupName/$packageLists/sources.list
 apt-key exportall > $backupName/$packageLists/repo.keys
 
 # creating archive (tar.gz)
 echo "Creating archive..."
-tar czf $now.tar.gz $backupName
+sudo tar czf $now.tar.gz $backupName
 
 # copying archive to destination device
 echo "Enter the connection information:"
@@ -33,13 +33,14 @@ read -p "Host: " destIP
 read -p "Folder: " destFolder
 read -p "User: " destUser
 
-rsync -ze ssh $now.tar.gz $destUser@$destIP:$destFolder
 echo "Transmitting backup..."
+rsync -ze ssh $now.tar.gz $destUser@$destIP:$destFolder
 
-# tidy up
-rm -R $backupName
-rm $now.tar.gz
-echo "finished"
+echo "Cleaning up..."
+sudo rm -R $backupName
+sudo rm $now.tar.gz
+
+echo "Finished!"
 
 # recover:
 #   sudo apt-key add ~/repo.keys
