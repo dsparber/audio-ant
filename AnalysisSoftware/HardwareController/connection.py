@@ -7,7 +7,7 @@ import inputManager as inManager
 from display import Display
  
 HOST = ''		# Symbolic name meaning all available interfaces
-PORT = input()
+PORT = 4207
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
