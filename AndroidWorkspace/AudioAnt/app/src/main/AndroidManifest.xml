@@ -58,6 +58,10 @@
         <service
             android:name=".Model.Services.RecordSignalService"
             android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Model.Services.CommunicationService"
+            android:enabled="true"
             android:exported="true"></service>
     </application>
 

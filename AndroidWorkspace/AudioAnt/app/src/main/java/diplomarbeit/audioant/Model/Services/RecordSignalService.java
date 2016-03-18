@@ -28,7 +28,13 @@ public class RecordSignalService extends Service {
             Log.d(TAG, "Die Aufnahme laeuft bereits");
         } else {
             alreadyStarted = true;
-            recordToFile();
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    recordToFile();
+                }
+            });
+            t.run();
         }
         return START_NOT_STICKY;
     }

@@ -60,7 +60,7 @@
                 android:textSize="@dimen/text_size_medium" />
 
             <CheckBox
-                android:id="@+id/settings_checkBox_signalton"
+                android:id="@+id/settings_checkbox_vibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/settings_checkBox_led"
@@ -68,8 +68,22 @@
                 android:layout_below="@+id/settings_checkBox_led"
                 android:layout_marginTop="@dimen/margin_small"
                 android:onClick="checkBoxClicked"
+                android:text="@string/settings_checkbox_vibrations"
+                android:textSize="@dimen/text_size_medium"
+                android:checked="true" />
+
+            <CheckBox
+                android:id="@+id/settings_checkBox_signalton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/settings_checkBox_led"
+                android:layout_alignStart="@+id/settings_checkBox_led"
+                android:layout_below="@+id/settings_checkbox_vibration"
+                android:layout_marginTop="@dimen/margin_small"
+                android:onClick="checkBoxClicked"
                 android:text="@string/settings_checkbox_notifications"
-                android:textSize="@dimen/text_size_medium" />
+                android:textSize="@dimen/text_size_medium"
+                android:checked="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
