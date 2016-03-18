@@ -1,7 +1,7 @@
 #!/bin/bash
 
-down=`ip link show wlan0 | grep -o "state UP"`
-if [ "$down" == "state UP" ]
+state=`ip link show wlan0 | grep -o "UP"`
+if [[ $state == UP* ]]
 then
 	echo "True"
 else
