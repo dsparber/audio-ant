@@ -7,46 +7,120 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class CommunicationService extends Service {
 
     private static String TAG = "BOUND_SERICE";
     private IBinder binder = new MyBinder();
     private String text = "asgard";
+    private BufferedReader reader;
+    private PrintWriter printer;
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "service created");
+        initialiseNetworkConnection();
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG, "Service was bound");
         return binder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "the service was started");
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Service was destroyed");
+        try {
+            reader.close();
+            printer.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "The service was unbound");
+        return super.onUnbind(intent);
+    }
+
+    public void sendText(String text) {
+        Log.d(TAG, "string wird an server gesendet");
+        printer.write(text);
+        printer.write("\r");
+        printer.flush();
+    }
+
+
+    private void sendReceivedData(String s) {
+        Intent intent;
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            intent = new Intent(jsonObject.getString("action"));
+            intent.putExtra("json", jsonObject.toString());
+
+        } catch (JSONException e) {
+            intent = new Intent("Test");
+            intent.putExtra("text", s);
+        }
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        Log.d(TAG, "sending broadcast");
+
+    }
+
+    private void initialiseNetworkConnection() {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+
+                Socket socket = null;
                 try {
-                    Thread.sleep(10000);
-                    sendBroadcast();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    socket = new Socket("192.168.0.102", 4444);
+
+                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    Log.d(TAG, "Verbindung zum Server erfolgreich");
+                    listenForAudioAntMessages();
+
+                } catch (IOException e) {
+                    Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
                 }
             }
         });
         t.start();
-        return START_STICKY;
     }
 
-    public String getText() {
-        return text;
+    private void listenForAudioAntMessages() {
+        String incoming;
+        try {
+            while ((incoming = reader.readLine()) != null) {
+                sendReceivedData(incoming);
+            }
+            Log.d(TAG, "Die Verbindung zum Server wurde verloren");
+        } catch (IOException e) {
+            Log.d(TAG, "server closed");
+        }
     }
-
-    private void sendBroadcast() {
-        Intent intent = new Intent("Networkstuff");
-        intent.putExtra("text", "broadcast");
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
 
     public class MyBinder extends Binder {
         public CommunicationService getService() {

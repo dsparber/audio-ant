@@ -20,7 +20,7 @@ import diplomarbeit.audioant.R;
 public class MainActivity extends AppCompatActivity {
 
     private CommunicationService communicationService;
-    private boolean serviceIsBound = false;
+    private static boolean serviceIsBound = false;
     private long start;
     private long stop;
     private static final String TAG = "MAIN_ACTIVITY";
@@ -29,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            String text = intent.getStringExtra("text");
-            Log.d(TAG, "Received Broadcast");
+            if (intent.hasExtra("text")) {
+                String text = intent.getStringExtra("text");
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -41,11 +42,9 @@ public class MainActivity extends AppCompatActivity {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
             stop = System.currentTimeMillis();
-            Log.d("ASDF", "" + (stop - start));
+            Log.d(TAG, "" + (stop - start));
             Toast.makeText(MainActivity.this, "jetzt", Toast.LENGTH_SHORT).show();
             serviceIsBound = true;
-
-            Toast.makeText(MainActivity.this, communicationService.getText(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -58,53 +57,55 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.button_lernen).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, RecordActivity.class));
-            }
-        });
-        findViewById(R.id.button_alle_zeigen).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ListActivity.class));
-            }
-        });
-        findViewById(R.id.button_app_einstellungen).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(MainActivity.this, SettingsActivity.class), 1);
-            }
-        });
-        findViewById(R.id.button_einstellungen_audioant).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AudioAntSettings.class));
-            }
-        });
-
-        findViewById(R.id.main_textView_verbunden).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         start = System.currentTimeMillis();
         bindToCommunicationService();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Networkstuff"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Test"));
     }
 
     public void bindToCommunicationService() {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Intent i = new Intent(MainActivity.this, CommunicationService.class);
-                bindService(i, serviceConnection, 0);
-                startService(i);
-            }
-        });
-        t.start();
+        if (!serviceIsBound) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(MainActivity.this, CommunicationService.class);
+                    bindService(i, serviceConnection, 0);
+                    startService(i);
+                }
+            });
+            t.start();
+        }
     }
+
+    public void unbindFromCommunicationService() {
+        unbindService(serviceConnection);
+        serviceIsBound = false;
+    }
+
+    public void sendTextToService(View v) {
+        communicationService.sendText("Beispieltext");
+    }
+
+    public void startRecordActivity(View v) {
+        unbindFromCommunicationService();
+        startActivity(new Intent(MainActivity.this, RecordActivity.class));
+    }
+
+    public void startListActivity(View v) {
+        unbindFromCommunicationService();
+        startActivity(new Intent(MainActivity.this, ListActivity.class));
+    }
+
+    public void startSettingsActivity(View v) {
+        unbindFromCommunicationService();
+        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+    }
+
+    public void startAudioAntSettingsActivity(View v) {
+        unbindFromCommunicationService();
+        startActivity(new Intent(MainActivity.this, AudioAntSettings.class));
+    }
+
+
 }

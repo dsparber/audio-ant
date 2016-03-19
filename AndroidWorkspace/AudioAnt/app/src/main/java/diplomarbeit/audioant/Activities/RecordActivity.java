@@ -1,13 +1,22 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,14 +26,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Helper.Settings;
+import diplomarbeit.audioant.Model.Services.CommunicationService;
 import diplomarbeit.audioant.Model.Services.RecordSignalService;
 import diplomarbeit.audioant.R;
 
@@ -43,6 +58,54 @@ public class RecordActivity extends AppCompatActivity {
     private EditText geräuschName;
     private Thread timeThread;
     private boolean geräuschSchonAufgenommen = false;
+    private CommunicationService communicationService;
+    private static boolean serviceIsBound = false;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
+            communicationService = binder.getService();
+            Toast.makeText(getApplicationContext(), "jetzt", Toast.LENGTH_SHORT).show();
+            serviceIsBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serviceIsBound = false;
+        }
+    };
+    private BroadcastReceiver soundLearnedFeedbackReceiver = new BroadcastReceiver() {
+        @Override
+
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("json")) {
+                JSONObject j = null;
+                try {
+                    j = new JSONObject(intent.getStringExtra("json"));
+                    boolean successful = j.getJSONObject("data").getBoolean("successful");
+                    if (successful) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(RecordActivity.this);
+                        alert.setTitle("Information");
+                        alert.setMessage("es geht");
+                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(RecordActivity.this, MainActivity.class);
+                                i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                i.putExtra("comingFrom", "RecordActivity");
+                                i.putExtra("message", "Der Ton wurde erfolgreich eingespeichert!!");
+                                startActivity(i);
+                            }
+                        });
+                        alert.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +144,10 @@ public class RecordActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+        bindToCommunicationService();
+        //has to be changed to soundLearnedFeedback
+        LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("saveSound"));
+
     }
 
     public void startTimeThread() {
@@ -192,8 +259,21 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void sendButtonClicked(View v) {
+        JSONObject object = new JSONObject();
+        JSONObject data = new JSONObject();
+        try {
+            data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
+            data.put("soundName", geräuschName.getText());
+            data.put("alertName", textView_ChosenSound.getText());
 
+            object.put("action", "saveSound");
+            object.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        communicationService.sendText(object.toString());
     }
+
 
     public String fileToString(File file) {
 
@@ -245,6 +325,47 @@ public class RecordActivity extends AppCompatActivity {
         }
         this.startActivityForResult(intent, 1);
     }
+
+    public void bindToCommunicationService() {
+        if (!serviceIsBound) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(getApplicationContext(), CommunicationService.class);
+                    bindService(i, serviceConnection, 0);
+                    startService(i);
+                }
+            });
+            t.start();
+        }
+    }
+
+    public void unbindFromCommunicationService() {
+        unbindService(serviceConnection);
+        serviceIsBound = false;
+    }
+
+    public void saveAudioFile(String s) {
+        File f = new File(getAbsoluteFileLocation());
+        if (f.exists()) {
+            f.delete();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        byte[] data = Base64.decode(s, Base64.NO_WRAP);
+        try {
+            FileOutputStream fos = new FileOutputStream(getAbsoluteFileLocation());
+            fos.write(data);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "File saved from json");
+    }
+
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {

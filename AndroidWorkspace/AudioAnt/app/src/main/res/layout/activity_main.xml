@@ -26,7 +26,8 @@
             android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_mic_48dp"
             android:text="Geräusch lernen"
-            android:textSize="@dimen/text_size_normal" />
+            android:textSize="@dimen/text_size_normal"
+            android:onClick="startRecordActivity" />
 
         <Button
             android:id="@+id/button_alle_zeigen"
@@ -36,7 +37,8 @@
             android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_toc_48dp"
             android:text="Alle Geräusche anzeigen"
-            android:textSize="@dimen/text_size_normal" />
+            android:textSize="@dimen/text_size_normal"
+            android:onClick="startListActivity" />
 
         <Button
             android:id="@+id/button_app_einstellungen"
@@ -46,7 +48,8 @@
             android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_mobile_phone_48dp"
             android:text="App Einstellungen"
-            android:textSize="@dimen/text_size_normal" />
+            android:textSize="@dimen/text_size_normal"
+            android:onClick="startSettingsActivity" />
 
         <Button
             android:id="@+id/button_einstellungen_audioant"
@@ -58,7 +61,8 @@
             android:enabled="true"
             android:fadeScrollbars="false"
             android:text="AudioAnt Einstellungen"
-            android:textSize="@dimen/text_size_normal" />
+            android:textSize="@dimen/text_size_normal"
+            android:onClick="startAudioAntSettingsActivity" />
 
     </LinearLayout>
 
@@ -83,5 +87,15 @@
         android:layout_toRightOf="@+id/ic_verbunden"
         android:text="@string/main_label_not_connected"
         android:textSize="@dimen/text_size_medium" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/button"
+        android:layout_above="@+id/ic_verbunden"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="88dp"
+        android:onClick="sendTextToService" />
 
 </RelativeLayout>
