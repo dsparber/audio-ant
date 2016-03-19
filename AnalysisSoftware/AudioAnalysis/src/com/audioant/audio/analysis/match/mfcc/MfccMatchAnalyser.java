@@ -49,13 +49,15 @@ public class MfccMatchAnalyser {
 
 	public double getMatch() {
 
-		double[] recentMeans = new double[recentValues.get(0).length];
+		double[] recentMeans = new double[12];
 
-		for (int j = 0; j < recentValues.get(0).length; j++) {
+		for (int j = 0; j < 12; j++) {
 			double tmp = 0;
 			for (int i = 0; i < recentValues.size(); i++) {
 				if (!Double.isNaN(savedValues[i][j])) {
-					tmp += recentValues.get(i)[j];
+					if (recentValues.get(i) != null) {
+						tmp += recentValues.get(i)[j];
+					}
 				}
 			}
 			recentMeans[j] = tmp / recentValues.size();

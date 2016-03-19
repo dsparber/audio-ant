@@ -62,7 +62,12 @@ public class FrequnecyMatchAnalyser {
 			double max = 0;
 			for (StrongestFrequenciesModel savedFreq : savedFreqs) {
 
-				double tmp = recentFreq.overlap(savedFreq);
+				double tmp;
+				if (recentFreq == null) {
+					tmp = 0;
+				} else {
+					tmp = recentFreq.overlap(savedFreq);
+				}
 				if (tmp > max) {
 					max = tmp;
 				}

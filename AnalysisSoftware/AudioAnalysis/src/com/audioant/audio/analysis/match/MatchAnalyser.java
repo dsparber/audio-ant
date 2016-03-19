@@ -40,41 +40,48 @@ public class MatchAnalyser extends Observable {
 	}
 
 	public void addAnalysisResult(Result result) {
-		srpAnalyser.addValue(result.getSpectralRolloffPoint());
-		mfccAnalyser.addValue(result.getMfcc());
-		energyAnalyser.addValue(result.getEnergy());
-		frequnecyAnalyser.addValue(result.getStrongestFrequencies());
+		if (result != null) {
+			srpAnalyser.addValue(result.getSpectralRolloffPoint());
+			mfccAnalyser.addValue(result.getMfcc());
+			energyAnalyser.addValue(result.getEnergy());
+			frequnecyAnalyser.addValue(result.getStrongestFrequencies());
+		} else {
+			srpAnalyser.addValue(-1);
+			mfccAnalyser.addValue(null);
+			energyAnalyser.addValue(-1);
+			frequnecyAnalyser.addValue(null);
+		}
 	}
 
-	public boolean isMatch() {
+	private boolean isMatch() {
 		return isMinThresholdReached() && isMatchByWeightedSum();
 	}
 
-	public boolean isSureMatch() {
+	private boolean isSureMatch() {
 		return isMatchByWeightedSum() && isMatchByThresholds();
 	}
 
-	public double getSrpMatch() {
+	private double getSrpMatch() {
 		return srpAnalyser.getMatch();
 	}
 
-	public double getFrequencyMatch() {
+	private double getFrequencyMatch() {
 		return frequnecyAnalyser.getMatch();
 	}
 
-	public double getMfccMatch() {
+	private double getMfccMatch() {
 		return mfccAnalyser.getMatch();
 	}
 
-	public double getEnergyMatch() {
+	private double getEnergyMatch() {
 		return energyAnalyser.getMatch();
 	}
 
-	public Sound getSoundModel() {
+	private Sound getSoundModel() {
 		return sound;
 	}
 
-	public double getWeightedSum() {
+	private double getWeightedSum() {
 		return (frequnecyAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_FREQUENCY
 				+ srpAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_SRP
 				+ mfccAnalyser.getMatch() * Config.AUDIO_ANALYSIS_MATCH_WEIGHT_MFCC
@@ -82,18 +89,18 @@ public class MatchAnalyser extends Observable {
 				/ Config.AUDIO_ANALYSIS_MATCH_WEIGHT_THRESHOLD;
 	}
 
-	public boolean isMatchByWeightedSum() {
+	private boolean isMatchByWeightedSum() {
 		return getWeightedSum() >= 1;
 	}
 
-	public boolean isMatchByThresholds() {
+	private boolean isMatchByThresholds() {
 		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_FREQUENCY
 				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MFCC
 				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_SRP
 				&& energyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_ENERGY;
 	}
 
-	public boolean isMinThresholdReached() {
+	private boolean isMinThresholdReached() {
 		return frequnecyAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_FREQUENCY
 				&& mfccAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_MFCC
 				&& srpAnalyser.getMatch() >= Config.AUDIO_ANALYSIS_MATCH_THRESHOLD_MIN_SRP

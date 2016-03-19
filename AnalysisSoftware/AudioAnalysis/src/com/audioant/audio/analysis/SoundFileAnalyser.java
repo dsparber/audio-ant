@@ -10,6 +10,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 
 import com.audioant.audio.analysis.match.MatchAnalyser;
 import com.audioant.audio.analysis.sound.SoundAnalyser;
+import com.audioant.audio.model.MatchResult;
 import com.audioant.audio.model.Result;
 import com.audioant.audio.model.Sound;
 import com.audioant.audio.windowing.Windowing;
@@ -58,11 +59,13 @@ public class SoundFileAnalyser extends SoundAnalyser {
 
 			matchAnalyser.addAnalysisResult(resultModel);
 
-			boolean currentMatch = matchAnalyser.isMatch();
-			double currentFreqMatch = matchAnalyser.getFrequencyMatch();
-			double currentSrpMatch = matchAnalyser.getSrpMatch();
-			double currentMfccMatch = matchAnalyser.getMfccMatch();
-			double currentEnergy = matchAnalyser.getEnergyMatch();
+			MatchResult matchResult = matchAnalyser.getMatchResult();
+
+			boolean currentMatch = matchResult.isMatch();
+			double currentFreqMatch = matchResult.getFrequencyMatch();
+			double currentSrpMatch = matchResult.getSrpMatch();
+			double currentMfccMatch = matchResult.getMfccMatch();
+			double currentEnergy = matchResult.getEnergyMatch();
 
 			if (currentMatch) {
 				match = true;

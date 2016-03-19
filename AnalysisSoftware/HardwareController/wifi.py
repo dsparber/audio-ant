@@ -23,12 +23,16 @@ class WifiController:
 		self.essid = subprocess.check_output("scripts/essid.sh")[:-1]
 		return self.essid
 
+	def getIP(self):
+		self.ip = subprocess.check_output("scripts/ip.sh")[:-1]
+		return self.ip
+
 	def isOn(self):
 		self.up = subprocess.check_output("scripts/ifup.sh")[:-1] == "True"
 		return self.up
 
 	def isHotspotOn(self):
-		self.ap = subprocess.check_output("scripts/ap.sh")[:-1] == "active" and self.getNetwork() == "AudioAnt"
+		self.ap = subprocess.check_output("scripts/ap.sh")[:-1] == "active" and self.getNetwork() == "AudioAnt" and self.getIP() == "192.168.42.1"
 		return self.ap
 
 	def toggle(self):

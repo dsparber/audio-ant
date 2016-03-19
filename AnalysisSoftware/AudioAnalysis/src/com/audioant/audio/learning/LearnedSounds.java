@@ -74,4 +74,15 @@ public class LearnedSounds {
 	public static void saveSounds() throws ParserConfigurationException, TransformerException {
 		getSoundsXml().write(getSounds());
 	}
+
+	public static void deleteSound(int id) {
+		for (int i = 0; i < getSounds().size(); i++) {
+			if (getSounds().get(i).getNumber() == id) {
+				getSounds().remove(i);
+				break;
+			}
+
+		}
+
+	}
 }
