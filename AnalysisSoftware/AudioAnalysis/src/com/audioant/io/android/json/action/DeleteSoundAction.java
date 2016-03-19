@@ -1,16 +1,23 @@
 package com.audioant.io.android.json.action;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.json.simple.JSONObject;
 
+import com.audioant.RaspberryTool;
+import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.io.android.json.JsonAction;
 import com.audioant.io.android.json.JsonFields;
-import com.audioant.io.android.json.JsonFields.DeleteSound;
+import com.audioant.io.android.json.JsonFields.DeleteSound.Reply;;
 
 public class DeleteSoundAction extends JsonAction {
 
+	private int id;
+
 	public DeleteSoundAction(JSONObject request) {
 		super(request);
-		// TODO Auto-generated constructor stub
+		id = Integer.parseInt((String) request.get(JsonFields.DATA_KEY));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -19,7 +26,15 @@ public class DeleteSoundAction extends JsonAction {
 
 		JSONObject jsonObject = new JSONObject();
 
-		jsonObject.put(JsonFields.ACTION_KEY, DeleteSound.Reply.ACTION_VALUE);
+		LearnedSounds.deleteSound(id);
+		try {
+			LearnedSounds.saveSounds();
+		} catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+		}
+		RaspberryTool.restartAnalysis();
+
+		jsonObject.put(JsonFields.ACTION_KEY, Reply.ACTION_VALUE);
 
 		return jsonObject;
 	}

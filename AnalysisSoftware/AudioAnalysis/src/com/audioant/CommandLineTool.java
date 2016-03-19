@@ -107,10 +107,10 @@ public class CommandLineTool {
 
 	private static void learnSound(Scanner scanner) {
 
+		Sound sound = LearnedSounds.getNewSound(scanner.nextLine());
+
 		try {
 			System.out.print("Enter the name of the sound: ");
-
-			Sound sound = LearnedSounds.getNewSound(scanner.nextLine());
 
 			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(sound);
 
@@ -135,6 +135,7 @@ public class CommandLineTool {
 				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
 				| IndexOutOfBoundsException e) {
 			System.out.println("failed");
+			LearnedSounds.deleteSound(sound.getNumber());
 			e.printStackTrace();
 		}
 

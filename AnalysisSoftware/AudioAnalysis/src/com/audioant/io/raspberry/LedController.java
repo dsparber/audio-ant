@@ -9,9 +9,11 @@ import com.audioant.io.raspberry.hardware.Led;
 
 public class LedController {
 
-	static private BufferedWriter writer;
+	private BufferedWriter writer;
 
-	public LedController() throws IOException {
+	private static LedController ledController;
+
+	private LedController() throws IOException {
 		writer = RaspberryConnection.getWriter();
 	}
 
@@ -41,5 +43,12 @@ public class LedController {
 
 		writer.write(message.toString());
 		writer.flush();
+	}
+
+	public static LedController getInstance() throws IOException {
+		if (ledController == null) {
+			ledController = new LedController();
+		}
+		return ledController;
 	}
 }

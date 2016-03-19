@@ -30,19 +30,18 @@ public class RaspberryTool implements Observer {
 
 	private static AudioStreamAnalyser analyser;
 	private static MicrophoneSoundLearner learner;
+	private static LedController ledController;
 
-	private LedController ledController;
 	private ButtonController buttonController;
 
 	private boolean recording = false;
 
 	private Sound newSound;
 
-	public RaspberryTool() throws IOException {
+	private RaspberryTool() throws IOException {
 
 		AndroidConnection.open();
 
-		ledController = new LedController();
 		buttonController = new ButtonController();
 		buttonController.addObserver(this);
 	}
@@ -50,9 +49,10 @@ public class RaspberryTool implements Observer {
 	public static void start() {
 
 		try {
-			RaspberryTool raspberryTool = new RaspberryTool();
+			ledController = LedController.getInstance();
+			new RaspberryTool();
 			if (!LearnedSounds.getSounds().isEmpty()) {
-				raspberryTool.startAnalysis();
+				RaspberryTool.startAnalysis();
 			}
 
 		} catch (IOException e) {
@@ -60,7 +60,7 @@ public class RaspberryTool implements Observer {
 		}
 	}
 
-	private void startAnalysis() {
+	private static void startAnalysis() {
 		try {
 			if (analyser == null) {
 
@@ -81,7 +81,7 @@ public class RaspberryTool implements Observer {
 		}
 	}
 
-	private void stopAnalysis() {
+	private static void stopAnalysis() {
 		if (analyser != null && analyser.isRunning()) {
 			analyser.stop();
 			led(Led.LED_RUNNING, 0);
@@ -137,6 +137,7 @@ public class RaspberryTool implements Observer {
 						| IndexOutOfBoundsException e) {
 
 					startAnalysis();
+					LearnedSounds.deleteSound(newSound.getNumber());
 					led(Led.LED_RECORDING_FAILED, 5);
 					e.printStackTrace();
 				}
@@ -144,7 +145,7 @@ public class RaspberryTool implements Observer {
 		}
 	}
 
-	private void led(Led led, int times) {
+	private static void led(Led led, int times) {
 		try {
 			if (times > 1) {
 				ledController.blink(led, times);
@@ -156,5 +157,10 @@ public class RaspberryTool implements Observer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void restartAnalysis() {
+		stopAnalysis();
+		startAnalysis();
 	}
 }
