@@ -39,4 +39,5 @@ public class Result {
 	public double getEnergy() {
 		return energy;
 	}
+
 }

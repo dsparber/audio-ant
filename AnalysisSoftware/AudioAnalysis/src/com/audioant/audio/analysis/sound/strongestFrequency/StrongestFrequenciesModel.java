@@ -30,6 +30,10 @@ public class StrongestFrequenciesModel {
 
 	public double overlap(StrongestFrequenciesModel model) {
 
+		if (model == null) {
+			return 0;
+		}
+
 		double c1 = 0, s = 0;
 		for (FrequencyModel m : strongestFrequencies) {
 			if (model.strongestFrequencies.contains(m)) {

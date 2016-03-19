@@ -12,7 +12,9 @@ import com.audioant.audio.analysis.sound.energy.EnergyAnalyser;
 import com.audioant.audio.analysis.sound.mfcc.MfccAnalyser;
 import com.audioant.audio.analysis.sound.srp.SrpAnalyser;
 import com.audioant.audio.analysis.sound.strongestFrequency.FrequnecyAnalyser;
+import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 import com.audioant.audio.model.Result;
+import com.audioant.config.Config;
 import com.audioant.io.microphone.AudioStreamReader;
 
 /**
@@ -48,7 +50,19 @@ public class SoundAnalyser extends Observable {
 		analyser.assignSamples(samples, sampleRate);
 		analyser.generateSpectrum();
 
-		return new Result(frequnecyAnalyser.analyseSamples(), srpAnalyser.analyseSamples(),
-				mfccAnalyser.analyseSamples(), energyAnalyser.analyseSamples());
+		double energy = energyAnalyser.analyseSamples();
+		if (energy >= Config.AUDIO_ANALYSIS_POWER_MIN_RMS) {
+
+			StrongestFrequenciesModel strongestFreq = frequnecyAnalyser.analyseSamples();
+			if (strongestFreq.size() > 0 && strongestFreq.size() <= Config.AUDIO_ANALYSIS_FREQUENCY_MAX_PEAK_COUNT) {
+
+				double srp = srpAnalyser.analyseSamples();
+				double[] mfcc = mfccAnalyser.analyseSamples();
+
+				return new Result(strongestFreq, srp, mfcc, energy);
+			}
+		}
+
+		return null;
 	}
 }
