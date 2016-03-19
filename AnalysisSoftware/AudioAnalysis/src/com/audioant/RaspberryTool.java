@@ -17,6 +17,7 @@ import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.audio.model.Sound;
+import com.audioant.io.android.AndroidConnection;
 import com.audioant.io.eventObserver.DetailLogger;
 import com.audioant.io.eventObserver.EventLights;
 import com.audioant.io.eventObserver.EventLogger;
@@ -38,6 +39,8 @@ public class RaspberryTool implements Observer {
 	private Sound newSound;
 
 	public RaspberryTool() throws IOException {
+
+		AndroidConnection.open();
 
 		ledController = new LedController();
 		buttonController = new ButtonController();

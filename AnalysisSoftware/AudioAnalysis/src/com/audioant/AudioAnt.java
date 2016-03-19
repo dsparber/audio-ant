@@ -2,8 +2,6 @@ package com.audioant;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.Date;
 
 import com.audioant.config.Config;
@@ -28,7 +26,7 @@ public class AudioAnt {
 
 			new File(log).getParentFile().mkdirs();
 
-			System.setErr(new PrintStream(new FileOutputStream(log)));
+			// System.setErr(new PrintStream(new FileOutputStream(log)));
 
 			RaspberryTool.start();
 		}

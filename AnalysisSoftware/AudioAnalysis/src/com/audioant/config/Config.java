@@ -193,4 +193,7 @@ public class Config {
 
 	// String formats
 	public static final String STRING_FORMATTER_DOUBLE = ConfigReader.getProperty("stringFormatterDouble");
+
+	// Android
+	public static final int ANDROID_PORT = ConfigReader.getPropertyAsInt("androidPort");
 }
