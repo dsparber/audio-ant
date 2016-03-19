@@ -31,6 +31,7 @@ public class AndroidConnection extends Observable {
 			while (true) {
 				try {
 					Socket socket = serverSocket.accept();
+					socket.setKeepAlive(true);
 					sockets.add(socket);
 
 					new AndroidInputListener(new BufferedReader(new InputStreamReader(socket.getInputStream())));
@@ -46,7 +47,7 @@ public class AndroidConnection extends Observable {
 
 	}
 
-	public void write(String text) throws IOException {
+	private void writeText(String text) throws IOException {
 		for (Socket socket : sockets) {
 
 			if (!socket.isConnected() || socket.isClosed() || !socket.isBound()) {
@@ -57,14 +58,29 @@ public class AndroidConnection extends Observable {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			writer.write(text);
 			writer.flush();
-			writer.close();
 		}
 	}
 
-	public static void open() throws IOException {
+	public static void write(String text) {
 		if (androidConnection == null) {
-			androidConnection = new AndroidConnection();
-			androidConnection.addObserver(AndroidLogger.getInstance());
+			open();
+		}
+		try {
+			androidConnection.writeText(text);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void open() {
+		if (androidConnection == null) {
+			try {
+				androidConnection = new AndroidConnection();
+				androidConnection.addObserver(AndroidListener.getInstance());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 	}
 
