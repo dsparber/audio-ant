@@ -30,7 +30,7 @@ public class GetAllSoundsAction extends JsonReplyAction {
 		for (Sound s : soundList) {
 			JSONObject sound = new JSONObject();
 			sound.put(GetAllSounds.Reply.SOUND_NAME_KEY, s.getNameNotNull());
-			sound.put(GetAllSounds.Reply.SOUND_NUMBER_KEY, new Integer(s.getNumber()));
+			sound.put(GetAllSounds.Reply.SOUND_NUMBER_KEY, new Integer(s.getId()));
 			sounds.add(sound);
 		}
 

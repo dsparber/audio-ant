@@ -34,7 +34,7 @@ public class RecognisedSoundAction extends JsonRequestAction {
 		for (Sound s : soundList) {
 			JSONObject sound = new JSONObject();
 			sound.put(Request.SOUND_NAME_KEY, s.getNameNotNull());
-			sound.put(Request.SOUND_NUMBER_KEY, new Integer(s.getNumber()));
+			sound.put(Request.SOUND_NUMBER_KEY, new Integer(s.getId()));
 			sounds.add(sound);
 		}
 

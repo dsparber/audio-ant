@@ -31,15 +31,40 @@ public class Config {
 	public static final String LEARNED_SOUNDS_FILE_POWER = ConfigReader.getProperty("learnedSoundsFilePower");
 
 	// Learned Sounds XML
-	public static final String LEARNED_SOUNDS_XML_FILE = ConfigReader.getProperty("learndedSoundsXml");
+	public static final String LEARNED_SOUNDS_XML_FILE = ConfigReader.getProperty("learnedSoundsXml");
 	public static final String LEARNED_SOUNDS_XML_FILE_PATH = LEARNED_SOUNDS_FOLDER_PATH + LEARNED_SOUNDS_XML_FILE;
 
-	public static final String LEARNED_SOUNDS_XML_ROOT = ConfigReader.getProperty("learndedSoundsXmlRoot");
-	public static final String LEARNED_SOUNDS_XML_SOUND = ConfigReader.getProperty("learndedSoundsXmlSound");
-	public static final String LEARNED_SOUNDS_XML_NAMED = ConfigReader.getProperty("learndedSoundsXmlNamed");
-	public static final String LEARNED_SOUNDS_XML_NUMBER = ConfigReader.getProperty("learndedSoundsXmlNumber");
-	public static final String LEARNED_SOUNDS_XML_NAME = ConfigReader.getProperty("learndedSoundsXmlName");
-	public static final String LEARNED_SOUNDS_XML_PATH = ConfigReader.getProperty("learndedSoundsXmlPath");
+	// Alert Sounds
+	public static final String ALERT_SOUNDS_FOLDER = ConfigReader.getProperty("alertSoundsFolder");
+	public static final String ALERT_SOUNDS_FOLDER_PATH = WORKING_FOLDER + ALERT_SOUNDS_FOLDER;
+	public static final String ALERT_SOUNDS_XML_FILE = ConfigReader.getProperty("alertSoundsXML");
+	public static final String ALERT_SOUNDS_XML_FILE_PATH = ALERT_SOUNDS_FOLDER_PATH + ALERT_SOUNDS_XML_FILE;
+
+	// Alert Settings
+	public static final String ALERT_SETTINGS_KEY_LIGHT_SIGNALS = ConfigReader
+			.getProperty("alertSettingsKeyLightSignals");
+	public static final String ALERT_SETTINGS_KEY_AUDIO_SIGNALS = ConfigReader
+			.getProperty("alertSettingsKeyAudioSignals");
+	public static final String ALERT_SETTINGS_KEY_ALERT_SOUND_ID = ConfigReader
+			.getProperty("alertSettingsKeyAlertSoundId");
+
+	public static final boolean ALERT_SETTINGS_INIT_VALUE_LIGHT_SIGNALS = ConfigReader
+			.getProperty("alertSettingsInitValueLightSignals").equals("true");
+	public static final boolean ALERT_SETTINGS_INIT_VALUE_AUDIO_SIGNALS = ConfigReader
+			.getProperty("alertSettingsInitValueAudioSignals").equals("true");
+	public static final int ALERT_SETTINGS_INIT_VALUE_ALERT_SOUND_ID = Integer
+			.parseInt(ConfigReader.getProperty("alertSettingsInitValueSoundId"));
+
+	public static final String ALERT_SETTINGS_FILE = ConfigReader.getProperty("alertSettingsFile");
+	public static final String ALERT_SETTINGS_FILE_PATH = WORKING_FOLDER + ALERT_SETTINGS_FILE;
+
+	public static final String SOUNDS_XML_ROOT = ConfigReader.getProperty("soundsXmlRoot");
+	public static final String SOUNDS_XML_SOUND = ConfigReader.getProperty("soundsXmlSound");
+	public static final String SOUNDS_XML_NAMED = ConfigReader.getProperty("soundsXmlNamed");
+	public static final String SOUNDS_XML_NUMBER = ConfigReader.getProperty("soundsXmlNumber");
+	public static final String SOUNDS_XML_NAME = ConfigReader.getProperty("soundsXmlName");
+	public static final String SOUNDS_XML_PATH = ConfigReader.getProperty("soundsXmlPath");
+	public static final String SOUNDS_XML_ALERT_ID = ConfigReader.getProperty("soundsXmlAlertId");
 
 	// Hardware controller
 	public static final int HW_CONTROLLER_PORT = ConfigReader.getPropertyAsInt("hardwareControllerPort");

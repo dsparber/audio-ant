@@ -36,7 +36,7 @@ public class GetSoundInfoAction extends JsonReplyAction {
 		Sound sound = LearnedSounds.getSounds().get(number);
 
 		data.put(Reply.NAME_KEY, sound.getNameNotNull());
-		data.put(Reply.NUMBER_KEY, sound.getNumber());
+		data.put(Reply.NUMBER_KEY, sound.getId());
 		data.put(Reply.ALERT, "Not implemented");
 
 		File soundFile = new File(sound.getPath() + Config.LEARNED_SOUNDS_FILE);

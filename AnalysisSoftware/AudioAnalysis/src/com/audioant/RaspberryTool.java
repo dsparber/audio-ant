@@ -139,7 +139,7 @@ public class RaspberryTool implements Observer {
 						| IndexOutOfBoundsException e) {
 
 					startAnalysis();
-					LearnedSounds.deleteSound(newSound.getNumber());
+					LearnedSounds.deleteSound(newSound.getId());
 					led(Led.LED_RECORDING_FAILED, 5);
 					e.printStackTrace();
 				}

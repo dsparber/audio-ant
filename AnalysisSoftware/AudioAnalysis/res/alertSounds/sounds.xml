@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="sounds.xsl"?>
+<recorded_sounds>
+	<sound>
+		<named>true</named>
+		<number>1</number>
+		<name>Bleep</name>
+		<path>res/alertSounds/1/</path>
+	</sound>
+	<sound>
+		<named>true</named>
+		<number>2</number>
+		<name>Alarm Clock</name>
+		<path>res/alertSounds/2/</path>
+	</sound>
+	<sound>
+		<named>true</named>
+		<number>3</number>
+		<name>Railroad</name>
+		<path>res/alertSounds/3/</path>
+	</sound>
+</recorded_sounds>

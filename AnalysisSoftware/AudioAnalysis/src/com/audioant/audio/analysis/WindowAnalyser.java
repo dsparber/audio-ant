@@ -8,7 +8,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 import com.audioant.audio.analysis.sound.strongestFrequency.FrequencyModel;
 import com.audioant.audio.analysis.sound.strongestFrequency.StrongestFrequenciesModel;
 import com.audioant.config.Config;
-import com.audioant.singleton.RConnectionSingleton;
+import com.audioant.io.r.RConnectionSingleton;
 
 public class WindowAnalyser {
 

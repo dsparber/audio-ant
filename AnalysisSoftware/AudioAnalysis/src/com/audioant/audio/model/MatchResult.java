@@ -31,7 +31,7 @@ public class MatchResult {
 		StringBuilder builder = new StringBuilder();
 
 		builder.append("Sound: ");
-		builder.append(sound.getNumber());
+		builder.append(sound.getId());
 		builder.append("\t");
 
 		if (sureMatch) {

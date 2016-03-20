@@ -4,7 +4,7 @@ import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 
-import com.audioant.singleton.RConnectionSingleton;
+import com.audioant.io.r.RConnectionSingleton;
 
 public class MatchFunctions {
 
