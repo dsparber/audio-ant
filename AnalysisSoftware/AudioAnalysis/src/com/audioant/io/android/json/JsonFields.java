@@ -80,6 +80,7 @@ public interface JsonFields {
 
 		public interface Reply {
 			String ACTION_VALUE = "settingsChanged";
+			String SUCCESS_KEY = "success";
 		}
 	}
 
