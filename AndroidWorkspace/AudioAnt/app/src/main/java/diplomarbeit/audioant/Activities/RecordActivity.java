@@ -1,11 +1,9 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -78,31 +76,18 @@ public class RecordActivity extends AppCompatActivity {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra("json")) {
-                JSONObject j = null;
-                try {
-                    j = new JSONObject(intent.getStringExtra("json"));
-                    boolean successful = j.getJSONObject("data").getBoolean("successful");
-                    if (successful) {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(RecordActivity.this);
-                        alert.setTitle("Information");
-                        alert.setMessage("es geht");
-                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(RecordActivity.this, MainActivity.class);
-                                i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                i.putExtra("comingFrom", "RecordActivity");
-                                i.putExtra("message", "Der Ton wurde erfolgreich eingespeichert!!");
-                                startActivity(i);
-                            }
-                        });
-                        alert.show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+            try {
+                JSONObject j = new JSONObject(intent.getStringExtra("json"));
+                JSONObject data = j.getJSONObject("data");
+                Intent i = new Intent(RecordActivity.this, MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                i.putExtra("message", data.getString("message"));
+                unbindFromCommunicationService();
+                startActivity(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -114,6 +99,12 @@ public class RecordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initElements();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindToCommunicationService();
     }
 
     public void initElements() {
@@ -144,9 +135,8 @@ public class RecordActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-        bindToCommunicationService();
         //has to be changed to soundLearnedFeedback
-        LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("saveSound"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("soundLearnedFeedback"));
 
     }
 
@@ -274,7 +264,6 @@ public class RecordActivity extends AppCompatActivity {
         communicationService.sendText(object.toString());
     }
 
-
     public String fileToString(File file) {
 
 //      Converts the audio File to a byte array
@@ -341,8 +330,12 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void unbindFromCommunicationService() {
-        unbindService(serviceConnection);
-        serviceIsBound = false;
+        try {
+            unbindService(serviceConnection);
+            serviceIsBound = false;
+        } catch (Exception e) {
+            Log.d(TAG, "service could not be unbound because it wasn't bound");
+        }
     }
 
     public void saveAudioFile(String s) {
@@ -365,7 +358,6 @@ public class RecordActivity extends AppCompatActivity {
         }
         Log.d(TAG, "File saved from json");
     }
-
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
