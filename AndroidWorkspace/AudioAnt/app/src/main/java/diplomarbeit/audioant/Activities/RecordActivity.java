@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +43,7 @@ import diplomarbeit.audioant.Model.Services.RecordSignalService;
 import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {
+    private static boolean serviceIsBound = false;
     private String recordingHelpText;
     private String recordingHelpTextHeader;
     private Settings settings;
@@ -57,7 +59,6 @@ public class RecordActivity extends AppCompatActivity {
     private Thread timeThread;
     private boolean geräuschSchonAufgenommen = false;
     private CommunicationService communicationService;
-    private static boolean serviceIsBound = false;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -105,6 +106,23 @@ public class RecordActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         bindToCommunicationService();
+    }
+
+    @Override
+    public void onBackPressed() {
+        unbindFromCommunicationService();
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                unbindFromCommunicationService();
+                super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void initElements() {
@@ -255,6 +273,7 @@ public class RecordActivity extends AppCompatActivity {
             data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
             data.put("soundName", geräuschName.getText());
             data.put("alertName", textView_ChosenSound.getText());
+            data.put("alertUri", uri_sound);
 
             object.put("action", "saveSound");
             object.put("data", data);

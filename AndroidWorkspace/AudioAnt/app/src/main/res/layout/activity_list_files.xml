@@ -9,10 +9,23 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Activities.ListActivity">
 
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/ic_info_black_24dp"
+        android:onClick="showListHelp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/info_list" />
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/list"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/info_list"
         android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>

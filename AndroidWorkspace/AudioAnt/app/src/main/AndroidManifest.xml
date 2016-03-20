@@ -53,7 +53,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.MainActivity" />
-            >
         </activity>
 
         <service
@@ -64,6 +63,7 @@
             android:name=".Model.Services.CommunicationService"
             android:enabled="true"
             android:exported="true" />
+
     </application>
 
 </manifest>

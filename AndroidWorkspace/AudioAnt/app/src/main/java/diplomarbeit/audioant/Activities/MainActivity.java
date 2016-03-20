@@ -87,8 +87,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void unbindFromCommunicationService() {
-        unbindService(serviceConnection);
-        serviceIsBound = false;
+        try {
+            unbindService(serviceConnection);
+            serviceIsBound = false;
+        } catch (Exception e) {
+            Log.d(TAG, "service could not be unbound because it wasn't bound");
+        }
     }
 
     public void sendTextToService(View v) {
@@ -115,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
     public void startRecordActivity(View v) {
         unbindFromCommunicationService();
         Intent i = new Intent(MainActivity.this, RecordActivity.class);
-        i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(i);
     }
 
