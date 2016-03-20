@@ -38,6 +38,21 @@ public interface JsonFields {
 		}
 	}
 
+	public interface GetAlertSounds {
+		public interface Request {
+			String ACTION_VALUE = "getAlertSounds";
+		}
+
+		public interface Reply {
+			String ACTION_VALUE = "alertSounds";
+			String SOUNDS_KEY = "sounds";
+			String FILE_CONTENT_KEY = "fileContent";
+			String FILE_NAME_KEY = "fileName";
+			String NAME_KEY = "name";
+			String NUMBER_KEY = "number";
+		}
+	}
+
 	public interface GetSoundInfo {
 		public interface Request {
 			String ACTION_VALUE = "getMoreInfoToSound";

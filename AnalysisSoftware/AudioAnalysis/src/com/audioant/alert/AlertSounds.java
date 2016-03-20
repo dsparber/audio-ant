@@ -29,9 +29,10 @@ public class AlertSounds {
 	public AlertSounds() {
 
 		try {
-			soundsXml = new SoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
+			soundsXml = new SoundsXml(Config.ALERT_SOUNDS_XML_FILE_PATH);
 			sounds = soundsXml.read();
 		} catch (FileNotFoundException | XMLStreamException e) {
+			e.printStackTrace();
 			sounds = new ArrayList<Sound>();
 		}
 	}
