@@ -135,7 +135,7 @@ public class CommandLineTool {
 				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException
 				| IndexOutOfBoundsException e) {
 			System.out.println("failed");
-			LearnedSounds.deleteSound(sound.getNumber());
+			LearnedSounds.deleteSound(sound.getId());
 			e.printStackTrace();
 		}
 

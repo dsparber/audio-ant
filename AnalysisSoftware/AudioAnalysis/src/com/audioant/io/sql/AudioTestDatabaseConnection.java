@@ -1,4 +1,4 @@
-package com.audioant.singleton;
+package com.audioant.io.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

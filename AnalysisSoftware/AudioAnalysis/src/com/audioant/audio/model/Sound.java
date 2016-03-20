@@ -4,18 +4,28 @@ import com.audioant.config.Config;
 
 public class Sound {
 
-	private int number;
+	private int id;
 	private String name;
 	private String path;
+	private Integer alertId;
 
 	public Sound() {
 	}
 
 	public Sound(String name, int number) {
-		this.name = name;
-		this.number = number;
+		this(name, Config.LEARNED_SOUNDS_FOLDER, number);
+	}
 
-		path = Config.WORKING_FOLDER + Config.LEARNED_SOUNDS_FOLDER + number + '/';
+	public Sound(String name, String folder, int number) {
+		this(name, folder, number, null);
+	}
+
+	public Sound(String name, String folder, int number, Integer alertId) {
+		this.name = name;
+		id = number;
+		this.alertId = alertId;
+
+		path = Config.WORKING_FOLDER + folder + number + '/';
 	}
 
 	@Override
@@ -23,7 +33,7 @@ public class Sound {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(getNumber());
+		sb.append(getId());
 		if (isNamed()) {
 			sb.append(" (");
 			sb.append(getName());
@@ -37,6 +47,10 @@ public class Sound {
 		return isNamed() ? name : "";
 	}
 
+	public String getAlertIdNotNull() {
+		return alertId != null ? alertId.toString() : "";
+	}
+
 	public boolean isUnnamed() {
 		return name == null || name.trim().isEmpty();
 	}
@@ -45,12 +59,12 @@ public class Sound {
 		return !isUnnamed();
 	}
 
-	public int getNumber() {
-		return number;
+	public int getId() {
+		return id;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setId(int number) {
+		id = number;
 	}
 
 	public String getName() {
@@ -67,5 +81,21 @@ public class Sound {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public Integer getAlertId() {
+		return alertId;
+	}
+
+	public void setAlertId(Integer alertId) {
+		this.alertId = alertId;
+	}
+
+	public void setAlertId(String alertId) {
+		if (alertId != null) {
+			this.alertId = Integer.parseInt(alertId);
+		} else {
+			alertId = null;
+		}
 	}
 }

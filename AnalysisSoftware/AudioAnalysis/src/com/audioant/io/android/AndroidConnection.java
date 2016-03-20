@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -48,16 +49,20 @@ public class AndroidConnection extends Observable {
 	}
 
 	private void writeText(String text) throws IOException {
-		for (Socket socket : sockets) {
+		for (int i = 0; i < sockets.size(); i++) {
 
-			if (!socket.isConnected() || socket.isClosed() || !socket.isBound()) {
-				sockets.remove(socket);
-				continue;
+			try {
+				if (!sockets.get(i).isConnected() || sockets.get(i).isClosed() || !sockets.get(i).isBound()) {
+					throw new SocketException();
+				}
+
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sockets.get(i).getOutputStream()));
+				writer.write(text);
+				writer.flush();
+
+			} catch (SocketException e) {
+				sockets.remove(i);
 			}
-
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			writer.write(text);
-			writer.flush();
 		}
 	}
 

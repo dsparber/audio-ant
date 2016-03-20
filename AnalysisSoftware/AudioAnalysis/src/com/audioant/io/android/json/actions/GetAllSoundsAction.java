@@ -1,4 +1,4 @@
-package com.audioant.io.android.json.action;
+package com.audioant.io.android.json.actions;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import org.json.simple.JSONObject;
 
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
-import com.audioant.io.android.json.JsonAction;
+import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.GetAllSounds;
 
-public class GetAllSoundsAction extends JsonAction {
+public class GetAllSoundsAction extends JsonReplyAction {
 
 	public GetAllSoundsAction(JSONObject request) {
 		super(request);
@@ -30,7 +30,7 @@ public class GetAllSoundsAction extends JsonAction {
 		for (Sound s : soundList) {
 			JSONObject sound = new JSONObject();
 			sound.put(GetAllSounds.Reply.SOUND_NAME_KEY, s.getNameNotNull());
-			sound.put(GetAllSounds.Reply.SOUND_NUMBER_KEY, new Integer(s.getNumber()));
+			sound.put(GetAllSounds.Reply.SOUND_NUMBER_KEY, new Integer(s.getId()));
 			sounds.add(sound);
 		}
 

@@ -23,6 +23,20 @@ class WifiController:
 		self.essid = subprocess.check_output("scripts/essid.sh")[:-1]
 		return self.essid
 
+	def addNetwork(self, ssid, psk):
+		f = open("/etc/wpa_supplicant/wpa_supplicant.conf")
+		backuptext = f.read()
+		f.close()
+		f = open("/etc/wpa_supplicant/wpa_supplicant.conf", "w")
+		f.write("network={\n")
+		f.write("\tssid=\"")
+		f.write(ssid)
+		f.write("\"\n\tpsk=\"")
+		f.write(psk)
+		f.write("\"\n}\n\n")
+		f.write(backuptext)
+		f.close()
+
 	def getIP(self):
 		self.ip = subprocess.check_output("scripts/ip.sh")[:-1]
 		return self.ip

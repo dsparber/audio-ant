@@ -21,3 +21,4 @@ __pycache__
 **/res/learnedSounds/**/*.csv
 **/res/learnedSounds/**/*.xml
 *.log
+alertSettings.json

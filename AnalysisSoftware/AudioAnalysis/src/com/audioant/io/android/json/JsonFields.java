@@ -38,6 +38,21 @@ public interface JsonFields {
 		}
 	}
 
+	public interface GetAlertSounds {
+		public interface Request {
+			String ACTION_VALUE = "getAlertSounds";
+		}
+
+		public interface Reply {
+			String ACTION_VALUE = "alertSounds";
+			String SOUNDS_KEY = "sounds";
+			String FILE_CONTENT_KEY = "fileContent";
+			String FILE_NAME_KEY = "fileName";
+			String NAME_KEY = "name";
+			String NUMBER_KEY = "number";
+		}
+	}
+
 	public interface GetSoundInfo {
 		public interface Request {
 			String ACTION_VALUE = "getMoreInfoToSound";
@@ -49,7 +64,7 @@ public interface JsonFields {
 			String FILE_NAME_KEY = "fileName";
 			String NAME_KEY = "name";
 			String NUMBER_KEY = "number";
-			String ALERT = "sound";
+			String ALERT = "alert";
 		}
 	}
 
@@ -66,10 +81,13 @@ public interface JsonFields {
 	public interface ChangeSoundAlert {
 		public interface Request {
 			String ACTION_VALUE = "changeSoundAlert";
+			String SOUND_KEY = "sound";
+			String ALERT_KEY = "alert";
 		}
 
 		public interface Reply {
 			String ACTION_VALUE = "soundChanged";
+			String SUCCESS_KEY = "success";
 		}
 	}
 
@@ -80,22 +98,31 @@ public interface JsonFields {
 
 		public interface Reply {
 			String ACTION_VALUE = "settingsChanged";
+			String SUCCESS_KEY = "success";
 		}
 	}
 
 	public interface SetWifi {
 		public interface Request {
 			String ACTION_VALUE = "connectToWifiNetwork";
+			String SSID_KEY = "SSID";
+			String PSK_KEY = "password";
 		}
 
 		public interface Reply {
-			String ACTION_VALUE = "wifiConnectedFeedback";
+			String ACTION_VALUE = "wifiNetworkAdded";
+			String SUCCESS_KEY = "successfull";
+			String PASSWORD_OK_KEY = "passwordOk";
+			String SSID_OK_KEY = "ssidOk";
 		}
 	}
 
 	public interface RecognisedSound {
 		public interface Request {
 			String ACTION_VALUE = "recognisedSound";
+			String SOUND_NAME_KEY = "name";
+			String SOUND_NUMBER_KEY = "number";
+			String SOUNDS_KEY = "sounds";
 		}
 
 		public interface Reply {

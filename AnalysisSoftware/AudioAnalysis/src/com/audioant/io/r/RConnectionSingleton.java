@@ -1,4 +1,4 @@
-package com.audioant.singleton;
+package com.audioant.io.r;
 
 import java.io.IOException;
 

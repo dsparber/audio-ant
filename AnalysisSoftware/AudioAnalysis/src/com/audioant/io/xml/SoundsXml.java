@@ -27,11 +27,11 @@ import org.w3c.dom.ProcessingInstruction;
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
 
-public class LearnedSoundsXml {
+public class SoundsXml {
 
 	private String pathname;
 
-	public LearnedSoundsXml(String pathname) {
+	public SoundsXml(String pathname) {
 		this.pathname = pathname;
 	}
 
@@ -42,7 +42,7 @@ public class LearnedSoundsXml {
 
 		Document doc = docBuilder.newDocument();
 
-		Element rootElement = doc.createElement(Config.LEARNED_SOUNDS_XML_ROOT);
+		Element rootElement = doc.createElement(Config.SOUNDS_XML_ROOT);
 		doc.appendChild(rootElement);
 
 		doc.setXmlStandalone(true);
@@ -53,24 +53,28 @@ public class LearnedSoundsXml {
 
 		for (Sound model : soundModels) {
 
-			Element sound = doc.createElement(Config.LEARNED_SOUNDS_XML_SOUND);
+			Element sound = doc.createElement(Config.SOUNDS_XML_SOUND);
 			rootElement.appendChild(sound);
 
-			Element named = doc.createElement(Config.LEARNED_SOUNDS_XML_NAMED);
+			Element named = doc.createElement(Config.SOUNDS_XML_NAMED);
 			named.appendChild(doc.createTextNode(Boolean.toString(model.isNamed())));
 			sound.appendChild(named);
 
-			Element number = doc.createElement(Config.LEARNED_SOUNDS_XML_NUMBER);
-			number.appendChild(doc.createTextNode(Integer.toString(model.getNumber())));
+			Element number = doc.createElement(Config.SOUNDS_XML_NUMBER);
+			number.appendChild(doc.createTextNode(Integer.toString(model.getId())));
 			sound.appendChild(number);
 
-			Element name = doc.createElement(Config.LEARNED_SOUNDS_XML_NAME);
+			Element name = doc.createElement(Config.SOUNDS_XML_NAME);
 			name.appendChild(doc.createTextNode(model.getNameNotNull()));
 			sound.appendChild(name);
 
-			Element path = doc.createElement(Config.LEARNED_SOUNDS_XML_PATH);
+			Element path = doc.createElement(Config.SOUNDS_XML_PATH);
 			path.appendChild(doc.createTextNode(model.getPath()));
 			sound.appendChild(path);
+
+			Element alertId = doc.createElement(Config.SOUNDS_XML_ALERT_ID);
+			alertId.appendChild(doc.createTextNode(model.getAlertIdNotNull()));
+			sound.appendChild(alertId);
 		}
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -100,28 +104,31 @@ public class LearnedSoundsXml {
 
 				String name = event.asStartElement().getName().getLocalPart();
 
-				if (name.equals(Config.LEARNED_SOUNDS_XML_SOUND)) {
+				if (name.equals(Config.SOUNDS_XML_SOUND)) {
 					sound = new Sound();
 				} else {
 
-					if (name.equals(Config.LEARNED_SOUNDS_XML_NAME)) {
+					if (name.equals(Config.SOUNDS_XML_NAME)) {
 						if ((event = eventReader.nextEvent()).isCharacters()) {
 							sound.setName(event.asCharacters().getData());
 						}
 					}
-					if (name.equals(Config.LEARNED_SOUNDS_XML_NUMBER)) {
+					if (name.equals(Config.SOUNDS_XML_NUMBER)) {
 						event = eventReader.nextEvent();
-						sound.setNumber(Integer.parseInt(event.asCharacters().getData()));
+						sound.setId(Integer.parseInt(event.asCharacters().getData()));
 					}
-					if (name.equals(Config.LEARNED_SOUNDS_XML_PATH)) {
+					if (name.equals(Config.SOUNDS_XML_PATH)) {
 						event = eventReader.nextEvent();
 						sound.setPath(event.asCharacters().getData());
 					}
-
+					if (name.equals(Config.SOUNDS_XML_ALERT_ID)) {
+						event = eventReader.nextEvent();
+						sound.setAlertId(event.asCharacters().getData());
+					}
 				}
 			}
 			if (event.isEndElement()) {
-				if (event.asEndElement().getName().getLocalPart().equals(Config.LEARNED_SOUNDS_XML_SOUND)) {
+				if (event.asEndElement().getName().getLocalPart().equals(Config.SOUNDS_XML_SOUND)) {
 					sounds.add(sound);
 				}
 			}

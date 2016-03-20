@@ -10,22 +10,22 @@ import javax.xml.transform.TransformerException;
 
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
-import com.audioant.io.xml.LearnedSoundsXml;
+import com.audioant.io.xml.SoundsXml;
 
 public class LearnedSounds {
 
 	private static LearnedSounds learnedSounds;
 
 	private List<Sound> sounds;
-	private LearnedSoundsXml soundsXml;
+	private SoundsXml soundsXml;
 
 	public LearnedSounds() {
 
 		try {
-			soundsXml = new LearnedSoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
+			soundsXml = new SoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
 			sounds = soundsXml.read();
 		} catch (FileNotFoundException | XMLStreamException e) {
-			soundsXml = new LearnedSoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
+			soundsXml = new SoundsXml(Config.LEARNED_SOUNDS_XML_FILE_PATH);
 			sounds = new ArrayList<Sound>();
 		}
 	}
@@ -42,7 +42,7 @@ public class LearnedSounds {
 		return learnedSounds.sounds;
 	}
 
-	public static LearnedSoundsXml getSoundsXml() {
+	public static SoundsXml getSoundsXml() {
 
 		if (learnedSounds == null) {
 			learnedSounds = new LearnedSounds();
@@ -55,8 +55,8 @@ public class LearnedSounds {
 		int max = 0;
 
 		for (Sound soundModel : getSounds()) {
-			if (soundModel.getNumber() > max) {
-				max = soundModel.getNumber();
+			if (soundModel.getId() > max) {
+				max = soundModel.getId();
 			}
 		}
 
@@ -77,12 +77,22 @@ public class LearnedSounds {
 
 	public static void deleteSound(int id) {
 		for (int i = 0; i < getSounds().size(); i++) {
-			if (getSounds().get(i).getNumber() == id) {
+			if (getSounds().get(i).getId() == id) {
 				getSounds().remove(i);
 				break;
 			}
 
 		}
+
+	}
+
+	public static Sound getSound(int id) {
+		for (Sound s : getSounds()) {
+			if (s.getId() == id) {
+				return s;
+			}
+		}
+		return null;
 
 	}
 }

@@ -25,3 +25,6 @@ class OutputManager:
 
 		if function == "DISPLAY":
 			self.display.write(options, 0, 20)
+			
+		if function == "WIFI":
+			self.wifi.addNetwork(options[0], options[1])
