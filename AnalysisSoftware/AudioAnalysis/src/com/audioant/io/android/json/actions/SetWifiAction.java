@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import org.json.simple.JSONObject;
 
-import com.audioant.io.android.json.JsonAction;
+import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.SetWifi.Reply;
 import com.audioant.io.android.json.JsonFields.SetWifi.Request;
 import com.audioant.io.raspberry.WifiController;
 
-public class SetWifiAction extends JsonAction {
+public class SetWifiAction extends JsonReplyAction {
 
 	String ssid;
 	String psk;

@@ -2,11 +2,11 @@ package com.audioant.io.android.json.actions;
 
 import org.json.simple.JSONObject;
 
-import com.audioant.io.android.json.JsonAction;
+import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.ChangeSoundAlert;
 
-public class ChangeSoundAlertAction extends JsonAction {
+public class ChangeSoundAlertAction extends JsonReplyAction {
 
 	public ChangeSoundAlertAction(JSONObject request) {
 		super(request);

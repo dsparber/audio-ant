@@ -101,6 +101,9 @@ public interface JsonFields {
 	public interface RecognisedSound {
 		public interface Request {
 			String ACTION_VALUE = "recognisedSound";
+			String SOUND_NAME_KEY = "name";
+			String SOUND_NUMBER_KEY = "number";
+			String SOUNDS_KEY = "sounds";
 		}
 
 		public interface Reply {

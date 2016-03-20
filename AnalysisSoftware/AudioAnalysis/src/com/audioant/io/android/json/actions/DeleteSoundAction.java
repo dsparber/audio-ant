@@ -7,11 +7,11 @@ import org.json.simple.JSONObject;
 
 import com.audioant.RaspberryTool;
 import com.audioant.audio.learning.LearnedSounds;
-import com.audioant.io.android.json.JsonAction;
+import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.DeleteSound.Reply;;
 
-public class DeleteSoundAction extends JsonAction {
+public class DeleteSoundAction extends JsonReplyAction {
 
 	private int id;
 

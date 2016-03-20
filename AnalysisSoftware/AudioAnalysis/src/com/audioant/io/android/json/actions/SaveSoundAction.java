@@ -2,11 +2,11 @@ package com.audioant.io.android.json.actions;
 
 import org.json.simple.JSONObject;
 
-import com.audioant.io.android.json.JsonAction;
+import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.SaveSound;
 
-public class SaveSoundAction extends JsonAction {
+public class SaveSoundAction extends JsonReplyAction {
 
 	public SaveSoundAction(JSONObject request) {
 		super(request);

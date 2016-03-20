@@ -10,12 +10,12 @@ import org.json.simple.JSONObject;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
-import com.audioant.io.android.json.JsonAction;
+import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo.Reply;
 
-public class GetSoundInfoAction extends JsonAction {
+public class GetSoundInfoAction extends JsonReplyAction {
 
 	private int number;
 

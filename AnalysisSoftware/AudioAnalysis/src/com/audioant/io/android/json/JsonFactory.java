@@ -10,6 +10,7 @@ import com.audioant.io.android.json.JsonFields.DeleteSound;
 import com.audioant.io.android.json.JsonFields.GetAllSounds;
 import com.audioant.io.android.json.JsonFields.GetSettings;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo;
+import com.audioant.io.android.json.JsonFields.RecognisedSound;
 import com.audioant.io.android.json.JsonFields.SaveSound;
 import com.audioant.io.android.json.JsonFields.SetWifi;
 import com.audioant.io.android.json.actions.ChangeSettingsAction;
@@ -18,6 +19,7 @@ import com.audioant.io.android.json.actions.DeleteSoundAction;
 import com.audioant.io.android.json.actions.GetAllSoundsAction;
 import com.audioant.io.android.json.actions.GetSettingsAction;
 import com.audioant.io.android.json.actions.GetSoundInfoAction;
+import com.audioant.io.android.json.actions.RecognisedSoundAction;
 import com.audioant.io.android.json.actions.SaveSoundAction;
 import com.audioant.io.android.json.actions.SetWifiAction;
 
@@ -49,6 +51,8 @@ public class JsonFactory {
 			return new ChangeSettingsAction(json);
 		case SetWifi.Request.ACTION_VALUE:
 			return new SetWifiAction(json);
+		case RecognisedSound.Reply.ACTION_VALUE:
+			return new RecognisedSoundAction();
 		default:
 			return null;
 		}

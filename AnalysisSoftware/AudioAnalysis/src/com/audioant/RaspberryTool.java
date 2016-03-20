@@ -19,6 +19,7 @@ import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.audio.model.Sound;
 import com.audioant.io.android.AndroidConnection;
 import com.audioant.io.eventObserver.DetailLogger;
+import com.audioant.io.eventObserver.EventAndroid;
 import com.audioant.io.eventObserver.EventLights;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.io.raspberry.ButtonController;
@@ -68,6 +69,7 @@ public class RaspberryTool implements Observer {
 				analyser.addObserver(new EventLogger());
 				analyser.addObserver(new DetailLogger());
 				analyser.addObserver(new EventLights());
+				analyser.addObserver(new EventAndroid());
 			}
 			if (!analyser.isRunning()) {
 				analyser.start();
