@@ -86,10 +86,15 @@ public interface JsonFields {
 	public interface SetWifi {
 		public interface Request {
 			String ACTION_VALUE = "connectToWifiNetwork";
+			String SSID_KEY = "SSID";
+			String PSK_KEY = "password";
 		}
 
 		public interface Reply {
-			String ACTION_VALUE = "wifiConnectedFeedback";
+			String ACTION_VALUE = "wifiNetworkAdded";
+			String SUCCESS_KEY = "successfull";
+			String PASSWORD_OK_KEY = "passwordOk";
+			String SSID_OK_KEY = "ssidOk";
 		}
 	}
 

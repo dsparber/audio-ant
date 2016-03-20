@@ -1,14 +1,14 @@
-package com.audioant.io.android.json.action;
+package com.audioant.io.android.json.actions;
 
 import org.json.simple.JSONObject;
 
 import com.audioant.io.android.json.JsonAction;
 import com.audioant.io.android.json.JsonFields;
-import com.audioant.io.android.json.JsonFields.ChangeSettings;
+import com.audioant.io.android.json.JsonFields.SaveSound;
 
-public class ChangeSettingsAction extends JsonAction {
+public class SaveSoundAction extends JsonAction {
 
-	public ChangeSettingsAction(JSONObject request) {
+	public SaveSoundAction(JSONObject request) {
 		super(request);
 		// TODO Auto-generated constructor stub
 	}
@@ -19,7 +19,7 @@ public class ChangeSettingsAction extends JsonAction {
 
 		JSONObject jsonObject = new JSONObject();
 
-		jsonObject.put(JsonFields.ACTION_KEY, ChangeSettings.Reply.ACTION_VALUE);
+		jsonObject.put(JsonFields.ACTION_KEY, SaveSound.Reply.ACTION_VALUE);
 
 		return jsonObject;
 	}

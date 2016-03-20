@@ -12,14 +12,14 @@ import com.audioant.io.android.json.JsonFields.GetSettings;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo;
 import com.audioant.io.android.json.JsonFields.SaveSound;
 import com.audioant.io.android.json.JsonFields.SetWifi;
-import com.audioant.io.android.json.action.ChangeSettingsAction;
-import com.audioant.io.android.json.action.ChangeSoundAlertAction;
-import com.audioant.io.android.json.action.DeleteSoundAction;
-import com.audioant.io.android.json.action.GetAllSoundsAction;
-import com.audioant.io.android.json.action.GetSettingsAction;
-import com.audioant.io.android.json.action.GetSoundInfoAction;
-import com.audioant.io.android.json.action.SaveSoundAction;
-import com.audioant.io.android.json.action.SetWifiAction;
+import com.audioant.io.android.json.actions.ChangeSettingsAction;
+import com.audioant.io.android.json.actions.ChangeSoundAlertAction;
+import com.audioant.io.android.json.actions.DeleteSoundAction;
+import com.audioant.io.android.json.actions.GetAllSoundsAction;
+import com.audioant.io.android.json.actions.GetSettingsAction;
+import com.audioant.io.android.json.actions.GetSoundInfoAction;
+import com.audioant.io.android.json.actions.SaveSoundAction;
+import com.audioant.io.android.json.actions.SetWifiAction;
 
 public class JsonFactory {
 

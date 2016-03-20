@@ -1,4 +1,4 @@
-package com.audioant.io.android.json.action;
+package com.audioant.io.android.json.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
