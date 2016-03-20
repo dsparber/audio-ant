@@ -85,4 +85,14 @@ public class LearnedSounds {
 		}
 
 	}
+
+	public static Sound getSound(int id) {
+		for (Sound s : getSounds()) {
+			if (s.getId() == id) {
+				return s;
+			}
+		}
+		return null;
+
+	}
 }

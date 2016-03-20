@@ -49,7 +49,7 @@ public interface JsonFields {
 			String FILE_NAME_KEY = "fileName";
 			String NAME_KEY = "name";
 			String NUMBER_KEY = "number";
-			String ALERT = "sound";
+			String ALERT = "alert";
 		}
 	}
 
@@ -66,10 +66,13 @@ public interface JsonFields {
 	public interface ChangeSoundAlert {
 		public interface Request {
 			String ACTION_VALUE = "changeSoundAlert";
+			String SOUND_KEY = "sound";
+			String ALERT_KEY = "alert";
 		}
 
 		public interface Reply {
 			String ACTION_VALUE = "soundChanged";
+			String SUCCESS_KEY = "success";
 		}
 	}
 
