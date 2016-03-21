@@ -28,15 +28,16 @@ import java.util.ArrayList;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Services.CommunicationService;
+import diplomarbeit.audioant.Model.SoundListItem;
 import diplomarbeit.audioant.R;
 
 public class ListActivity extends AppCompatActivity {
 
     private final String TAG = "LIST_ACTIVITY";
-    private boolean serviceIsBound = false;
     private ListView listOfSounds;
-    private ArrayList<SoundListItem> listItems = new ArrayList<SoundListItem>();
+    private ArrayList<SoundListItem> listItems = new ArrayList<>();
     private ArrayAdapter<SoundListItem> adapter;
+    private boolean serviceIsBound = false;
     private CommunicationService communicationService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -63,7 +64,7 @@ public class ListActivity extends AppCompatActivity {
     private BroadcastReceiver soundDeletedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            listItems = new ArrayList<SoundListItem>();
+            listItems = new ArrayList<>();
             try {
                 JSONObject object = new JSONObject();
                 object.put("action", "getListOfSounds");
@@ -93,7 +94,6 @@ public class ListActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sendDeleteSoundCommand(selectedItem.getNumber());
-
                             }
                         });
                         alert.show();
@@ -112,6 +112,17 @@ public class ListActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_files);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(listOfSoundsReceiver, new IntentFilter("listOfSounds"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(soundDeletedReceiver, new IntentFilter("soundDeleted"));
+    }
 
     @Override
     protected void onResume() {
@@ -166,15 +177,6 @@ public class ListActivity extends AppCompatActivity {
         textAlert.show(getFragmentManager(), "notifications help");
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_files);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(listOfSoundsReceiver, new IntentFilter("listOfSounds"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(soundDeletedReceiver, new IntentFilter("soundDeleted"));
-    }
 
     private void sendDeleteSoundCommand(int soundNumber) {
         JSONObject object = new JSONObject();
@@ -184,30 +186,6 @@ public class ListActivity extends AppCompatActivity {
             communicationService.sendText(object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private class SoundListItem {
-        private String soundName;
-        private int number;
-
-        public SoundListItem(String soundName, int number) {
-            this.soundName = soundName;
-            this.number = number;
-        }
-
-        public String getSoundName() {
-            return soundName;
-        }
-
-        public int getNumber() {
-            return number;
-        }
-
-
-        @Override
-        public String toString() {
-            return soundName;
         }
     }
 }

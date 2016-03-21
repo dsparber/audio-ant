@@ -95,7 +95,7 @@ public class CommunicationService extends Service {
 
                 Socket socket = null;
                 try {
-                    socket = new Socket("192.168.0.104", 4444);
+                    socket = new Socket("192.168.0.102", 4444);
 
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));

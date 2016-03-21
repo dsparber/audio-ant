@@ -22,11 +22,13 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +42,7 @@ import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Helper.Settings;
 import diplomarbeit.audioant.Model.Services.CommunicationService;
 import diplomarbeit.audioant.Model.Services.RecordSignalService;
+import diplomarbeit.audioant.Model.SoundListItem;
 import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {
@@ -57,6 +60,9 @@ public class RecordActivity extends AppCompatActivity {
     private String TAG = "RECORDING_ACTIVITY";
     private EditText geräuschName;
     private Thread timeThread;
+    private ArrayAdapter<SoundListItem> arrayAdapter = new ArrayAdapter<>(
+            RecordActivity.this,
+            android.R.layout.select_dialog_singlechoice);
     private boolean geräuschSchonAufgenommen = false;
     private CommunicationService communicationService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -64,6 +70,7 @@ public class RecordActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
+            requestSoundsIfFirstStart();
             Toast.makeText(getApplicationContext(), "jetzt", Toast.LENGTH_SHORT).show();
             serviceIsBound = true;
         }
@@ -87,6 +94,31 @@ public class RecordActivity extends AppCompatActivity {
                 i.putExtra("message", data.getString("message"));
                 unbindFromCommunicationService();
                 startActivity(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    private BroadcastReceiver getAllAlertSounds = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
+                JSONObject data = jsonObject.getJSONObject("data");
+                JSONArray sounds = data.getJSONArray("sounds");
+                for (int i = 0; i < sounds.length(); i++) {
+                    JSONObject sound = (JSONObject) sounds.get(i);
+                    String name = sound.getString("name");
+                    String fileName = sound.getString("fileName");
+                    int number = sound.getInt("number");
+                    String fileContent = sound.getString("fileContent");
+                    String fullFileName = number + "-" + name + "-" + fileName;
+
+                    saveAlert(fullFileName, fileContent);
+                }
+                settings.setSoundsLoaded(true);
+                readAlerts();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -155,7 +187,9 @@ public class RecordActivity extends AppCompatActivity {
         });
         //has to be changed to soundLearnedFeedback
         LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("soundLearnedFeedback"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(getAllAlertSounds, new IntentFilter("alertSounds"));
 
+        readAlerts();
     }
 
     public void startTimeThread() {
@@ -272,8 +306,7 @@ public class RecordActivity extends AppCompatActivity {
         try {
             data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
             data.put("soundName", geräuschName.getText());
-            data.put("alertName", textView_ChosenSound.getText());
-            data.put("alertUri", uri_sound);
+            data.put("alertId", textView_ChosenSound.getText());
 
             object.put("action", "saveSound");
             object.put("data", data);
@@ -376,6 +409,55 @@ public class RecordActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Log.d(TAG, "File saved from json");
+    }
+
+    public void saveAlert(String fileName, String fileContent) {
+        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
+        dir.mkdirs();
+        File f = new File(dir, fileName);
+
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] data = Base64.decode(fileContent, Base64.NO_WRAP);
+        try {
+            FileOutputStream fos = new FileOutputStream(getAbsoluteFileLocation());
+            fos.write(data);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "Alert saved from json");
+    }
+
+    public void readAlerts() {
+        File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
+        File[] files = folder.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String[] items = files[i].getName().split("-");
+            int number = Integer.parseInt(items[0]);
+            String name = items[1];
+            arrayAdapter.add(new SoundListItem(name, number));
+            Toast.makeText(getApplicationContext(), files[i].getName(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void requestSoundsIfFirstStart() {
+        Settings settings = new Settings(this);
+        if (!settings.getSoundsLoaded()) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("action", "getAlertSounds");
+                communicationService.sendText(jsonObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

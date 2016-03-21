@@ -102,17 +102,6 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <SeekBar
-                android:id="@+id/seekBar_lautstärke"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/textView_lautstärke_label"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginTop="5dp" />
-
             <ImageView
                 android:id="@+id/info_audioant_notifications"
                 android:layout_width="36dp"
@@ -132,7 +121,7 @@
                 android:layout_alignLeft="@+id/button_wlan_infos_senden"
                 android:layout_alignStart="@+id/button_wlan_infos_senden"
                 android:layout_below="@+id/textView_benachrichtigungen_label"
-                android:checked="true"
+                android:checked="false"
                 android:onClick="checkBoxClicked"
                 android:text="@string/audioant_settings_checkbox_lichtsignale"
                 android:textSize="@dimen/text_size_medium" />
@@ -144,22 +133,9 @@
                 android:layout_alignLeft="@+id/button_wlan_infos_senden"
                 android:layout_below="@+id/checkBox_lichtsignale"
                 android:layout_marginTop="@dimen/margin_small"
-                android:checked="true"
+                android:checked="false"
                 android:onClick="checkBoxClicked"
                 android:text="@string/audioant_settings_checkbox_audiosignale"
-                android:textSize="@dimen/text_size_medium" />
-
-            <TextView
-                android:id="@+id/textView_lautstärke_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/checkBox_audiosignale"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/audioant_settings_label_lautstärke"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="@dimen/text_size_medium" />
 
 

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         start = System.currentTimeMillis();
-        bindToCommunicationService();
+        showDialogIfNecessary();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Test"));
     }
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showDialogIfNecessary();
+        bindToCommunicationService();
     }
 
     public void bindToCommunicationService() {
