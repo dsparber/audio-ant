@@ -31,6 +31,12 @@
     </string>
     <string name="audioant_benachrichtigungen_description_header">AudioAnt Benachrichtigungen</string>
 
+
+    <string name="list_description_header">Information</string>
+    <string name="list_description">Hier sehen Sie alle Geräusche die die AudioAnt gelernt hat!.
+    \n\nUm ein Geräusch zu löschen (es wird nicht mehr von der AudioAnt erkannt) drücken Sie auf das
+    Geräusch und drücken Sie anschließend \"Ja, Löschen\"</string>
+
     <!-- -->
 
     <!-- AudioAnt Settings Activity-->
@@ -66,6 +72,14 @@
     <string name="record_button_start_replay">Abspielen</string>
     <string name="record_button_stop_replay">Stoppen</string>
     <string name="main_label_not_connected">Nicht mit AudioAnt verbunden</string>
+
+
+    <!-- More info to Sound Activity-->
+    <string name="more_info_label_name">Geräuschname:</string>
+    <string name="more_info_label_alert">AudioAnt Benachrichtigungston:</string>
+
+
+    <!-- List Activity-->
 
 
 </resources>

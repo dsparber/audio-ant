@@ -32,7 +32,7 @@ public class AlertSettings {
 		this.lightSignals = lightSignals;
 		this.audioSignals = audioSignals;
 		this.alertSoundId = alertSoundId;
-		saveJson();
+		save();
 	}
 
 	public boolean isLightSignals() {
@@ -41,7 +41,7 @@ public class AlertSettings {
 
 	public void setLightSignals(boolean lightSignals) throws IOException {
 		this.lightSignals = lightSignals;
-		saveJson();
+		save();
 	}
 
 	public boolean isAudioSignals() {
@@ -50,7 +50,7 @@ public class AlertSettings {
 
 	public void setAudioSignals(boolean audioSignals) throws IOException {
 		this.audioSignals = audioSignals;
-		saveJson();
+		save();
 	}
 
 	public Integer getAlertSoundId() {
@@ -59,7 +59,7 @@ public class AlertSettings {
 
 	public void setAlertSoundId(Integer alertSoundId) throws IOException {
 		this.alertSoundId = alertSoundId;
-		saveJson();
+		save();
 	}
 
 	private static AlertSettings loadJson() throws FileNotFoundException, IOException, ParseException {
@@ -74,7 +74,7 @@ public class AlertSettings {
 			jsonObject = (JSONObject) new JSONParser().parse(new FileReader(f));
 			audioSignals = (Boolean) jsonObject.get(Config.ALERT_SETTINGS_KEY_AUDIO_SIGNALS);
 			lightSignals = (Boolean) jsonObject.get(Config.ALERT_SETTINGS_KEY_LIGHT_SIGNALS);
-			alertSoundId = (Integer) jsonObject.get(Config.ALERT_SETTINGS_KEY_ALERT_SOUND_ID);
+			alertSoundId = (int) ((long) jsonObject.get(Config.ALERT_SETTINGS_KEY_ALERT_SOUND_ID));
 		} else {
 			audioSignals = Config.ALERT_SETTINGS_INIT_VALUE_AUDIO_SIGNALS;
 			lightSignals = Config.ALERT_SETTINGS_INIT_VALUE_LIGHT_SIGNALS;
@@ -84,11 +84,12 @@ public class AlertSettings {
 		return new AlertSettings(lightSignals, audioSignals, alertSoundId);
 	}
 
-	private void saveJson() throws IOException {
+	private void save() throws IOException {
 		File f = new File(Config.ALERT_SETTINGS_FILE_PATH);
 		BufferedWriter writer = new BufferedWriter(new FileWriter(f));
 		writer.write(getJson().toJSONString());
 		writer.close();
+		// TODO: Send to raspberry
 	}
 
 	@SuppressWarnings("unchecked")
@@ -103,7 +104,7 @@ public class AlertSettings {
 	public void setValues(JSONObject jsonObject) throws IOException {
 		audioSignals = (Boolean) jsonObject.get(Config.ALERT_SETTINGS_KEY_AUDIO_SIGNALS);
 		lightSignals = (Boolean) jsonObject.get(Config.ALERT_SETTINGS_KEY_LIGHT_SIGNALS);
-		alertSoundId = (Integer) jsonObject.get(Config.ALERT_SETTINGS_KEY_ALERT_SOUND_ID);
-		saveJson();
+		alertSoundId = (int) ((long) jsonObject.get(Config.ALERT_SETTINGS_KEY_ALERT_SOUND_ID));
+		save();
 	}
 }

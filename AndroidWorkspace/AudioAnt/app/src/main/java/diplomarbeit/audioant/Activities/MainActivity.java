@@ -1,8 +1,10 @@
 package diplomarbeit.audioant.Activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -64,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Test"));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showDialogIfNecessary();
+    }
+
     public void bindToCommunicationService() {
         if (!serviceIsBound) {
             Thread t = new Thread(new Runnable() {
@@ -79,17 +87,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void unbindFromCommunicationService() {
-        unbindService(serviceConnection);
-        serviceIsBound = false;
+        try {
+            unbindService(serviceConnection);
+            serviceIsBound = false;
+        } catch (Exception e) {
+            Log.d(TAG, "service could not be unbound because it wasn't bound");
+        }
     }
 
     public void sendTextToService(View v) {
         communicationService.sendText("Beispieltext");
     }
 
+    public void showDialogIfNecessary() {
+        Log.d(TAG, "Entered showDialogIfNecessary");
+        Intent i = getIntent();
+        if (i.hasExtra("message")) {
+            String message = i.getStringExtra("message");
+            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            alert.setTitle("Information");
+            alert.setMessage(message);
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            alert.show();
+        }
+    }
+
     public void startRecordActivity(View v) {
         unbindFromCommunicationService();
-        startActivity(new Intent(MainActivity.this, RecordActivity.class));
+        Intent i = new Intent(MainActivity.this, RecordActivity.class);
+        startActivity(i);
     }
 
     public void startListActivity(View v) {

@@ -1,11 +1,9 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -22,6 +20,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +43,7 @@ import diplomarbeit.audioant.Model.Services.RecordSignalService;
 import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {
+    private static boolean serviceIsBound = false;
     private String recordingHelpText;
     private String recordingHelpTextHeader;
     private Settings settings;
@@ -59,7 +59,6 @@ public class RecordActivity extends AppCompatActivity {
     private Thread timeThread;
     private boolean geräuschSchonAufgenommen = false;
     private CommunicationService communicationService;
-    private static boolean serviceIsBound = false;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -78,31 +77,18 @@ public class RecordActivity extends AppCompatActivity {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-            if (intent.hasExtra("json")) {
-                JSONObject j = null;
-                try {
-                    j = new JSONObject(intent.getStringExtra("json"));
-                    boolean successful = j.getJSONObject("data").getBoolean("successful");
-                    if (successful) {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(RecordActivity.this);
-                        alert.setTitle("Information");
-                        alert.setMessage("es geht");
-                        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(RecordActivity.this, MainActivity.class);
-                                i.setFlags(i.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                i.putExtra("comingFrom", "RecordActivity");
-                                i.putExtra("message", "Der Ton wurde erfolgreich eingespeichert!!");
-                                startActivity(i);
-                            }
-                        });
-                        alert.show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+            try {
+                JSONObject j = new JSONObject(intent.getStringExtra("json"));
+                JSONObject data = j.getJSONObject("data");
+                Intent i = new Intent(RecordActivity.this, MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                i.putExtra("message", data.getString("message"));
+                unbindFromCommunicationService();
+                startActivity(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -114,6 +100,29 @@ public class RecordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initElements();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindToCommunicationService();
+    }
+
+    @Override
+    public void onBackPressed() {
+        unbindFromCommunicationService();
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                unbindFromCommunicationService();
+                super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void initElements() {
@@ -144,9 +153,8 @@ public class RecordActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-        bindToCommunicationService();
         //has to be changed to soundLearnedFeedback
-        LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("saveSound"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("soundLearnedFeedback"));
 
     }
 
@@ -265,6 +273,7 @@ public class RecordActivity extends AppCompatActivity {
             data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
             data.put("soundName", geräuschName.getText());
             data.put("alertName", textView_ChosenSound.getText());
+            data.put("alertUri", uri_sound);
 
             object.put("action", "saveSound");
             object.put("data", data);
@@ -273,7 +282,6 @@ public class RecordActivity extends AppCompatActivity {
         }
         communicationService.sendText(object.toString());
     }
-
 
     public String fileToString(File file) {
 
@@ -341,8 +349,12 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void unbindFromCommunicationService() {
-        unbindService(serviceConnection);
-        serviceIsBound = false;
+        try {
+            unbindService(serviceConnection);
+            serviceIsBound = false;
+        } catch (Exception e) {
+            Log.d(TAG, "service could not be unbound because it wasn't bound");
+        }
     }
 
     public void saveAudioFile(String s) {
@@ -365,7 +377,6 @@ public class RecordActivity extends AppCompatActivity {
         }
         Log.d(TAG, "File saved from json");
     }
-
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {

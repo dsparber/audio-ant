@@ -1,16 +1,31 @@
 package com.audioant.io.android.json.actions;
 
-import org.json.simple.JSONObject;
+import java.io.IOException;
 
-import com.audioant.io.android.json.JsonReplyAction;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
+import com.audioant.alert.AlertSettings;
 import com.audioant.io.android.json.JsonFields;
-import com.audioant.io.android.json.JsonFields.ChangeSettings;
+import com.audioant.io.android.json.JsonFields.ChangeSettings.Reply;
+import com.audioant.io.android.json.JsonReplyAction;
 
 public class ChangeSettingsAction extends JsonReplyAction {
 
+	boolean success;
+
 	public ChangeSettingsAction(JSONObject request) {
 		super(request);
-		// TODO Auto-generated constructor stub
+
+		success = true;
+
+		JSONObject data = (JSONObject) request.get(JsonFields.DATA_KEY);
+		try {
+			AlertSettings.getInstance().setValues(data);
+		} catch (IOException | ParseException e) {
+			success = false;
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -19,7 +34,11 @@ public class ChangeSettingsAction extends JsonReplyAction {
 
 		JSONObject jsonObject = new JSONObject();
 
-		jsonObject.put(JsonFields.ACTION_KEY, ChangeSettings.Reply.ACTION_VALUE);
+		jsonObject.put(JsonFields.ACTION_KEY, Reply.ACTION_VALUE);
+
+		JSONObject data = new JSONObject();
+		data.put(Reply.SUCCESS_KEY, success);
+		jsonObject.put(JsonFields.DATA_KEY, data);
 
 		return jsonObject;
 	}

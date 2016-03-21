@@ -6,14 +6,16 @@ import java.io.IOException;
 import java.util.Base64;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
+import com.audioant.alert.AlertSettings;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
-import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo.Reply;
+import com.audioant.io.android.json.JsonReplyAction;
 
 public class GetSoundInfoAction extends JsonReplyAction {
 
@@ -21,7 +23,7 @@ public class GetSoundInfoAction extends JsonReplyAction {
 
 	public GetSoundInfoAction(JSONObject request) {
 		super(request);
-		number = Integer.parseInt((String) request.get(JsonFields.DATA_KEY));
+		number = (int) ((long) request.get(JsonFields.DATA_KEY));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -33,11 +35,21 @@ public class GetSoundInfoAction extends JsonReplyAction {
 
 		JSONObject data = new JSONObject();
 
-		Sound sound = LearnedSounds.getSounds().get(number);
+		Sound sound = LearnedSounds.getSound(number);
 
 		data.put(Reply.NAME_KEY, sound.getNameNotNull());
 		data.put(Reply.NUMBER_KEY, sound.getId());
-		data.put(Reply.ALERT, "Not implemented");
+
+		Integer defaultAlertId = null;
+		try {
+			defaultAlertId = AlertSettings.getInstance().getAlertSoundId();
+		} catch (IOException | ParseException e1) {
+			e1.printStackTrace();
+		}
+
+		Integer alertId = (sound.getAlertId() != null) ? sound.getAlertId() : defaultAlertId;
+
+		data.put(Reply.ALERT, alertId);
 
 		File soundFile = new File(sound.getPath() + Config.LEARNED_SOUNDS_FILE);
 

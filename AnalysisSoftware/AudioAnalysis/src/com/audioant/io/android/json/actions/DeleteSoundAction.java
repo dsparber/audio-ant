@@ -7,9 +7,9 @@ import org.json.simple.JSONObject;
 
 import com.audioant.RaspberryTool;
 import com.audioant.audio.learning.LearnedSounds;
-import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
-import com.audioant.io.android.json.JsonFields.DeleteSound.Reply;;
+import com.audioant.io.android.json.JsonFields.DeleteSound.Reply;
+import com.audioant.io.android.json.JsonReplyAction;;
 
 public class DeleteSoundAction extends JsonReplyAction {
 
@@ -17,7 +17,7 @@ public class DeleteSoundAction extends JsonReplyAction {
 
 	public DeleteSoundAction(JSONObject request) {
 		super(request);
-		id = Integer.parseInt((String) request.get(JsonFields.DATA_KEY));
+		id = (int) ((long) request.get(JsonFields.DATA_KEY));
 	}
 
 	@SuppressWarnings("unchecked")
