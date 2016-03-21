@@ -39,10 +39,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
+import diplomarbeit.audioant.Model.Classes.SoundListItem;
 import diplomarbeit.audioant.Model.Helper.Settings;
 import diplomarbeit.audioant.Model.Services.CommunicationService;
 import diplomarbeit.audioant.Model.Services.RecordSignalService;
-import diplomarbeit.audioant.Model.SoundListItem;
 import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {

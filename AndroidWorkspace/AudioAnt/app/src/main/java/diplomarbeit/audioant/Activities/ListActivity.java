@@ -27,8 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
+import diplomarbeit.audioant.Model.Classes.SoundListItem;
 import diplomarbeit.audioant.Model.Services.CommunicationService;
-import diplomarbeit.audioant.Model.SoundListItem;
 import diplomarbeit.audioant.R;
 
 public class ListActivity extends AppCompatActivity {
@@ -88,7 +88,7 @@ public class ListActivity extends AppCompatActivity {
                         final SoundListItem selectedItem = listItems.get(position);
                         AlertDialog.Builder alert = new AlertDialog.Builder(ListActivity.this);
                         alert.setTitle("Ton löschen");
-                        alert.setMessage("Wollen sie Das Geräusch \"" + selectedItem.getSoundName() + "\" wirklich löschen?");
+                        alert.setMessage("Wollen sie Das Geräusch \"" + selectedItem.getName() + "\" wirklich löschen?");
                         alert.setNegativeButton("Nein", null);
                         alert.setPositiveButton("Ja, löschen", new DialogInterface.OnClickListener() {
                             @Override
