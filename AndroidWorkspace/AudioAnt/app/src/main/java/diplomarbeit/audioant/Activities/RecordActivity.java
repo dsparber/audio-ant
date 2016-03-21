@@ -1,15 +1,14 @@
 package diplomarbeit.audioant.Activities;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,11 +21,13 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,9 +61,8 @@ public class RecordActivity extends AppCompatActivity {
     private String TAG = "RECORDING_ACTIVITY";
     private EditText geräuschName;
     private Thread timeThread;
-    private ArrayAdapter<SoundListItem> arrayAdapter = new ArrayAdapter<>(
-            RecordActivity.this,
-            android.R.layout.select_dialog_singlechoice);
+    private int chosenAlertNumber = 1;
+    private ArrayAdapter<SoundListItem> arrayAdapter;
     private boolean geräuschSchonAufgenommen = false;
     private CommunicationService communicationService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -71,7 +71,7 @@ public class RecordActivity extends AppCompatActivity {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
             requestSoundsIfFirstStart();
-            Toast.makeText(getApplicationContext(), "jetzt", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Der service ist jetzt verbunden");
             serviceIsBound = true;
         }
 
@@ -106,6 +106,7 @@ public class RecordActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
                 JSONObject data = jsonObject.getJSONObject("data");
                 JSONArray sounds = data.getJSONArray("sounds");
+                deleteExistingAlerts();
                 for (int i = 0; i < sounds.length(); i++) {
                     JSONObject sound = (JSONObject) sounds.get(i);
                     String name = sound.getString("name");
@@ -162,7 +163,6 @@ public class RecordActivity extends AppCompatActivity {
         recordingHelpTextHeader = getResources().getString(R.string.recording_description_header);
         settings = new Settings(this);
         textView_ChosenSound = (TextView) findViewById(R.id.record_textView_sound_chosen);
-        setChosenSoundToTextView(settings.getCurrentSound());
         button_record = (Button) findViewById(R.id.record_button_start_recording);
         button_play = (Button) findViewById(R.id.record_button_replay);
         geräuschName = (EditText) findViewById(R.id.record_editText_geräuschname);
@@ -188,7 +188,9 @@ public class RecordActivity extends AppCompatActivity {
         //has to be changed to soundLearnedFeedback
         LocalBroadcastManager.getInstance(this).registerReceiver(soundLearnedFeedbackReceiver, new IntentFilter("soundLearnedFeedback"));
         LocalBroadcastManager.getInstance(this).registerReceiver(getAllAlertSounds, new IntentFilter("alertSounds"));
-
+        arrayAdapter = new ArrayAdapter<>(
+                RecordActivity.this,
+                android.R.layout.select_dialog_singlechoice);
         readAlerts();
     }
 
@@ -230,12 +232,6 @@ public class RecordActivity extends AppCompatActivity {
 
     public void resetTimeOfTextView() {
         textView_displayTime.setText("00:00");
-    }
-
-    public void setChosenSoundToTextView(Uri uri) {
-        Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
-        String title = ringtone.getTitle(this);
-        textView_ChosenSound.setText(title);
     }
 
     public void showRecordingHelp(View v) {
@@ -306,7 +302,7 @@ public class RecordActivity extends AppCompatActivity {
         try {
             data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
             data.put("soundName", geräuschName.getText());
-            data.put("alertId", textView_ChosenSound.getText());
+            data.put("alertId", chosenAlertNumber);
 
             object.put("action", "saveSound");
             object.put("data", data);
@@ -355,16 +351,60 @@ public class RecordActivity extends AppCompatActivity {
 
     }
 
-    public void showNotificationDialog(View v) {
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Benachrichtigungston auswählen");
-        if (uri_sound != null) {
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri_sound);
-        } else {
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, settings.getCurrentSound());
+    public void showChooseAlertDialog(View v) {
+
+        final AlertDialog.Builder chooseAlertDialog = new AlertDialog.Builder(RecordActivity.this);
+        chooseAlertDialog.setTitle(getResources().getString(R.string.notification_choose_header));
+        chooseAlertDialog.setNegativeButton("Fertig", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (player != null) {
+                    player.release();
+                    player = null;
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        final ListView listView = new ListView(this);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listView.setSelection(position);
+                SoundListItem chosenAlert = arrayAdapter.getItem(position);
+                chosenAlertNumber = chosenAlert.getNumber();
+                textView_ChosenSound.setText(chosenAlert.getName());
+                playAlertFromName(chosenAlert.getName());
+            }
+        });
+        listView.setSelection(chosenAlertNumber);
+        chooseAlertDialog.setView(listView);
+        chooseAlertDialog.show();
+    }
+
+    public void playAlertFromName(String name) {
+        File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
+        File[] files = folder.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String[] items = files[i].getName().split("-");
+            if (items[1].equals(name)) {
+                try {
+                    if (player != null) {
+                        player.release();
+                        player = null;
+                    }
+                    player = new MediaPlayer();
+                    player.setDataSource(files[i].getAbsolutePath());
+                    player.prepare();
+                    player.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        this.startActivityForResult(intent, 1);
+
     }
 
     public void bindToCommunicationService() {
@@ -426,7 +466,7 @@ public class RecordActivity extends AppCompatActivity {
         }
         byte[] data = Base64.decode(fileContent, Base64.NO_WRAP);
         try {
-            FileOutputStream fos = new FileOutputStream(getAbsoluteFileLocation());
+            FileOutputStream fos = new FileOutputStream(f.getAbsoluteFile());
             fos.write(data);
             fos.close();
         } catch (IOException e) {
@@ -435,20 +475,35 @@ public class RecordActivity extends AppCompatActivity {
         Log.d(TAG, "Alert saved from json");
     }
 
+    public void deleteExistingAlerts() {
+        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
+        deleteRecursive(dir);
+    }
+
+    void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+
+        fileOrDirectory.delete();
+    }
+
     public void readAlerts() {
         File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
         File[] files = folder.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            String[] items = files[i].getName().split("-");
-            int number = Integer.parseInt(items[0]);
-            String name = items[1];
-            arrayAdapter.add(new SoundListItem(name, number));
-            Toast.makeText(getApplicationContext(), files[i].getName(), Toast.LENGTH_SHORT).show();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                String[] items = files[i].getName().split("-");
+                int number = Integer.parseInt(items[0]);
+                String name = items[1];
+                arrayAdapter.add(new SoundListItem(name, number));
+                Log.d(TAG, "Found file " + files[i].getName());
+            }
         }
     }
 
     public void requestSoundsIfFirstStart() {
-        Settings settings = new Settings(this);
+        settings = new Settings(this);
         if (!settings.getSoundsLoaded()) {
             try {
                 JSONObject jsonObject = new JSONObject();
@@ -456,17 +511,6 @@ public class RecordActivity extends AppCompatActivity {
                 communicationService.sendText(jsonObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
-            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            if (uri != null) {
-                uri_sound = uri;
-                setChosenSoundToTextView(uri);
             }
         }
     }

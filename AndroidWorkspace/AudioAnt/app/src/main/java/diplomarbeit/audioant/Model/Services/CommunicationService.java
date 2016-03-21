@@ -65,10 +65,14 @@ public class CommunicationService extends Service {
     }
 
     public void sendText(String text) {
-        Log.d(TAG, "string wird an server gesendet");
-        printer.write(text);
-        printer.write("\r");
-        printer.flush();
+        try {
+            Log.d(TAG, "string wird an server gesendet");
+            printer.write(text);
+            printer.write("\r");
+            printer.flush();
+        } catch (NullPointerException e) {
+            Log.d(TAG, "fehler beim senden, server stream nicht bereit");
+        }
     }
 
 

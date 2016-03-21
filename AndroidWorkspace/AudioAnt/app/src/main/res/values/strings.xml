@@ -27,7 +27,9 @@
     <string name="audioant_benachrichtigungen_description">
         Mit den Optionen unterhalb können Sie festlegen wie die AudioAnt auf ein eingehendes Signal
         reagieren soll.
-        \n\nWenn Sie die Lautstärke verändern wird sofort ein Beispielton zur Kontrolle abgespielt.
+        \n\n\"Benachrichtigungston\" ist derjenige Ton der auf der AudioAnt abgespielt wird, wenn
+        kein bestimmter Ton während des Lernprozesses ausgewählt wird (z.B.: wenn das Geräusch über
+        drücken des vorgesehenen Knopfes auf der AudioAnt gelernt wird).
     </string>
     <string name="audioant_benachrichtigungen_description_header">AudioAnt Benachrichtigungen</string>
 
@@ -49,6 +51,7 @@
     <string name="audioant_settings_label_lautstärke">Lautstärke der Signaltöne</string>
     <string name="audioant_settings_editText_wifi_name">Name des Wlans</string>
     <string name="audioant_settings_editText_wifi_password">Passwort</string>
+    <string name="audioant_setting_label_default_sound">Benachrichtigungston</string>
 
 
     <!-- Smartphone Settings Activity-->

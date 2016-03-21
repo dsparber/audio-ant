@@ -122,7 +122,6 @@
                 android:layout_alignStart="@+id/button_wlan_infos_senden"
                 android:layout_below="@+id/textView_benachrichtigungen_label"
                 android:checked="false"
-                android:onClick="checkBoxClicked"
                 android:text="@string/audioant_settings_checkbox_lichtsignale"
                 android:textSize="@dimen/text_size_medium" />
 
@@ -134,9 +133,39 @@
                 android:layout_below="@+id/checkBox_lichtsignale"
                 android:layout_marginTop="@dimen/margin_small"
                 android:checked="false"
-                android:onClick="checkBoxClicked"
                 android:text="@string/audioant_settings_checkbox_audiosignale"
                 android:textSize="@dimen/text_size_medium" />
+
+            <LinearLayout
+                android:layout_below="@id/checkBox_audiosignale"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/seperator_bottom"
+                android:onClick="showChooseAlertDialog"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:singleLine="false"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audioant_setting_label_default_sound"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/audioAnt_settings_textView_chosen_sound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Beispielton"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
 
 
         </RelativeLayout>
