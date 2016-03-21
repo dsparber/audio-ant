@@ -98,4 +98,17 @@ public class Sound {
 			alertId = null;
 		}
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Sound s = (Sound) obj;
+		return id == s.id && path.equals(s.path);
+	}
+
+	public String getTextForDisplay() {
+		if (isNamed()) {
+			return name;
+		}
+		return Config.TEXT_SOUND + " " + id;
+	}
 }

@@ -10,9 +10,11 @@ import com.audioant.io.raspberry.hardware.Hardware;
 
 public class ButtonController extends Observable implements Observer {
 
-	public ButtonController() throws IOException {
+	private static ButtonController buttonController;
 
-		RaspberryInputListener.getInsatce().addObserver(this);
+	private ButtonController() throws IOException {
+
+		RaspberryInputListener.getInstance().addObserver(this);
 	}
 
 	@Override
@@ -30,6 +32,13 @@ public class ButtonController extends Observable implements Observer {
 			notifyObservers(button);
 		}
 
+	}
+
+	public static ButtonController getInstance() throws IOException {
+		if (buttonController == null) {
+			buttonController = new ButtonController();
+		}
+		return buttonController;
 	}
 
 }

@@ -7,9 +7,11 @@ import com.audioant.io.raspberry.hardware.Hardware;
 
 public class AlertController {
 
-	static private BufferedWriter writer;
+	private BufferedWriter writer;
 
-	public AlertController() throws IOException {
+	private static AlertController alertController;
+
+	private AlertController() throws IOException {
 		writer = RaspberryConnection.getWriter();
 	}
 
@@ -17,5 +19,12 @@ public class AlertController {
 
 		writer.write(Hardware.ALERT_LIGHT.toString() + "\r\n");
 		writer.flush();
+	}
+
+	public static AlertController getInstance() throws IOException {
+		if (alertController == null) {
+			alertController = new AlertController();
+		}
+		return alertController;
 	}
 }

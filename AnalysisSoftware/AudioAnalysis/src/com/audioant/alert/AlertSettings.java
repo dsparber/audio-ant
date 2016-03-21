@@ -89,7 +89,6 @@ public class AlertSettings {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(f));
 		writer.write(getJson().toJSONString());
 		writer.close();
-		// TODO: Send to raspberry
 	}
 
 	@SuppressWarnings("unchecked")

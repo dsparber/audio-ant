@@ -223,4 +223,7 @@ public class Config {
 
 	// Android
 	public static final int ANDROID_PORT = ConfigReader.getPropertyAsInt("androidPort");
+
+	// Text
+	public static final String TEXT_SOUND = ConfigReader.getProperty("textSound");
 }

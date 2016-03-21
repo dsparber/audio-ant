@@ -29,7 +29,7 @@ public class RaspberryInputListener extends Observable {
 		thread.start();
 	}
 
-	public static RaspberryInputListener getInsatce() throws IOException {
+	public static RaspberryInputListener getInstance() throws IOException {
 
 		if (inputListener == null) {
 			inputListener = new RaspberryInputListener();

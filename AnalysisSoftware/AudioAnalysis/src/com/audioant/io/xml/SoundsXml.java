@@ -122,8 +122,9 @@ public class SoundsXml {
 						sound.setPath(event.asCharacters().getData());
 					}
 					if (name.equals(Config.SOUNDS_XML_ALERT_ID)) {
-						event = eventReader.nextEvent();
-						sound.setAlertId(event.asCharacters().getData());
+						if ((event = eventReader.nextEvent()).isCharacters()) {
+							sound.setAlertId(event.asCharacters().getData());
+						}
 					}
 				}
 			}

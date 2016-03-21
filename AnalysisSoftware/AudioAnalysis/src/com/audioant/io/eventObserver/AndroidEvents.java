@@ -17,7 +17,7 @@ import com.audioant.io.android.json.actions.RecognisedSoundAction;
  *
  * @version 1.0
  */
-public class EventAndroid implements Observer {
+public class AndroidEvents implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {

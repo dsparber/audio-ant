@@ -58,6 +58,7 @@ public class AndroidConnection extends Observable {
 
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sockets.get(i).getOutputStream()));
 				writer.write(text);
+				writer.newLine();
 				writer.flush();
 
 			} catch (SocketException e) {

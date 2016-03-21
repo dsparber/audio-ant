@@ -111,7 +111,7 @@ public interface JsonFields {
 
 		public interface Reply {
 			String ACTION_VALUE = "wifiNetworkAdded";
-			String SUCCESS_KEY = "successfull";
+			String SUCCESS_KEY = "successful";
 			String PASSWORD_OK_KEY = "passwordOk";
 			String SSID_OK_KEY = "ssidOk";
 		}
