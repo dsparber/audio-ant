@@ -1,30 +1,44 @@
-import ledController as led
-import alertLightController as alert
+from ledController import LedController
+from alertLightController import AlertLight
 from wifi import WifiController
+from sound import Sound
 from display import Display
+import RPi.GPIO as GPIO
 
 class OutputManager:
 
 	def __init__(self):
 
-		self.wifi = WifiController(self)
+		GPIO.setwarnings(False)
+		GPIO.cleanup()
+		GPIO.setmode(GPIO.BCM)
+
+		self.alertLight = AlertLight()
+		self.sound = Sound()
+		self.led = LedController()
+
 		self.display = Display()
 		self.display.light(True)
 		self.display.displayClock()
 
-		led.ledWifi(self.wifi.isOn())
-		led.ledHotspot(self.wifi.isHotspotOn())
+		self.wifi = WifiController(self)
+		self.led.ledWifi(self.wifi.isOn())
+		self.led.ledHotspot(self.wifi.isHotspotOn())
 
 	def execute(self,function, options):
 
 		if function == "LED":
-			led.ledByOptions(options)
+			self.led.ledByOptions(options)
 
 		if function == "ALERT_LIGHT":
-			alert.blink()
+			self.alertLight.blink()
+
+		if function == "SOUND":
+			self.sound.play(str(options[0]))
 
 		if function == "DISPLAY":
-			self.display.write(options, 0, 20)
-			
+			self.display.addText(str(options[0]))
+			self.display.displayText()
+
 		if function == "WIFI":
 			self.wifi.addNetwork(options[0], options[1])

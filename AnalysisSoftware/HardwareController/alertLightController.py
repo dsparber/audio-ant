@@ -1,21 +1,33 @@
-import RPi.GPIO as GPIO; 
+import RPi.GPIO as GPIO;
+from thread import *
 import time
 import PINS
 import CONFIG
 
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PINS.alertLight, GPIO.OUT)
+class AlertLight:
 
-def blink():
-    for i in range(30):
-        on();
-        time.sleep(CONFIG.alertLightDelay)
-        off();
-        time.sleep(CONFIG.alertLightDelay)
+    def __init__(self):
+        GPIO.setup(PINS.alertLight, GPIO.OUT)
+        GPIO.output(PINS.alertLight, False)
+        self.running = False
 
-def on():
-    GPIO.output(PINS.alertLight, True)
+    def blink(self):
+        if not self.running:
+            self.running = True
+            start_new_thread(self.blinkThread ,())
 
-def off():
-    GPIO.output(PINS.alertLight, False)
+    def blinkThread(self):
+        while self.running:
+            self.on();
+            time.sleep(CONFIG.alertLightDelay)
+            self.off();
+            time.sleep(CONFIG.alertLightDelay)
+
+    def stop(self):
+        self.running = False
+
+    def on(self):
+        GPIO.output(PINS.alertLight, True)
+
+    def off(self):
+        GPIO.output(PINS.alertLight, False)

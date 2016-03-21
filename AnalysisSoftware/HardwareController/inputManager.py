@@ -15,10 +15,6 @@ class InputManager:
 		# Socket list
 		self.sockets = []
 
-		# GPIO setup
-		GPIO.setwarnings(False)
-		GPIO.setmode(GPIO.BCM)
-
 		# Button Dict
 		self.buttons = {}
 
@@ -26,7 +22,7 @@ class InputManager:
 		self.addButton("BUTTON_RECORDING", PINS.buttonRecording)
 		self.addButton("BUTTON_WIFI", PINS.buttonWifi)
 		self.addButton("BUTTON_HOTSPOT", PINS.buttonBluetooth)
-		self.addButton("BUTTON_BLUETOOTH", PINS.buttonHotspot)
+		self.addButton("BUTTON_CONFIRM", PINS.buttonConfirm)
 
 		self.lastWifi = current_milli_time()
 		self.lastHotspot = current_milli_time()
@@ -42,6 +38,11 @@ class InputManager:
 			if current_milli_time() - self.lastHotspot > 750:
 				self.outManager.wifi.toggleHotspot()
 				self.lastHotspot = current_milli_time()
+		elif name == "BUTTON_CONFIRM":
+			self.outManager.sound.stop()
+			self.outManager.alertLight.stop()
+			self.send("BUTTON;" + name)
+			self.outManager.display.displayClock()
 		else:
 			print name
 

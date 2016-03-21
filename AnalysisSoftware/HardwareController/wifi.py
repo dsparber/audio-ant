@@ -1,5 +1,4 @@
 import subprocess
-import ledController as led
 import time
 
 
@@ -16,8 +15,8 @@ class WifiController:
 		self.setLeds()
 
 	def setLeds(self):
-		led.ledHotspot(self.isHotspotOn())
-		led.ledWifi(self.isOn())
+		self.outputManager.led.ledHotspot(self.isHotspotOn())
+		self.outputManager.led.ledWifi(self.isOn())
 
 	def getNetwork(self):
 		self.essid = subprocess.check_output("scripts/essid.sh")[:-1]
@@ -65,22 +64,22 @@ class WifiController:
 			self.setLeds()
 
 	def on(self):
-		led.ledWifiBlink()
+		self.outputManager.led.ledWifiBlink()
 		subprocess.check_output("scripts/wifiUp.sh")
 		time.sleep(10)
 		self.setLeds()
 
 	def off(self):
-		led.ledWifiBlink()
+		self.outputManager.led.ledWifiBlink()
 		subprocess.check_output("scripts/wifiDown.sh")
 		self.setLeds()
 
 	def hotspotOn(self):
-		led.ledHotspotBlink()
+		self.outputManager.led.ledHotspotBlink()
 		subprocess.check_output("scripts/enableHotspot.sh")
 		self.setLeds()
 
 	def hotspotOff(self):
-		led.ledHotspotBlink()
+		self.outputManager.led.ledHotspotBlink()
 		subprocess.check_output("scripts/disableHotspot.sh")
 		self.setLeds()

@@ -5,7 +5,7 @@ from outputManager import OutputManager
 from inputManager import InputManager
 
 HOST = ''		# Symbolic name meaning all available interfaces
-PORT = 4207
+PORT = 4209
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -33,7 +33,7 @@ def receiveThread(clientsocket):
 			options = line.split(';')[1:]
 
 			outManager.execute(function, options)
-			
+
 while True:
 	#wait to accept a connection - blocking call
 	(clientsocket, address) = serversocket.accept()

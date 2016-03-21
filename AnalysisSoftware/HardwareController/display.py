@@ -17,8 +17,6 @@ class Display:
 
     def __init__(self):
 
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
         GPIO.setup(PINS.DisplayBL, GPIO.OUT)
 
         self.disp = LCD.PCD8544(PINS.DisplayDC, PINS.DisplayRST, spi=SPI.SpiDev(PINS.DisplaySPI_PORT, PINS.DisplaySPI_DEVICE, max_speed_hz=4000000))
@@ -33,16 +31,20 @@ class Display:
 
         self.displayingText = False
         self.showClock = False
+        self.text = ""
 
     def light(self, on):
         GPIO.output(PINS.DisplayBL, on)
 
     def displayClock(self):
         self.displayingText = False
-        self.showClock = True
+        self.showClock = False
+        time.sleep(CONFIG.displaySleepTime*2)
         start_new_thread(self.clockThread ,())
 
     def clockThread(self):
+        self.text = ""
+        self.showClock = True
 
         while self.showClock:
 
@@ -53,38 +55,69 @@ class Display:
             maxwidth, height = self.draw.textsize(text, font=self.font)
 
             self.draw.rectangle((0,0,84,48), outline=255, fill=255)
-            self.displayText(text, (84-maxwidth)/2, (48-height)/2, 30)
+            self.set(text, (84-maxwidth)/2, (48-height)/2, 30)
 
             time.sleep(CONFIG.displaySleepTime)
+        self.cleanup()
 
-    def write(self, text, y, size):
-	self.showClock = False
+    def cleanup(self):
         self.displayingText = False
+        self.showClock = False
+        self.draw.rectangle((0,0,84,48), outline=255, fill=255)
+        self.disp.image(self.image)
+        self.disp.display()
 
+    def addText(self, text):
+        if self.text == "":
+            self.text = text
+        else:
+            self.text = self.text + ", " + text
+
+    def setText(self, text):
+        self.text = text
+
+    def displayText(self):
+        self.showClock = False
+        time.sleep(CONFIG.displaySleepTime*2)
+        if not self.displayingText:
+            start_new_thread(self.writeThread ,(20,30))
+
+    def writeThread(self, y, size):
+
+        self.displayingText = True
+        self.set(CONFIG.displayText,0,0,20)
+
+        maxwidth, height = self.draw.textsize(self.text, font=self.font)
         self.font = ImageFont.truetype(CONFIG.displayFont, size)
-
-        maxwidth, height = self.draw.textsize(text, font=self.font)
-        diff = maxwidth-84
-
         self.draw.rectangle((0,y,LCD.LCDWIDTH,height), outline=255, fill=255)
         self.disp.image(self.image)
         self.disp.display()
 
-        time.sleep(CONFIG.displaySleepTime*5)
-        self.displayingText = True
+        text = self.text
 
-        if diff > 0:
-             while True:
-                 for i in range(0,diff+84+21):
-                     self.displayText(text,-i,y,size)
-                     self.displayText(text,maxwidth+21-i,y,size)
-                     if self.displayingText == False:
+        while self.displayingText:
+
+            maxwidth, height = self.draw.textsize(self.text, font=self.font)
+            diff = maxwidth-84
+
+            if diff > 0:
+                for i in range(0,diff+84+21):
+
+                    if not text == self.text:
+                        text = self.text
+                        break
+
+                    if self.displayingText:
+                         self.set(self.text,-i,y,size)
+                         self.set(self.text,maxwidth+21-i,y,size)
+                         time.sleep(CONFIG.displaySleepTime)
+                    else:
                          break
-                     time.sleep(CONFIG.displaySleepTime)
-        else:
-            self.displayText(text,0,y,size)
+            else:
+                self.set(self.text,0,y,size)
+                time.sleep(CONFIG.displaySleepTime)
 
-    def displayText(self, text, x, y, size):
+    def set(self, text, x, y, size):
 
         self.font = ImageFont.truetype(CONFIG.displayFont, size)
 

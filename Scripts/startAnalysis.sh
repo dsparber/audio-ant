@@ -1,6 +1,7 @@
 #!/bin/bash
-cd /home/pi/HardwareController/
 
 R CMD Rserve --save
-sudo -b connection.py
+cd /home/pi/HardwareController/
+sudo -b python connection.py
+cd /home/pi/
 java -jar /home/pi/AudioRecognition.jar &
