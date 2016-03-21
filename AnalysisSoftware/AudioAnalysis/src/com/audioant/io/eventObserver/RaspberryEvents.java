@@ -9,10 +9,14 @@ import java.util.Observer;
 import org.json.simple.parser.ParseException;
 
 import com.audioant.alert.AlertSettings;
+import com.audioant.alert.AlertSounds;
+import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
+import com.audioant.config.Config;
 import com.audioant.io.raspberry.AlertController;
 import com.audioant.io.raspberry.ButtonController;
 import com.audioant.io.raspberry.DisplayController;
+import com.audioant.io.raspberry.SoundController;
 import com.audioant.io.raspberry.hardware.Button;
 
 /**
@@ -54,15 +58,24 @@ public class RaspberryEvents implements Observer {
 			try {
 				AlertSettings settings = AlertSettings.getInstance();
 
-				if (shouldBlink(newSounds)) {
+				if (notNotified(newSounds)) {
 					if (settings.isLightSignals()) {
 						AlertController.getInstance().blink();
+
+						if (settings.isAudioSignals()) {
+
+							Integer id = LearnedSounds.getSound(newSounds.get(0).getId()).getAlertId();
+							Integer defaultId = AlertSettings.getInstance().getAlertSoundId();
+
+							String path = Config.FOLDER_GLOBAL + Config.ALERT_SOUNDS_FOLDER_PATH
+									+ AlertSounds.getSoundFallback(id, defaultId).getId() + '/'
+									+ Config.ALERT_SOUNDS_FILE;
+
+							SoundController.getInstance().play(path);
+						}
 					}
 				}
 				if (!newSounds.isEmpty()) {
-					if (settings.isAudioSignals()) {
-						// TODO: Sound
-					}
 					for (Sound sound : newSounds) {
 						DisplayController.getInstance().write(sound.getTextForDisplay());
 					}
@@ -76,7 +89,7 @@ public class RaspberryEvents implements Observer {
 		}
 	}
 
-	private boolean shouldBlink(List<Sound> newSounds) {
+	private boolean notNotified(List<Sound> newSounds) {
 		return newSounds.size() == lastSounds.size();
 	}
 

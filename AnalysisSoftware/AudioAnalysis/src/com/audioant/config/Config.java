@@ -17,6 +17,8 @@ public class Config {
 
 	// Working directory
 	public static final String WORKING_FOLDER = ConfigReader.getProperty("workingFolder");
+	public static final String FOLDER_GLOBAL = ConfigReader.getProperty("globalPath");
+	public static final String PROJEKT_FOLDER = ConfigReader.getProperty("projectFolder");
 
 	// Learned Sounds
 	public static final String LEARNED_SOUNDS_FOLDER = ConfigReader.getProperty("learnedSoundsFolder");
@@ -35,7 +37,6 @@ public class Config {
 	public static final String LEARNED_SOUNDS_XML_FILE_PATH = LEARNED_SOUNDS_FOLDER_PATH + LEARNED_SOUNDS_XML_FILE;
 
 	// Alert Sounds
-
 	public static final String ALERT_SOUNDS_FILE = ConfigReader.getProperty("alertSoundsFile");
 	public static final String ALERT_SOUNDS_FOLDER = ConfigReader.getProperty("alertSoundsFolder");
 	public static final String ALERT_SOUNDS_FOLDER_PATH = WORKING_FOLDER + ALERT_SOUNDS_FOLDER;
