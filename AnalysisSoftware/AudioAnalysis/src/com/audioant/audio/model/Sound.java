@@ -7,21 +7,32 @@ public class Sound {
 	private int id;
 	private String name;
 	private String path;
+	private String soundFile;
 	private Integer alertId;
 
-	public Sound() {
+	public Sound(String soundFile) {
+		this.soundFile = soundFile;
 	}
 
-	public Sound(String name, int number) {
-		this(name, Config.LEARNED_SOUNDS_FOLDER, number);
+	public Sound(int number, String soundFile) {
+		this(null, number, soundFile);
 	}
 
-	public Sound(String name, String folder, int number) {
-		this(name, folder, number, null);
+	public Sound(String name, int number, String soundFile) {
+		this(name, Config.LEARNED_SOUNDS_FOLDER, number, soundFile);
 	}
 
-	public Sound(String name, String folder, int number, Integer alertId) {
+	public Sound(String name, int number, String soundFile, Integer alertId) {
+		this(name, null, number, soundFile, alertId);
+	}
+
+	public Sound(String name, String folder, int number, String soundFile) {
+		this(name, folder, number, soundFile, null);
+	}
+
+	public Sound(String name, String folder, int number, String soundFile, Integer alertId) {
 		this.name = name;
+		this.soundFile = soundFile;
 		id = number;
 		this.alertId = alertId;
 
@@ -77,6 +88,14 @@ public class Sound {
 
 	public String getPath() {
 		return path;
+	}
+
+	public String getSoundFile() {
+		return soundFile;
+	}
+
+	public void setSoundFile(String soundFile) {
+		this.soundFile = soundFile;
 	}
 
 	public void setPath(String path) {

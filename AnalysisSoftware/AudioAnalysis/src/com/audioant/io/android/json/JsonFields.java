@@ -8,10 +8,15 @@ public interface JsonFields {
 	public interface SaveSound {
 		public interface Request {
 			String ACTION_VALUE = "saveSound";
+			String ALERT_ID_KEY = "alertId";
+			String NAME_KEY = "name";
+			String FILE_CONTENT = "fileContent";
+			String FILE_EXTENSION = "fileExtension";
 		}
 
 		public interface Reply {
 			String ACTION_VALUE = "soundLearnedFeedback";
+			String SUCCESS_KEY = "successful";
 		}
 	}
 

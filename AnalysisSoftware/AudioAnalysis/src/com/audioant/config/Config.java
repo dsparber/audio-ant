@@ -24,7 +24,10 @@ public class Config {
 	public static final String LEARNED_SOUNDS_FOLDER = ConfigReader.getProperty("learnedSoundsFolder");
 	public static final String LEARNED_SOUNDS_FOLDER_PATH = WORKING_FOLDER + LEARNED_SOUNDS_FOLDER;
 
-	public static final String LEARNED_SOUNDS_FILE = ConfigReader.getProperty("learnedSoundsFileSound");
+	public static final String LEARNED_SOUNDS_FILE_NAME = ConfigReader.getProperty("learnedSoundsFileName");
+	public static final String LEARNED_SOUNDS_FILE_DEFAULT_EXTENSION = ConfigReader
+			.getProperty("learnedSoundsFileExtension");
+	public static final String LEARNED_SOUNDS_FILE = LEARNED_SOUNDS_FILE_NAME + LEARNED_SOUNDS_FILE_DEFAULT_EXTENSION;
 
 	public static final String LEARNED_SOUNDS_FILE_FREQUENCIES = ConfigReader
 			.getProperty("learnedSoundsFileFrequencies");
@@ -67,6 +70,7 @@ public class Config {
 	public static final String SOUNDS_XML_NUMBER = ConfigReader.getProperty("soundsXmlNumber");
 	public static final String SOUNDS_XML_NAME = ConfigReader.getProperty("soundsXmlName");
 	public static final String SOUNDS_XML_PATH = ConfigReader.getProperty("soundsXmlPath");
+	public static final String SOUNDS_XML_SOUND_FILE = ConfigReader.getProperty("soundsXmlSoundFile");
 	public static final String SOUNDS_XML_ALERT_ID = ConfigReader.getProperty("soundsXmlAlertId");
 
 	// Hardware controller

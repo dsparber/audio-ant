@@ -22,20 +22,22 @@ public class UpdateSoundAction extends JsonReplyAction {
 		success = false;
 		JSONObject data = (JSONObject) request.get(JsonFields.DATA_KEY);
 		int soundId = (int) ((long) data.get(Request.ID_KEY));
-		int alertId = (int) ((long) data.get(Request.ALERT_KEY));
+		Integer alertId = (int) ((long) data.get(Request.ALERT_KEY));
+		alertId = (alertId == -1) ? null : alertId;
 		String name = (String) data.get(Request.NAME_KEY);
 
 		Sound s = LearnedSounds.getSound(soundId);
 
 		if (s != null) {
+			success = true;
 			s.setName(name);
 			Sound alert = AlertSounds.getSound(alertId);
 			if (alert != null) {
 				s.setAlertId(alert.getId());
 				try {
 					LearnedSounds.saveSounds();
-					success = true;
 				} catch (ParserConfigurationException | TransformerException e) {
+					success = false;
 					e.printStackTrace();
 				}
 

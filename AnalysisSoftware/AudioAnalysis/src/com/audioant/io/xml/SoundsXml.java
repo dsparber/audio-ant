@@ -72,6 +72,10 @@ public class SoundsXml {
 			path.appendChild(doc.createTextNode(model.getPath()));
 			sound.appendChild(path);
 
+			Element soundFile = doc.createElement(Config.SOUNDS_XML_SOUND_FILE);
+			soundFile.appendChild(doc.createTextNode(model.getSoundFile()));
+			sound.appendChild(soundFile);
+
 			Element alertId = doc.createElement(Config.SOUNDS_XML_ALERT_ID);
 			alertId.appendChild(doc.createTextNode(model.getAlertIdNotNull()));
 			sound.appendChild(alertId);
@@ -105,7 +109,7 @@ public class SoundsXml {
 				String name = event.asStartElement().getName().getLocalPart();
 
 				if (name.equals(Config.SOUNDS_XML_SOUND)) {
-					sound = new Sound();
+					sound = new Sound(null);
 				} else {
 
 					if (name.equals(Config.SOUNDS_XML_NAME)) {
@@ -120,6 +124,10 @@ public class SoundsXml {
 					if (name.equals(Config.SOUNDS_XML_PATH)) {
 						event = eventReader.nextEvent();
 						sound.setPath(event.asCharacters().getData());
+					}
+					if (name.equals(Config.SOUNDS_XML_SOUND_FILE)) {
+						event = eventReader.nextEvent();
+						sound.setSoundFile(event.asCharacters().getData());
 					}
 					if (name.equals(Config.SOUNDS_XML_ALERT_ID)) {
 						if ((event = eventReader.nextEvent()).isCharacters()) {

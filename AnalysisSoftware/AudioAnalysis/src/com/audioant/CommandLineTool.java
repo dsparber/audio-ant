@@ -17,6 +17,7 @@ import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.audio.model.Sound;
+import com.audioant.config.Config;
 import com.audioant.io.eventObserver.DetailLogger;
 import com.audioant.io.eventObserver.EventLogger;
 import com.audioant.test.FeatureTest;
@@ -69,6 +70,9 @@ public class CommandLineTool {
 			}
 		}
 		s.close();
+		if (analyser != null) {
+			endAnalysing();
+		}
 		System.out.println("Program terminated");
 	}
 
@@ -107,11 +111,10 @@ public class CommandLineTool {
 
 	private static void learnSound(Scanner scanner) {
 
-		Sound sound = LearnedSounds.getNewSound(scanner.nextLine());
+		System.out.print("Enter the name of the sound: ");
+		Sound sound = new Sound(scanner.nextLine(), LearnedSounds.getNextNumber(), Config.LEARNED_SOUNDS_FILE);
 
 		try {
-			System.out.print("Enter the name of the sound: ");
-
 			MicrophoneSoundLearner learnSound = new MicrophoneSoundLearner(sound);
 
 			System.out.println("Hit return to start recording");

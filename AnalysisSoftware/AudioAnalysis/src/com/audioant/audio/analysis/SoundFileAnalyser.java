@@ -33,10 +33,10 @@ public class SoundFileAnalyser extends SoundAnalyser {
 	private double frequencyMatch, srpMatch, mfccMatch, energyMatch;
 	private MatchAnalyser matchAnalyser;
 
-	public SoundFileAnalyser(String pathname) throws RserveException, IOException {
+	public SoundFileAnalyser(String fileName, String pathname) throws RserveException, IOException {
 		super();
 		this.pathname = pathname;
-		matchAnalyser = new MatchAnalyser(new Sound());
+		matchAnalyser = new MatchAnalyser(new Sound(fileName));
 	}
 
 	public void analyse() throws IOException, REngineException, REXPMismatchException, UnsupportedAudioFileException {
