@@ -22,12 +22,12 @@ import diplomarbeit.audioant.Model.Helper.Constants;
 public class CommunicationService extends Service {
 
     private static String TAG = "BOUND_SERICE";
+    Socket socket = null;
     private IBinder binder = new MyBinder();
-    private String text = "asgard";
     private BufferedReader reader;
     private PrintWriter printer;
-    private String IPADDRESS = "192.168.0.104";
-    private int PORT = 4444;
+    private boolean isConnected = false;
+    private boolean socketClosedOnPurpose = false;
 
 
     @Override
@@ -61,7 +61,6 @@ public class CommunicationService extends Service {
         }
     }
 
-
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d(TAG, "The service was unbound");
@@ -76,6 +75,7 @@ public class CommunicationService extends Service {
             printer.flush();
         } catch (NullPointerException e) {
             Log.d(TAG, "fehler beim senden, server stream nicht bereit");
+
         }
     }
 
@@ -99,22 +99,64 @@ public class CommunicationService extends Service {
 
     }
 
+    public void closeSocket() {
+        try {
+            socket.close();
+            reader = null;
+            printer = null;
+            socketClosedOnPurpose = true;
+            isConnected = false;
+            Log.d(TAG, "Socket closed");
+        } catch (IOException e) {
+            Log.d(TAG, "socket could not be closed");
+        }
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
     private void initialiseNetworkConnectionAgain() {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
 
-                Socket socket = null;
-                try {
-                    socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    Log.d(TAG, "Erneutes verbinden zum Server erfolgreich!!");
-                    Intent i = new Intent("reconnected");
-                    LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
-                    listenForAudioAntMessages();
-                } catch (IOException e) {
-                    Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
+                A:
+                while (true) {
+                    B:
+                    while (true) {
+
+                        Thread tt = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!isConnected) {
+                                    try {
+                                        socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
+                                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                                        printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                                        Log.d(TAG, "Erneutes verbinden zum Server erfolgreich!!");
+                                        Intent i = new Intent("reconnected");
+                                        LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
+                                        listenForAudioAntMessages();
+
+                                        isConnected = true;
+                                        socketClosedOnPurpose = false;
+                                    } catch (IOException e) {
+                                        Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
+                                    }
+                                }
+                            }
+
+                        });
+                        tt.start();
+                        try {
+                            Thread.sleep(10000);
+                            if (!isConnected) break B;
+                            else break A;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         });
@@ -125,18 +167,43 @@ public class CommunicationService extends Service {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+                A:
+                while (true) {
+                    B:
+                    while (true) {
 
-                Socket socket = null;
-                try {
-                    socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
+                        Thread tt = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!isConnected) {
+                                    try {
+                                        socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
+                                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                                        printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    Log.d(TAG, "Verbindung zum Server erfolgreich");
-                    listenForAudioAntMessages();
+                                        Intent i = new Intent("verbunden");
+                                        LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
+                                        Log.d(TAG, "Verbindung zum Server erfolgreich");
+                                        listenForAudioAntMessages();
 
-                } catch (IOException e) {
-                    Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
+                                        isConnected = true;
+                                    } catch (IOException e) {
+                                        Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
+                                    }
+                                }
+                            }
+                        });
+                        tt.start();
+
+
+                        try {
+                            Thread.sleep(10000);
+                            if (!isConnected) break B;
+                            else break A;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         });
@@ -144,15 +211,32 @@ public class CommunicationService extends Service {
     }
 
     private void listenForAudioAntMessages() {
-        String incoming;
-        try {
-            while ((incoming = reader.readLine()) != null) {
-                sendReceivedData(incoming);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String incoming;
+                try {
+                    while ((incoming = reader.readLine()) != null) {
+                        sendReceivedData(incoming);
+                    }
+                    Log.d(TAG, "Die Verbindung zum Server wurde verloren");
+                    if (!socketClosedOnPurpose) {
+                        Log.d(TAG, "trying to reconnect");
+                        initialiseNetworkConnection();
+                        isConnected = false;
+                    }
+                } catch (IOException e) {
+                    Log.d(TAG, "server closed");
+                    if (!socketClosedOnPurpose) {
+                        Log.d(TAG, "trying to reconnect");
+                        isConnected = false;
+                        initialiseNetworkConnection();
+                    }
+                }
             }
-            Log.d(TAG, "Die Verbindung zum Server wurde verloren");
-        } catch (IOException e) {
-            Log.d(TAG, "server closed");
-        }
+        });
+        t.start();
+
     }
 
     public class MyBinder extends Binder {

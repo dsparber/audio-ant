@@ -279,6 +279,7 @@ public class AudioAntSettings extends AppCompatActivity {
         if (connectedToNewNetwork) {
             sendConnectToLocalWifiJson();
             Toast.makeText(this, "es hat funktioniert!!!", Toast.LENGTH_SHORT).show();
+            new Settings(this).setLocalWifiName("" + wlanName.getText());
             readyForResult = false;
         } else {
             Toast.makeText(this, "es hat nicht funktioniert!!!", Toast.LENGTH_SHORT).show();
@@ -560,6 +561,7 @@ public class AudioAntSettings extends AppCompatActivity {
                     @Override
                     public void run() {
                         registerReceiver(wifiChangedReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+                        communicationService.closeSocket();
                         connectToWifi("" + wlanName.getText(), "" + wlanPassword.getText());
                         startWifiConnectTimer();
                     }

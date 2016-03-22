@@ -1,6 +1,7 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,8 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private long start;
     private long stop;
     private static final String TAG = "MAIN_ACTIVITY";
+    private AlertDialog loadingDialog;
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
 
         public void onReceive(Context context, Intent intent) {
@@ -37,12 +39,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    private BroadcastReceiver connectedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleConnectedReceived(context, intent);
+        }
+    };
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
+            if (!communicationService.isConnected()) {
+                showLoadingDialog();
+            }
             stop = System.currentTimeMillis();
             Log.d(TAG, "" + (stop - start));
             Toast.makeText(MainActivity.this, "jetzt", Toast.LENGTH_SHORT).show();
@@ -63,13 +74,23 @@ public class MainActivity extends AppCompatActivity {
         start = System.currentTimeMillis();
         showDialogIfNecessary();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("Test"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("Test"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(connectedReceiver, new IntentFilter("verbunden"));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         bindToCommunicationService();
+    }
+
+
+    public void handleConnectedReceived(Context context, Intent intent) {
+        try {
+            loadingDialog.dismiss();
+        } catch (NullPointerException e) {
+            Log.d(TAG, "could not dismiss dialog");
+        }
     }
 
     public void bindToCommunicationService() {
@@ -95,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void sendTextToService(View v) {
-        communicationService.sendText("Beispieltext");
-    }
-
     public void showDialogIfNecessary() {
         Log.d(TAG, "Entered showDialogIfNecessary");
         Intent i = getIntent();
@@ -114,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
             });
             alert.show();
         }
+    }
+
+    public void showLoadingDialog() {
+        loadingDialog = new ProgressDialog(MainActivity.this);
+        loadingDialog.setMessage("Verbindung zu  Server wird aufgebaut....");
+        loadingDialog.setCancelable(false);
+        loadingDialog.show();
     }
 
     public void startRecordActivity(View v) {
