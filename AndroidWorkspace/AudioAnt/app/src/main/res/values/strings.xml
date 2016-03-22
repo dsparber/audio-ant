@@ -52,6 +52,9 @@
     <string name="audioant_settings_editText_wifi_name">Name des Wlans</string>
     <string name="audioant_settings_editText_wifi_password">Passwort</string>
     <string name="audioant_setting_label_default_sound">Benachrichtigungston</string>
+    <string name="audioant_settings_button_wlan_list">Netzwerk aus Liste auswählen</string>
+    <string name="audioant_settings_choose_wifi_header">Netzwerk auswählen</string>
+    <string name="audioant_settings_message_connect_error">Die eingegebenen Daten sind fehlerhaft!  Überprüfen Sie, ob Name und Passwort des Netzwerks stimmen und versuchen Sie es erneut!</string>
 
 
     <!-- Smartphone Settings Activity-->

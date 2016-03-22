@@ -72,6 +72,20 @@
                 android:inputType="textPassword"
                 android:textSize="@dimen/text_size_medium" />
 
+            <Button
+                android:id="@+id/audioant_settings_button_wlan_list"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button_height_normal"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/editText_wifi_password"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:onClick="buttonClicked"
+                android:text="@string/audioant_settings_button_wlan_list"
+                android:textSize="@dimen/text_size_normal" />
 
             <Button
                 android:id="@+id/button_wlan_infos_senden"
@@ -81,7 +95,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/editText_wifi_password"
+                android:layout_below="@+id/audioant_settings_button_wlan_list"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
                 android:onClick="buttonClicked"

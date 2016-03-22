@@ -9,6 +9,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
@@ -35,9 +41,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Classes.SoundListItem;
+import diplomarbeit.audioant.Model.Helper.Constants;
 import diplomarbeit.audioant.Model.Helper.Settings;
 import diplomarbeit.audioant.Model.Helper.WifiHelper;
 import diplomarbeit.audioant.Model.Services.CommunicationService;
@@ -50,13 +58,24 @@ public class AudioAntSettings extends AppCompatActivity {
     private CheckBox checkBox_audioSignals;
     private WifiHelper wifiHelper;
     private EditText wlanName;
+    private EditText wlanPassword;
     private Settings settings;
-    private boolean lightSignals;
-    private boolean audioSignals;
+    private boolean connectedToNewNetwork = false;
+    private boolean readyForResult = false;
+    private String chosenNetwork = "";
+    private WifiManager wifiManager;
     private MediaPlayer player;
     private TextView textView_ChosenSound;
     private int alertSoundId = 0;
-    private ArrayAdapter<SoundListItem> arrayAdapter;
+    private ArrayAdapter<SoundListItem> arrayAdapterSounds;
+    private ArrayAdapter<String> arrayAdapterNetworks;
+
+    private BroadcastReceiver wifiScanReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context c, Intent intent) {
+            handleWifiNetworksRecieved(c, intent);
+        }
+    };
     private boolean serviceIsBound = false;
     private CommunicationService communicationService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -85,53 +104,215 @@ public class AudioAntSettings extends AppCompatActivity {
     private BroadcastReceiver currentSettingsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            try {
-                JSONObject obj = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = obj.getJSONObject("data");
-
-                lightSignals = data.getBoolean("lightSignals");
-                audioSignals = data.getBoolean("audioSignals");
-                alertSoundId = data.getInt("alertSoundId");
-
-                checkBox_audioSignals.setChecked(audioSignals);
-                checkBox_lightSignals.setChecked(lightSignals);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleSettingsReceived(context, intent);
         }
     };
     private BroadcastReceiver getAllAlertSounds = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            try {
-                JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = jsonObject.getJSONObject("data");
-                JSONArray sounds = data.getJSONArray("sounds");
-                deleteExistingAlerts();
-                for (int i = 0; i < sounds.length(); i++) {
-                    JSONObject sound = (JSONObject) sounds.get(i);
-                    String name = sound.getString("name");
-                    String fileName = sound.getString("fileName");
-                    int number = sound.getInt("number");
-                    String fileContent = sound.getString("fileContent");
-                    String fullFileName = number + "-" + name + "-" + fileName;
-
-                    saveAlert(fullFileName, fileContent);
-                }
-                settings.setSoundsLoaded(true);
-                readAlerts();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleAlertSounds(context, intent);
         }
     };
+    private BroadcastReceiver reconnectReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleWifiReconnectReceived(context, intent);
+        }
+    };
+    private BroadcastReceiver wifiChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleWifiChangedReceived(context, intent);
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_audio_ant_settings);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        wifiHelper = new WifiHelper(this);
+        wlanName = (EditText) findViewById(R.id.editText_wifi_name);
+        wlanPassword = (EditText) findViewById(R.id.editText_wifi_password);
+
+        checkBox_audioSignals = (CheckBox) findViewById(R.id.checkBox_audiosignale);
+        checkBox_lightSignals = (CheckBox) findViewById(R.id.checkBox_lichtsignale);
+        textView_ChosenSound = (TextView) findViewById(R.id.audioAnt_settings_textView_chosen_sound);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(currentSettingsReceiver, new IntentFilter("currentSettings"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(getAllAlertSounds, new IntentFilter("alertSounds"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(reconnectReceiver, new IntentFilter("reconnected"));
+
+        arrayAdapterSounds = new ArrayAdapter<>(AudioAntSettings.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapterNetworks = new ArrayAdapter<String>(AudioAntSettings.this, android.R.layout.select_dialog_singlechoice);
+
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        wifiManager.startScan();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         bindToCommunicationService();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                sendSaveSettingsJson();
+                try {
+                    unbindFromCommunicationService();
+                    unregisterReceiver(wifiScanReceiver);
+                    unregisterReceiver(wifiChangedReceiver);
+                    unregisterReceiver(reconnectReceiver);
+                } catch (IllegalArgumentException e) {
+                    Log.d(TAG, "tried to unregister receiver that was not registered");
+                }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        sendSaveSettingsJson();
+        try {
+            unregisterReceiver(wifiScanReceiver);
+            unregisterReceiver(wifiChangedReceiver);
+            unregisterReceiver(reconnectReceiver);
+        } catch (IllegalArgumentException e) {
+            Log.d(TAG, "tried to unregister receiver that was not registered");
+        }
+        unbindFromCommunicationService();
+        super.onBackPressed();
+    }
+
+    //Logic of BroadcastReceiver Methods
+    public void handleAlertSounds(Context context, Intent intent) {
+        try {
+            JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray sounds = data.getJSONArray("sounds");
+            deleteExistingAlerts();
+            for (int i = 0; i < sounds.length(); i++) {
+                JSONObject sound = (JSONObject) sounds.get(i);
+                String name = sound.getString("name");
+                String fileName = sound.getString("fileName");
+                int number = sound.getInt("number");
+                String fileContent = sound.getString("fileContent");
+                String fullFileName = number + "-" + name + "-" + fileName;
+
+                saveAlert(fullFileName, fileContent);
+            }
+            settings.setSoundsLoaded(true);
+            readAlerts();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleSettingsReceived(Context context, Intent intent) {
+        try {
+            JSONObject obj = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = obj.getJSONObject("data");
+
+            boolean lightSignals = data.getBoolean("lightSignals");
+            boolean audioSignals = data.getBoolean("audioSignals");
+            alertSoundId = data.getInt("alertSoundId");
+
+            checkBox_audioSignals.setChecked(audioSignals);
+            checkBox_lightSignals.setChecked(lightSignals);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleWifiNetworksRecieved(Context context, Intent intent) {
+        if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+            List<ScanResult> scanResults = wifiManager.getScanResults();
+            arrayAdapterNetworks.clear();
+            for (int i = 0; i < scanResults.size(); i++) {
+                arrayAdapterNetworks.add(scanResults.get(i).SSID);
+            }
+        }
+    }
+
+    public void handleWifiChangedReceived(Context context, Intent intent) {
+        final Intent i = intent;
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NetworkInfo networkInfo = i.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                if (networkInfo != null) {
+                    if (networkInfo.isConnected()) {
+                        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                        String ssid = wifiInfo.getSSID();
+                        if (ssid.equals(wlanName.getText() + "")) {
+                            if (wifiInfo.getSupplicantState().equals(SupplicantState.COMPLETED)) {
+                                Log.d(TAG, "conneted to new network");
+                                connectedToNewNetwork = true;
+                                readyForResult = true;
+                                reconnectToHotspot();
+                            }
+                        } else if (ssid.equals(new Constants().AA_HOTSPOT_NAME)) {
+                            if (wifiInfo.getSupplicantState().equals(SupplicantState.COMPLETED)) {
+                                if (readyForResult) {
+                                    Log.d(TAG, "connected to AudioAnt Hotspot");
+                                    initialiseConnectionToAudioAnt();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        t.start();
+    }
+
+    public void handleWifiReconnectReceived(Context context, Intent intent) {
+        if (connectedToNewNetwork) {
+            sendConnectToLocalWifiJson();
+            Toast.makeText(this, "es hat funktioniert!!!", Toast.LENGTH_SHORT).show();
+            readyForResult = false;
+        } else {
+            Toast.makeText(this, "es hat nicht funktioniert!!!", Toast.LENGTH_SHORT).show();
+
+//            AlertDialog.Builder alert = new AlertDialog.Builder(AudioAntSettings.this);
+//            alert.setTitle("Fehler!");
+//            alert.setMessage(getResources().getString(R.string.audioant_settings_message_connect_error));
+//            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                }
+//            });
+//            alert.show();
+        }
+    }
+
+
+    public void sendConnectToLocalWifiJson() {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("action", "connectToWifiNetwork");
+            JSONObject data = new JSONObject();
+            data.put("SSID", "" + wlanName.getText());
+            data.put("password", "" + wlanPassword.getText());
+            object.put("data", data);
+            communicationService.sendText(object.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initialiseConnectionToAudioAnt() {
+        communicationService.reconnectToAudioAntHotspot();
     }
 
     public void bindToCommunicationService() {
@@ -155,25 +336,6 @@ public class AudioAntSettings extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, "service could not be unbound because it wasn't bound");
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                sendSaveSettingsJson();
-                unbindFromCommunicationService();
-                super.onOptionsItemSelected(item);
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        sendSaveSettingsJson();
-        unbindFromCommunicationService();
-        super.onBackPressed();
     }
 
     public void sendSaveSettingsJson() {
@@ -221,21 +383,21 @@ public class AudioAntSettings extends AppCompatActivity {
             }
         });
 
-        final ListView listView = new ListView(this);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final ListView listViewSounds = new ListView(this);
+        listViewSounds.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        listViewSounds.setAdapter(arrayAdapterSounds);
+        listViewSounds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listView.setSelection(position);
-                SoundListItem chosenAlert = arrayAdapter.getItem(position);
+                listViewSounds.setSelection(position);
+                SoundListItem chosenAlert = arrayAdapterSounds.getItem(position);
                 alertSoundId = chosenAlert.getNumber();
                 textView_ChosenSound.setText(chosenAlert.getName());
                 playAlertFromName(chosenAlert.getName());
             }
         });
-        listView.setSelection(alertSoundId);
-        chooseAlertDialog.setView(listView);
+        listViewSounds.setSelection(alertSoundId);
+        chooseAlertDialog.setView(listViewSounds);
         chooseAlertDialog.show();
     }
 
@@ -261,7 +423,6 @@ public class AudioAntSettings extends AppCompatActivity {
         }
 
     }
-
 
     public void deleteExistingAlerts() {
         File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
@@ -300,13 +461,13 @@ public class AudioAntSettings extends AppCompatActivity {
                 String[] items = files[i].getName().split("-");
                 int number = Integer.parseInt(items[0]);
                 String name = items[1];
-                arrayAdapter.add(new SoundListItem(name, number));
+                arrayAdapterSounds.add(new SoundListItem(name, number));
                 Log.d(TAG, "Found file " + files[i].getName());
             }
         }
     }
 
-    void deleteRecursive(File fileOrDirectory) {
+    public void deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles())
                 deleteRecursive(child);
@@ -314,31 +475,99 @@ public class AudioAntSettings extends AppCompatActivity {
         fileOrDirectory.delete();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_ant_settings);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public void chooseWifiFromListDialog() {
+        final AlertDialog.Builder chooseWifiDialog = new AlertDialog.Builder(AudioAntSettings.this);
+        chooseWifiDialog.setTitle(getResources().getString(R.string.audioant_settings_choose_wifi_header));
+        chooseWifiDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }
+        );
+        chooseWifiDialog.setPositiveButton("Fertig", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                wlanName.setText(chosenNetwork);
+            }
+        });
 
-        wifiHelper = new WifiHelper(this);
-        wlanName = (EditText) findViewById(R.id.editText_wifi_name);
+        final ListView listViewNetworks = new ListView(this);
+        listViewNetworks.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        listViewNetworks.setAdapter(arrayAdapterNetworks);
+        listViewNetworks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listViewNetworks.setSelection(position);
+                chosenNetwork = arrayAdapterNetworks.getItem(position);
+            }
+        });
 
-        checkBox_audioSignals = (CheckBox) findViewById(R.id.checkBox_audiosignale);
-        checkBox_lightSignals = (CheckBox) findViewById(R.id.checkBox_lichtsignale);
-        textView_ChosenSound = (TextView) findViewById(R.id.audioAnt_settings_textView_chosen_sound);
+        chooseWifiDialog.setView(listViewNetworks);
+        chooseWifiDialog.show();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(currentSettingsReceiver, new IntentFilter("currentSettings"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(getAllAlertSounds, new IntentFilter("alertSounds"));
-        arrayAdapter = new ArrayAdapter<>(
-                AudioAntSettings.this,
-                android.R.layout.select_dialog_singlechoice);
+    }
+
+    public void connectToWifi(String ssid, String password) {
+        WifiConfiguration wifiConfiguration = new WifiConfiguration();
+        wifiConfiguration.SSID = "\"" + ssid + "\"";
+        wifiConfiguration.preSharedKey = "\"" + password + "\"";
+        wifiConfiguration.status = WifiConfiguration.Status.ENABLED;
+
+        //Damit netzwerke nicht doppelt auftauchen
+        List<WifiConfiguration> bekannteNetzwerke = wifiManager.getConfiguredNetworks();
+        for (int i = 0; i < bekannteNetzwerke.size(); i++) {
+            if (bekannteNetzwerke.get(i).SSID.equals("\"" + ssid + "\"")) {
+                int netId = bekannteNetzwerke.get(i).networkId;
+                wifiManager.removeNetwork(netId);
+            }
+        }
+        int netId = wifiManager.addNetwork(wifiConfiguration);
+        wifiManager.enableNetwork(netId, true);
+        wifiManager.setWifiEnabled(true);
+    }
+
+    public void startWifiConnectTimer() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                    if (!connectedToNewNetwork) {
+                        Log.d(TAG, "Entweder passwort oder ssid sind falsch!!");
+                        readyForResult = true;
+                        reconnectToHotspot();
+                    }
+                    Log.d(TAG, "zeit vorbei");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+    }
+
+    public void reconnectToHotspot() {
+        Log.d(TAG, "trying to reconnect to hotspot");
+        connectToWifi(new Constants().AA_HOTSPOT_NAME, new Constants().AA_HOTSPOT_PW);
     }
 
     public void buttonClicked(View v) {
         Button button = (Button) v;
         switch (button.getId()) {
             case R.id.button_wlan_infos_senden:
-                Toast.makeText(getApplicationContext(), wifiHelper.getSSID(), Toast.LENGTH_SHORT).show();
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        registerReceiver(wifiChangedReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+                        connectToWifi("" + wlanName.getText(), "" + wlanPassword.getText());
+                        startWifiConnectTimer();
+                    }
+                });
+                t.start();
+                break;
+            case R.id.audioant_settings_button_wlan_list:
+                chooseWifiFromListDialog();
                 break;
         }
     }

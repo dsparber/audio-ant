@@ -17,6 +17,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import diplomarbeit.audioant.Model.Helper.Constants;
+
 public class CommunicationService extends Service {
 
     private static String TAG = "BOUND_SERICE";
@@ -24,6 +26,8 @@ public class CommunicationService extends Service {
     private String text = "asgard";
     private BufferedReader reader;
     private PrintWriter printer;
+    private String IPADDRESS = "192.168.0.104";
+    private int PORT = 4444;
 
 
     @Override
@@ -75,6 +79,9 @@ public class CommunicationService extends Service {
         }
     }
 
+    public void reconnectToAudioAntHotspot() {
+        initialiseNetworkConnectionAgain();
+    }
 
     private void sendReceivedData(String s) {
         Intent intent;
@@ -92,6 +99,28 @@ public class CommunicationService extends Service {
 
     }
 
+    private void initialiseNetworkConnectionAgain() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Socket socket = null;
+                try {
+                    socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
+                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    Log.d(TAG, "Erneutes verbinden zum Server erfolgreich!!");
+                    Intent i = new Intent("reconnected");
+                    LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
+                    listenForAudioAntMessages();
+                } catch (IOException e) {
+                    Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
+                }
+            }
+        });
+        t.start();
+    }
+
     private void initialiseNetworkConnection() {
         Thread t = new Thread(new Runnable() {
             @Override
@@ -99,7 +128,7 @@ public class CommunicationService extends Service {
 
                 Socket socket = null;
                 try {
-                    socket = new Socket("192.168.0.102", 4444);
+                    socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
 
                     reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
