@@ -92,4 +92,4 @@ class LedController:
     			print ("LED not defined")
 
     def ledByOptions(self, options):
-        led(options[0], options[1])
+        self.led(options[0], options[1])
