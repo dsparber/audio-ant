@@ -78,15 +78,16 @@ public interface JsonFields {
 		}
 	}
 
-	public interface ChangeSoundAlert {
+	public interface UpdateSound {
 		public interface Request {
-			String ACTION_VALUE = "changeSoundAlert";
-			String SOUND_KEY = "sound";
-			String ALERT_KEY = "alert";
+			String ACTION_VALUE = "updateSound";
+			String ID_KEY = "id";
+			String NAME_KEY = "name";
+			String ALERT_KEY = "alertId";
 		}
 
 		public interface Reply {
-			String ACTION_VALUE = "soundChanged";
+			String ACTION_VALUE = "soundUpdated";
 			String SUCCESS_KEY = "success";
 		}
 	}
