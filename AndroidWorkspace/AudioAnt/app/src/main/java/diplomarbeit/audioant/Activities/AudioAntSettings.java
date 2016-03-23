@@ -12,7 +12,6 @@ import android.media.MediaPlayer;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -509,24 +508,7 @@ public class AudioAntSettings extends AppCompatActivity {
 
     }
 
-    public void connectToWifi(String ssid, String password) {
-        WifiConfiguration wifiConfiguration = new WifiConfiguration();
-        wifiConfiguration.SSID = "\"" + ssid + "\"";
-        wifiConfiguration.preSharedKey = "\"" + password + "\"";
-        wifiConfiguration.status = WifiConfiguration.Status.ENABLED;
 
-        //Damit netzwerke nicht doppelt auftauchen
-        List<WifiConfiguration> bekannteNetzwerke = wifiManager.getConfiguredNetworks();
-        for (int i = 0; i < bekannteNetzwerke.size(); i++) {
-            if (bekannteNetzwerke.get(i).SSID.equals("\"" + ssid + "\"")) {
-                int netId = bekannteNetzwerke.get(i).networkId;
-                wifiManager.removeNetwork(netId);
-            }
-        }
-        int netId = wifiManager.addNetwork(wifiConfiguration);
-        wifiManager.enableNetwork(netId, true);
-        wifiManager.setWifiEnabled(true);
-    }
 
     public void startWifiConnectTimer() {
         Thread t = new Thread(new Runnable() {
@@ -550,7 +532,7 @@ public class AudioAntSettings extends AppCompatActivity {
 
     public void reconnectToHotspot() {
         Log.d(TAG, "trying to reconnect to hotspot");
-        connectToWifi(new Constants().AA_HOTSPOT_NAME, new Constants().AA_HOTSPOT_PW);
+        wifiHelper.connectToWifi(new Constants().AA_HOTSPOT_NAME, new Constants().AA_HOTSPOT_PW);
     }
 
     public void buttonClicked(View v) {
@@ -560,9 +542,10 @@ public class AudioAntSettings extends AppCompatActivity {
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        connectedToNewNetwork = false;
                         registerReceiver(wifiChangedReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
                         communicationService.closeSocket();
-                        connectToWifi("" + wlanName.getText(), "" + wlanPassword.getText());
+                        wifiHelper.connectToWifi("" + wlanName.getText(), "" + wlanPassword.getText());
                         startWifiConnectTimer();
                     }
                 });

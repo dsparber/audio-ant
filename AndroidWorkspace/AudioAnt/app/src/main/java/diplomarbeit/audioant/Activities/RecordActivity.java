@@ -84,45 +84,13 @@ public class RecordActivity extends AppCompatActivity {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-            try {
-                JSONObject j = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = j.getJSONObject("data");
-                Intent i = new Intent(RecordActivity.this, MainActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                i.putExtra("message", data.getString("message"));
-                unbindFromCommunicationService();
-                startActivity(i);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleSoundLearnedFeedback(context, intent);
         }
     };
     private BroadcastReceiver getAllAlertSounds = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            try {
-                JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = jsonObject.getJSONObject("data");
-                JSONArray sounds = data.getJSONArray("sounds");
-                deleteExistingAlerts();
-                for (int i = 0; i < sounds.length(); i++) {
-                    JSONObject sound = (JSONObject) sounds.get(i);
-                    String name = sound.getString("name");
-                    String fileName = sound.getString("fileName");
-                    int number = sound.getInt("number");
-                    String fileContent = sound.getString("fileContent");
-                    String fullFileName = number + "-" + name + "-" + fileName;
-
-                    saveAlert(fullFileName, fileContent);
-                }
-                settings.setSoundsLoaded(true);
-                readAlerts();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleGetAllAlertSounds(context, intent);
         }
     };
 
@@ -157,6 +125,48 @@ public class RecordActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+    public void handleSoundLearnedFeedback(Context context, Intent intent) {
+        try {
+            JSONObject j = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = j.getJSONObject("data");
+            Intent i = new Intent(RecordActivity.this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            i.putExtra("message", data.getString("message"));
+            unbindFromCommunicationService();
+            startActivity(i);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleGetAllAlertSounds(Context context, Intent intent) {
+        try {
+            JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray sounds = data.getJSONArray("sounds");
+            deleteExistingAlerts();
+            for (int i = 0; i < sounds.length(); i++) {
+                JSONObject sound = (JSONObject) sounds.get(i);
+                String name = sound.getString("name");
+                String fileName = sound.getString("fileName");
+                int number = sound.getInt("number");
+                String fileContent = sound.getString("fileContent");
+                String fullFileName = number + "-" + name + "-" + fileName;
+
+                saveAlert(fullFileName, fileContent);
+            }
+            settings.setSoundsLoaded(true);
+            readAlerts();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void initElements() {
         recordingHelpText = getResources().getString(R.string.recording_description);

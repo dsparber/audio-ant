@@ -83,6 +83,7 @@
     <!-- More info to Sound Activity-->
     <string name="more_info_label_name">Geräuschname:</string>
     <string name="more_info_label_alert">AudioAnt Benachrichtigungston:</string>
+    <string name="main_label_connected">Mit AudioAnt verbunden</string>
 
 
     <!-- List Activity-->

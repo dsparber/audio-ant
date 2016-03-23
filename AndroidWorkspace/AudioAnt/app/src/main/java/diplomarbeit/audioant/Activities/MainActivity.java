@@ -15,6 +15,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import diplomarbeit.audioant.Model.Services.CommunicationService;
@@ -22,11 +24,13 @@ import diplomarbeit.audioant.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CommunicationService communicationService;
+    private static final String TAG = "MAIN_ACTIVITY";
     private static boolean serviceIsBound = false;
+    private CommunicationService communicationService;
     private long start;
     private long stop;
-    private static final String TAG = "MAIN_ACTIVITY";
+    private TextView textView_audioant_connection_status;
+    private ImageView imageView_verbunden;
     private AlertDialog loadingDialog;
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
@@ -51,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
-            if (!communicationService.isConnected()) {
+            if (communicationService.isConnected()) {
+                imageView_verbunden.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_24dp));
+                textView_audioant_connection_status.setText(getResources().getString(R.string.main_label_connected));
+            } else {
+                imageView_verbunden.setImageDrawable(getResources().getDrawable(R.drawable.ic_wifi_not_connected_24dp));
+                textView_audioant_connection_status.setText(getResources().getString(R.string.main_label_not_connected));
                 showLoadingDialog();
             }
             stop = System.currentTimeMillis();
@@ -74,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         start = System.currentTimeMillis();
         showDialogIfNecessary();
 
+        textView_audioant_connection_status = (TextView) findViewById(R.id.main_textView_verbunden);
+        imageView_verbunden = (ImageView) findViewById(R.id.ic_verbunden);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("Test"));
         LocalBroadcastManager.getInstance(this).registerReceiver(connectedReceiver, new IntentFilter("verbunden"));
     }
@@ -85,13 +96,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public void handleConnectedReceived(Context context, Intent intent) {
         try {
             loadingDialog.dismiss();
+            textView_audioant_connection_status.setText(getResources().getString(R.string.main_label_connected));
+            imageView_verbunden.setImageDrawable(getResources().getDrawable(R.drawable.ic_done_24dp));
         } catch (NullPointerException e) {
             Log.d(TAG, "could not dismiss dialog");
         }
     }
+
 
     public void bindToCommunicationService() {
         if (!serviceIsBound) {
@@ -160,6 +175,4 @@ public class MainActivity extends AppCompatActivity {
         unbindFromCommunicationService();
         startActivity(new Intent(MainActivity.this, AudioAntSettings.class));
     }
-
-
 }
