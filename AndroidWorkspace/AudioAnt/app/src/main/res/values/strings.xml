@@ -109,4 +109,11 @@
     <!-- List Activity-->
 
 
+    <!-- Alarm Activity-->
+    <string name="alarm_label">Ein Geräusch wurde von der AudioAnt erkannt!!!</string>
+    <string name="alarm_label_description_single_sound">Das folgende Geräusch wurde von der AudioAnt erkannt:</string>
+    <string name="alarm_label_description_multiple_sound">Die folgenden Geräusche wurden von der AudioAnt erkannt:</string>
+    <string name="alarm_button_schließen">Schließen</string>
+
+
 </resources>

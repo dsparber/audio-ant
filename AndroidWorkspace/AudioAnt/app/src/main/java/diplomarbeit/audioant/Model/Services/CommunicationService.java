@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import diplomarbeit.audioant.Activities.AlarmActivity;
 import diplomarbeit.audioant.Activities.MainActivity;
 import diplomarbeit.audioant.Model.Helper.Constants;
 
@@ -166,7 +167,11 @@ public class CommunicationService extends Service {
                 String incoming;
                 try {
                     while ((incoming = reader.readLine()) != null) {
-                        sendLocalBroadcast(incoming);
+                        if (checkIfRecognisedSounds(incoming)) {
+                            startAlarmActivity(incoming);
+                        } else {
+                            sendLocalBroadcast(incoming);
+                        }
                     }
                     Log.d(TAG, "Die Verbindung zum Server wurde verloren");
                     if (!socketClosedOnPurpose) {
@@ -220,7 +225,27 @@ public class CommunicationService extends Service {
 
     }
 
+    private boolean checkIfRecognisedSounds(String s) {
+        try {
+            JSONObject object = new JSONObject(s);
+            String action = object.getString("action");
+            if (action.equals("recognisedSound")) {
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
+    private void startAlarmActivity(String jsonFile) {
+        Intent i = new Intent(CommunicationService.this, AlarmActivity.class);
+        i.putExtra("json", jsonFile);
+        startActivity(i);
+    }
+
+
+    //  Methods that handle the server connection
     public void handleServerDisconnected() {
         Intent i = new Intent(CommunicationService.this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
