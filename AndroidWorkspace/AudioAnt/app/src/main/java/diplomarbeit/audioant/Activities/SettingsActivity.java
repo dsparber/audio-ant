@@ -2,6 +2,7 @@ package diplomarbeit.audioant.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Helper.Settings;
@@ -21,8 +21,10 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout linearLayout_choose_notification;
     private Settings settings;
     private CheckBox checkBox_led;
+    private CheckBox checkBox_vibration;
     private CheckBox checkBox_audio;
     private TextView textView_chosen_sound;
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -54,12 +56,14 @@ public class SettingsActivity extends AppCompatActivity {
         settings = new Settings(this);
         checkBox_audio = (CheckBox) findViewById(R.id.settings_checkBox_signalton);
         checkBox_led = (CheckBox) findViewById(R.id.settings_checkBox_led);
+        checkBox_vibration = (CheckBox) findViewById(R.id.settings_checkbox_vibration);
         textView_chosen_sound = (TextView) findViewById(R.id.settings_textView_sound_chosen);
     }
 
     public void initValuesFromSettings() {
         checkBox_audio.setChecked(settings.getUseAudioSignal());
         checkBox_led.setChecked(settings.getUseFlash());
+        checkBox_vibration.setChecked(settings.getUseVibration());
         if (!settings.getCurrentSound().toString().equals("")) {
             setChosenSoundToTextView();
         }
@@ -101,7 +105,6 @@ public class SettingsActivity extends AppCompatActivity {
         CheckBox checkBox = (CheckBox) v;
         switch (checkBox.getId()) {
             case R.id.settings_checkBox_signalton:
-                Toast.makeText(getApplicationContext(), ("Warnton verwenden: " + checkBox.isChecked()), Toast.LENGTH_SHORT).show();
                 settings.setUseAudio(checkBox.isChecked());
                 if (checkBox.isChecked())
                     linearLayout_choose_notification.setVisibility(View.VISIBLE);
@@ -109,7 +112,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.settings_checkBox_led:
                 settings.setUseFlash(checkBox.isChecked());
-                Toast.makeText(getApplicationContext(), ("Blitz verwenden: " + checkBox.isChecked()), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.settings_checkbox_vibration:
+                settings.setUseVibration(checkBox.isChecked());
                 break;
         }
     }

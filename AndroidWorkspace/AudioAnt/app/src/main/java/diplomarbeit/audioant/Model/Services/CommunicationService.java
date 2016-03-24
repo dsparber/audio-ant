@@ -240,6 +240,9 @@ public class CommunicationService extends Service {
 
     private void startAlarmActivity(String jsonFile) {
         Intent i = new Intent(CommunicationService.this, AlarmActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         i.putExtra("json", jsonFile);
         startActivity(i);
     }

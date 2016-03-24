@@ -5,9 +5,10 @@
     <dimen name="button_height_normal">60sp</dimen>
     <dimen name="button_height_medium">75sp</dimen>
     <dimen name="button_height_large">100sp</dimen>
-    <dimen name="text_size_normal">16sp</dimen>
-    <dimen name="text_size_medium">20sp</dimen>
-    <dimen name="text_size_large">24sp</dimen>
+    <dimen name="text_size_normal">16dp</dimen>
+    <dimen name="text_size_medium">20dp</dimen>
+    <dimen name="text_size_large">24dp</dimen>
+    <dimen name="text_size_xlarge">36dp</dimen>
     <dimen name="margin_small">16dp</dimen>
     <dimen name="margin_normal">24dp</dimen>
     <dimen name="margin_medium">36dp</dimen>

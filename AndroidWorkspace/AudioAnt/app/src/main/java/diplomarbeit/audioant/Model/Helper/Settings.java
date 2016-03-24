@@ -16,6 +16,7 @@ public class Settings {
     private static final String localWifiName = "WIFI_NAME";
     private static final String firstStartKey = "FIRS_START";
     private static final String localwifiPW = "PW";
+    private static final String vibrationKey = "USE_VIBRATION";
     private SharedPreferences sharedPref;
 
 
@@ -24,8 +25,19 @@ public class Settings {
         sharedPref = context.getSharedPreferences(FILE_KEY, Context.MODE_PRIVATE);
     }
 
+
+    public boolean getUseVibration() {
+        return sharedPref.getBoolean(vibrationKey, false);
+    }
+
+    public void setUseVibration(boolean useVibration) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(vibrationKey, useVibration);
+        editor.commit();
+    }
+
     public String getLocalwifiPW() {
-        return sharedPref.getString("PW", "");
+        return sharedPref.getString(localwifiPW, "");
     }
 
     public void setLocalwifiPW(String pw) {
