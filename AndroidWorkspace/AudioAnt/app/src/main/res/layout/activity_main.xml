@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -11,7 +13,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
+            android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -25,9 +27,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_mic_48dp"
+            android:onClick="startRecordActivity"
             android:text="Geräusch lernen"
-            android:textSize="@dimen/text_size_normal"
-            android:onClick="startRecordActivity" />
+            android:textSize="@dimen/text_size_normal" />
 
         <Button
             android:id="@+id/button_alle_zeigen"
@@ -36,9 +38,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_toc_48dp"
+            android:onClick="startListActivity"
             android:text="Alle Geräusche anzeigen"
-            android:textSize="@dimen/text_size_normal"
-            android:onClick="startListActivity" />
+            android:textSize="@dimen/text_size_normal" />
 
         <Button
             android:id="@+id/button_app_einstellungen"
@@ -47,9 +49,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
             android:drawableLeft="@drawable/ic_mobile_phone_48dp"
+            android:onClick="startSettingsActivity"
             android:text="App Einstellungen"
-            android:textSize="@dimen/text_size_normal"
-            android:onClick="startSettingsActivity" />
+            android:textSize="@dimen/text_size_normal" />
 
         <Button
             android:id="@+id/button_einstellungen_audioant"
@@ -60,9 +62,9 @@
             android:drawableLeft="@drawable/ic_audioant_48dp"
             android:enabled="true"
             android:fadeScrollbars="false"
+            android:onClick="startAudioAntSettingsActivity"
             android:text="AudioAnt Einstellungen"
-            android:textSize="@dimen/text_size_normal"
-            android:onClick="startAudioAntSettingsActivity" />
+            android:textSize="@dimen/text_size_normal" />
 
     </LinearLayout>
 
@@ -73,29 +75,18 @@
         android:layout_alignBottom="@+id/main_textView_verbunden"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:background="@drawable/ic_wifi_not_connected_24dp" />
+        android:layout_marginBottom="@dimen/margin_small" />
 
     <TextView
         android:id="@+id/main_textView_verbunden"
-        android:lines="2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_toEndOf="@+id/ic_verbunden"
         android:layout_toRightOf="@+id/ic_verbunden"
+        android:lines="2"
         android:text="@string/main_label_not_connected"
         android:textSize="@dimen/text_size_medium" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_above="@+id/ic_verbunden"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="88dp"
-        android:onClick="sendTextToService" />
 
 </RelativeLayout>

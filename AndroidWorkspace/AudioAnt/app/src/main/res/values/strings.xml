@@ -52,6 +52,9 @@
     <string name="audioant_settings_editText_wifi_name">Name des Wlans</string>
     <string name="audioant_settings_editText_wifi_password">Passwort</string>
     <string name="audioant_setting_label_default_sound">Benachrichtigungston</string>
+    <string name="audioant_settings_button_wlan_list">Netzwerk aus Liste auswählen</string>
+    <string name="audioant_settings_choose_wifi_header">Netzwerk auswählen</string>
+    <string name="audioant_settings_message_connect_error">Die eingegebenen Daten sind fehlerhaft!  Überprüfen Sie, ob Name und Passwort des Netzwerks stimmen und versuchen Sie es erneut!</string>
 
 
     <!-- Smartphone Settings Activity-->
@@ -74,12 +77,33 @@
     <string name="record_button_stop_recording">Aufnahme stoppen</string>
     <string name="record_button_start_replay">Abspielen</string>
     <string name="record_button_stop_replay">Stoppen</string>
-    <string name="main_label_not_connected">Nicht mit AudioAnt verbunden</string>
 
 
     <!-- More info to Sound Activity-->
     <string name="more_info_label_name">Geräuschname:</string>
     <string name="more_info_label_alert">AudioAnt Benachrichtigungston:</string>
+
+    <!-- Main Activity-->
+    <string name="main_message_no_wifi_connection">Sie sind derzeit mit keinem Wlan netzwerk verbunden!
+    \n\nUm die Applikation zu benutzen müssen Sie entweder mit dem Hotspot der AudioAnt verbunden sein
+    oder mit dem Wlan dessen Benutzerdaten Sie der AudioAnt übermittelt haben.
+    \n\nFalls Sie die App zum ersten Mal benutzern, starten Sie die AudioAnt versuchen Sie es erneut</string>
+    <string name="main_message_first_usage">Es freut uns sehr dass Sie unsere App benutzen!
+        \n\nUm die App zu benutzern ist eine Verbindung mit der AudioAnt über Wlan notwendig. Schalten
+        Sie die AudioAnt ein falls Sie dies noch nicht getan haben und drücken Sie auf \"Verbinden\"
+        sobald die Statusleuchte der AudioAnt leuchtet.
+
+    </string>
+    <string name="main_message_no_server_connection">Es konnte keine Verbinung zum Server aufgebaut werden!!
+    \n\nStellen Sie sicher dass die AudioAnt aktiviert ist und starten Sie die App neu!</string>
+    <string name="main_message_no_wifi_connection_hotspot">
+        Das Smartphone ist nicht mit dem Hotspot der AudioAnt verbunden.
+        \n\nStarten Sie die AudioAnt und drücken Sie auf \"Verbinden\"
+        sobald die Statusleuchte der AudioAnt leuchtet.
+    </string>
+
+    <string name="main_label_connected">Mit AudioAnt verbunden</string>
+    <string name="main_label_not_connected">Nicht mit AudioAnt verbunden</string>
 
 
     <!-- List Activity-->

@@ -39,6 +39,16 @@ public class RecordSignalService extends Service {
         return START_NOT_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+//      called when stopService(....) is invoked from any class
+        super.onDestroy();
+        stopRecording();
+        Log.d(TAG, "Die Aufnahme wurde angehalten!");
+    }
+
+
+    //  Recording Methods
     public void recordToFile() {
 //      Initialising the MediaRecorder and specifying recording properties
         recorder = new MediaRecorder();
@@ -46,7 +56,7 @@ public class RecordSignalService extends Service {
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setAudioEncodingBitRate(16);
-        recorder.setAudioSamplingRate(44100);
+        recorder.setAudioSamplingRate(16000);
         File f = new File(getBaseDir() + "/Signalton.mp3");
         if (f.exists()) {
             f.delete();
@@ -63,14 +73,6 @@ public class RecordSignalService extends Service {
         }
     }
 
-    @Override
-    public void onDestroy() {
-//      called when stopService(....) is invoked from any class
-        super.onDestroy();
-        stopRecording();
-        Log.d(TAG, "Die Aufnahme wurde angehalten!");
-    }
-
     public void stopRecording() {
         recorder.stop();
         recorder.release();
@@ -78,10 +80,10 @@ public class RecordSignalService extends Service {
         Log.d(TAG, "Die Aufnahme wurde beendet");
     }
 
-//  returns the Directory the audio files are saved in as a file
-    public static File getBaseDir() {
+
+    //  returns the Directory the audio files are saved in, creates dir
+    public File getBaseDir() {
         File dir = new File(Environment.getExternalStorageDirectory(), ".AudioAnt");
-//      Create directory if necessary
         dir.mkdirs();
         return dir;
     }

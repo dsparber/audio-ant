@@ -84,45 +84,13 @@ public class RecordActivity extends AppCompatActivity {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-            try {
-                JSONObject j = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = j.getJSONObject("data");
-                Intent i = new Intent(RecordActivity.this, MainActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                i.putExtra("message", data.getString("message"));
-                unbindFromCommunicationService();
-                startActivity(i);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleSoundLearnedFeedback(context, intent);
         }
     };
     private BroadcastReceiver getAllAlertSounds = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            try {
-                JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = jsonObject.getJSONObject("data");
-                JSONArray sounds = data.getJSONArray("sounds");
-                deleteExistingAlerts();
-                for (int i = 0; i < sounds.length(); i++) {
-                    JSONObject sound = (JSONObject) sounds.get(i);
-                    String name = sound.getString("name");
-                    String fileName = sound.getString("fileName");
-                    int number = sound.getInt("number");
-                    String fileContent = sound.getString("fileContent");
-                    String fullFileName = number + "-" + name + "-" + fileName;
-
-                    saveAlert(fullFileName, fileContent);
-                }
-                settings.setSoundsLoaded(true);
-                readAlerts();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleGetAllAlertSounds(context, intent);
         }
     };
 
@@ -158,6 +126,8 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
+
+    //  Initialisation methods
     public void initElements() {
         recordingHelpText = getResources().getString(R.string.recording_description);
         recordingHelpTextHeader = getResources().getString(R.string.recording_description_header);
@@ -194,6 +164,105 @@ public class RecordActivity extends AppCompatActivity {
         readAlerts();
     }
 
+    public void requestSoundsIfFirstStart() {
+        settings = new Settings(this);
+        if (!settings.getSoundsLoaded()) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("action", "getAlertSounds");
+                communicationService.sendToServer(jsonObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    //  Methods that implement what should happen on received Broadcasts or finished Timers
+    public void handleSoundLearnedFeedback(Context context, Intent intent) {
+        try {
+            JSONObject j = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = j.getJSONObject("data");
+            Intent i = new Intent(RecordActivity.this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            i.putExtra("message", data.getString("message"));
+            unbindFromCommunicationService();
+            startActivity(i);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleGetAllAlertSounds(Context context, Intent intent) {
+        try {
+            JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray sounds = data.getJSONArray("sounds");
+            deleteExistingAlerts();
+            for (int i = 0; i < sounds.length(); i++) {
+                JSONObject sound = (JSONObject) sounds.get(i);
+                String name = sound.getString("name");
+                String fileName = sound.getString("fileName");
+                int number = sound.getInt("number");
+                String fileContent = sound.getString("fileContent");
+                String fullFileName = number + "-" + name + "-" + fileName;
+
+                saveAlert(fullFileName, fileContent);
+            }
+            settings.setSoundsLoaded(true);
+            readAlerts();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //  Methods that show dialogs
+    public void showChooseAlertDialog(View v) {
+
+        final AlertDialog.Builder chooseAlertDialog = new AlertDialog.Builder(RecordActivity.this);
+        chooseAlertDialog.setTitle(getResources().getString(R.string.notification_choose_header));
+        chooseAlertDialog.setNegativeButton("Fertig", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (player != null) {
+                    player.release();
+                    player = null;
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        final ListView listView = new ListView(this);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listView.setSelection(position);
+                SoundListItem chosenAlert = arrayAdapter.getItem(position);
+                chosenAlertNumber = chosenAlert.getNumber();
+                textView_ChosenSound.setText(chosenAlert.getName());
+                playAlertFromName(chosenAlert.getName());
+            }
+        });
+        listView.setSelection(chosenAlertNumber);
+        chooseAlertDialog.setView(listView);
+        chooseAlertDialog.show();
+    }
+
+    public void showRecordingHelp(View v) {
+        ShowTextAlert textAlert = new ShowTextAlert();
+        textAlert.setText(recordingHelpText);
+        textAlert.setHeader(recordingHelpTextHeader);
+        textAlert.show(getFragmentManager(), "recording help");
+    }
+
+
+    //  Methods for time textView
     public void startTimeThread() {
         timeThread = new Thread() {
 
@@ -234,13 +303,8 @@ public class RecordActivity extends AppCompatActivity {
         textView_displayTime.setText("00:00");
     }
 
-    public void showRecordingHelp(View v) {
-        ShowTextAlert textAlert = new ShowTextAlert();
-        textAlert.setText(recordingHelpText);
-        textAlert.setHeader(recordingHelpTextHeader);
-        textAlert.show(getFragmentManager(), "recording help");
-    }
 
+    //  OnClick Methods for buttons
     public void recordButtonClicked(View v) {
         geräuschSchonAufgenommen = true;
         if (button_record.getText().equals(getResources().getString(R.string.record_button_start_recording))) {
@@ -309,9 +373,26 @@ public class RecordActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        communicationService.sendText(object.toString());
+        communicationService.sendToServer(object.toString());
     }
 
+    public void changeButtonText(Button b) {
+        switch (b.getId()) {
+            case R.id.record_button_start_recording:
+                if (b.getText().equals(getResources().getString(R.string.record_button_start_recording))) {
+                    b.setText(getResources().getString(R.string.record_button_stop_recording));
+                } else b.setText(getResources().getString(R.string.record_button_start_recording));
+                break;
+            case R.id.record_button_replay:
+                if (b.getText().equals(getResources().getString(R.string.record_button_start_replay))) {
+                    b.setText(getResources().getString(R.string.record_button_stop_replay));
+                } else b.setText(getResources().getString(R.string.record_button_start_replay));
+                break;
+        }
+    }
+
+
+    //  Methods concerning files
     public String fileToString(File file) {
 
 //      Converts the audio File to a byte array
@@ -330,19 +411,25 @@ public class RecordActivity extends AppCompatActivity {
         return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
-    public void changeButtonText(Button b) {
-        switch (b.getId()) {
-            case R.id.record_button_start_recording:
-                if (b.getText().equals(getResources().getString(R.string.record_button_start_recording))) {
-                    b.setText(getResources().getString(R.string.record_button_stop_recording));
-                } else b.setText(getResources().getString(R.string.record_button_start_recording));
-                break;
-            case R.id.record_button_replay:
-                if (b.getText().equals(getResources().getString(R.string.record_button_start_replay))) {
-                    b.setText(getResources().getString(R.string.record_button_stop_replay));
-                } else b.setText(getResources().getString(R.string.record_button_start_replay));
-                break;
+    public void saveAudioFile(String s) {
+        File f = new File(getAbsoluteFileLocation());
+        if (f.exists()) {
+            f.delete();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        byte[] data = Base64.decode(s, Base64.NO_WRAP);
+        try {
+            FileOutputStream fos = new FileOutputStream(getAbsoluteFileLocation());
+            fos.write(data);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "File saved from json");
     }
 
     public String getAbsoluteFileLocation() {
@@ -351,37 +438,55 @@ public class RecordActivity extends AppCompatActivity {
 
     }
 
-    public void showChooseAlertDialog(View v) {
 
-        final AlertDialog.Builder chooseAlertDialog = new AlertDialog.Builder(RecordActivity.this);
-        chooseAlertDialog.setTitle(getResources().getString(R.string.notification_choose_header));
-        chooseAlertDialog.setNegativeButton("Fertig", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (player != null) {
-                    player.release();
-                    player = null;
-                    dialog.dismiss();
+    //  Methods for binding and unbinding to the communicationService
+    public void bindToCommunicationService() {
+        if (!serviceIsBound) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i = new Intent(getApplicationContext(), CommunicationService.class);
+                    bindService(i, serviceConnection, 0);
+                    startService(i);
                 }
-            }
-        });
+            });
+            t.start();
+        }
+    }
 
-        final ListView listView = new ListView(this);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listView.setSelection(position);
-                SoundListItem chosenAlert = arrayAdapter.getItem(position);
-                chosenAlertNumber = chosenAlert.getNumber();
-                textView_ChosenSound.setText(chosenAlert.getName());
-                playAlertFromName(chosenAlert.getName());
-            }
-        });
-        listView.setSelection(chosenAlertNumber);
-        chooseAlertDialog.setView(listView);
-        chooseAlertDialog.show();
+    public void unbindFromCommunicationService() {
+        try {
+            unbindService(serviceConnection);
+            serviceIsBound = false;
+        } catch (Exception e) {
+            Log.d(TAG, "service could not be unbound because it wasn't bound");
+        }
+    }
+
+
+    //  Methods concerning alerts
+    public void saveAlert(String fileName, String fileContent) {
+        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
+        dir.mkdirs();
+        File f = new File(dir, fileName);
+
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] data = Base64.decode(fileContent, Base64.NO_WRAP);
+        try {
+            FileOutputStream fos = new FileOutputStream(f.getAbsoluteFile());
+            fos.write(data);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "Alert saved from json");
     }
 
     public void playAlertFromName(String name) {
@@ -407,85 +512,9 @@ public class RecordActivity extends AppCompatActivity {
 
     }
 
-    public void bindToCommunicationService() {
-        if (!serviceIsBound) {
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent i = new Intent(getApplicationContext(), CommunicationService.class);
-                    bindService(i, serviceConnection, 0);
-                    startService(i);
-                }
-            });
-            t.start();
-        }
-    }
-
-    public void unbindFromCommunicationService() {
-        try {
-            unbindService(serviceConnection);
-            serviceIsBound = false;
-        } catch (Exception e) {
-            Log.d(TAG, "service could not be unbound because it wasn't bound");
-        }
-    }
-
-    public void saveAudioFile(String s) {
-        File f = new File(getAbsoluteFileLocation());
-        if (f.exists()) {
-            f.delete();
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        byte[] data = Base64.decode(s, Base64.NO_WRAP);
-        try {
-            FileOutputStream fos = new FileOutputStream(getAbsoluteFileLocation());
-            fos.write(data);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "File saved from json");
-    }
-
-    public void saveAlert(String fileName, String fileContent) {
-        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        dir.mkdirs();
-        File f = new File(dir, fileName);
-
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        byte[] data = Base64.decode(fileContent, Base64.NO_WRAP);
-        try {
-            FileOutputStream fos = new FileOutputStream(f.getAbsoluteFile());
-            fos.write(data);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Alert saved from json");
-    }
-
     public void deleteExistingAlerts() {
         File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
         deleteRecursive(dir);
-    }
-
-    void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
-                deleteRecursive(child);
-
-        fileOrDirectory.delete();
     }
 
     public void readAlerts() {
@@ -502,16 +531,12 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    public void requestSoundsIfFirstStart() {
-        settings = new Settings(this);
-        if (!settings.getSoundsLoaded()) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("action", "getAlertSounds");
-                communicationService.sendText(jsonObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    public void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+
+        fileOrDirectory.delete();
     }
+
 }
