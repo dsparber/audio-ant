@@ -17,6 +17,7 @@ import com.audioant.audio.analysis.AudioStreamAnalyser;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.MicrophoneSoundLearner;
 import com.audioant.audio.model.Sound;
+import com.audioant.config.Config;
 import com.audioant.io.android.AndroidConnection;
 import com.audioant.io.eventObserver.AndroidEvents;
 import com.audioant.io.eventObserver.DetailLogger;
@@ -100,7 +101,7 @@ public class RaspberryTool implements Observer {
 
 				stopAnalysis();
 
-				newSound = LearnedSounds.getNewUnnamedSound();
+				newSound = new Sound(LearnedSounds.getNextNumber(), Config.LEARNED_SOUNDS_FILE);
 
 				recording = true;
 				led(Led.LED_RECORDING, 1);

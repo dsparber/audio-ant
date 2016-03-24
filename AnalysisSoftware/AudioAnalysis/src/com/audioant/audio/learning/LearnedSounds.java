@@ -63,14 +63,6 @@ public class LearnedSounds {
 		return max + 1;
 	}
 
-	public static Sound getNewUnnamedSound() {
-		return new Sound(null, getNextNumber());
-	}
-
-	public static Sound getNewSound(String name) {
-		return new Sound(name, getNextNumber());
-	}
-
 	public static void saveSounds() throws ParserConfigurationException, TransformerException {
 		getSoundsXml().write(getSounds());
 	}

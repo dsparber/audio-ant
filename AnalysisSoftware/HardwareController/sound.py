@@ -19,6 +19,8 @@ class Sound:
 
     def stop(self):
         self.running = False
+        subprocess.call(["sudo", "killall", "mpg123"])
+        subprocess.call(["sudo", "killall", "aplay"])
 
     def playThread(self):
         while self.running:

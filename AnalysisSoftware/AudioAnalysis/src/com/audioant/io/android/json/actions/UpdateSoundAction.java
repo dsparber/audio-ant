@@ -9,31 +9,35 @@ import com.audioant.alert.AlertSounds;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
 import com.audioant.io.android.json.JsonFields;
-import com.audioant.io.android.json.JsonFields.ChangeSoundAlert.Reply;
-import com.audioant.io.android.json.JsonFields.ChangeSoundAlert.Request;
+import com.audioant.io.android.json.JsonFields.UpdateSound.Reply;
+import com.audioant.io.android.json.JsonFields.UpdateSound.Request;
 import com.audioant.io.android.json.JsonReplyAction;
 
-public class ChangeSoundAlertAction extends JsonReplyAction {
+public class UpdateSoundAction extends JsonReplyAction {
 
 	private boolean success;
 
-	public ChangeSoundAlertAction(JSONObject request) {
+	public UpdateSoundAction(JSONObject request) {
 		super(request);
 		success = false;
 		JSONObject data = (JSONObject) request.get(JsonFields.DATA_KEY);
-		int soundId = (int) ((long) data.get(Request.SOUND_KEY));
-		int alertId = (int) ((long) data.get(Request.ALERT_KEY));
+		int soundId = (int) ((long) data.get(Request.ID_KEY));
+		Integer alertId = (int) ((long) data.get(Request.ALERT_KEY));
+		alertId = (alertId == -1) ? null : alertId;
+		String name = (String) data.get(Request.NAME_KEY);
 
 		Sound s = LearnedSounds.getSound(soundId);
 
 		if (s != null) {
+			success = true;
+			s.setName(name);
 			Sound alert = AlertSounds.getSound(alertId);
 			if (alert != null) {
 				s.setAlertId(alert.getId());
 				try {
 					LearnedSounds.saveSounds();
-					success = true;
 				} catch (ParserConfigurationException | TransformerException e) {
+					success = false;
 					e.printStackTrace();
 				}
 

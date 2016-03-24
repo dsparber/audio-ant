@@ -45,7 +45,7 @@ public class AlertSounds {
 		return alertSounds;
 	}
 
-	private int getNextNumber() {
+	public int getNextNumber() {
 		int max = 0;
 		for (Sound sound : sounds) {
 			if (sound.getId() > max) {
@@ -78,14 +78,6 @@ public class AlertSounds {
 
 	public static List<Sound> getAllSounds() {
 		return getInstance().sounds;
-	}
-
-	public static Sound getNewSound() {
-		return new Sound(null, Config.ALERT_SOUNDS_FOLDER, getInstance().getNextNumber());
-	}
-
-	public static Sound getNewSound(String name) {
-		return new Sound(name, Config.ALERT_SOUNDS_FOLDER, getInstance().getNextNumber());
 	}
 
 	public static Sound getSound(Integer id) {

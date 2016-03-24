@@ -11,7 +11,6 @@ import org.json.simple.parser.ParseException;
 import com.audioant.alert.AlertSettings;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
-import com.audioant.config.Config;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo;
 import com.audioant.io.android.json.JsonFields.GetSoundInfo.Reply;
@@ -51,7 +50,7 @@ public class GetSoundInfoAction extends JsonReplyAction {
 
 		data.put(Reply.ALERT, alertId);
 
-		File soundFile = new File(sound.getPath() + Config.LEARNED_SOUNDS_FILE);
+		File soundFile = new File(sound.getPath() + sound.getSoundFile());
 
 		data.put(Reply.FILE_NAME_KEY, soundFile.getName());
 

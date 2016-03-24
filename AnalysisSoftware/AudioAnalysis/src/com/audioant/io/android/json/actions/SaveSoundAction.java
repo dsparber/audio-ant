@@ -1,16 +1,67 @@
 package com.audioant.io.android.json.actions;
 
-import org.json.simple.JSONObject;
+import java.io.File;
+import java.io.IOException;
 
-import com.audioant.io.android.json.JsonReplyAction;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
+import org.json.simple.JSONObject;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.REngineException;
+
+import com.audioant.audio.learning.LearnedSounds;
+import com.audioant.audio.learning.SoundFileLearner;
+import com.audioant.audio.model.Sound;
+import com.audioant.config.Config;
 import com.audioant.io.android.json.JsonFields;
-import com.audioant.io.android.json.JsonFields.SaveSound;
+import com.audioant.io.android.json.JsonFields.SaveSound.Reply;
+import com.audioant.io.android.json.JsonFields.SaveSound.Request;
+import com.audioant.io.android.json.JsonReplyAction;
+import com.audioant.tools.Base64Tool;
 
 public class SaveSoundAction extends JsonReplyAction {
 
+	private boolean success;
+
 	public SaveSoundAction(JSONObject request) {
 		super(request);
-		// TODO Auto-generated constructor stub
+
+		success = true;
+
+		JSONObject data = (JSONObject) request.get(JsonFields.DATA_KEY);
+
+		Integer alertID = (int) ((long) data.get(Request.ALERT_ID_KEY));
+		alertID = (alertID == -1) ? null : alertID;
+
+		String name = (String) data.get(Request.NAME_KEY);
+
+		String fileContent = (String) data.get(Request.FILE_CONTENT);
+		String fileExtension = ((String) data.get(Request.FILE_EXTENSION));
+
+		Sound sound = new Sound(name, Config.LEARNED_SOUNDS_FOLDER, LearnedSounds.getNextNumber(),
+				Config.LEARNED_SOUNDS_FILE_NAME + fileExtension, alertID);
+
+		String pathname = sound.getPath() + sound.getSoundFile();
+		File file = new File(pathname);
+		file.getParentFile().mkdirs();
+
+		try {
+			file = Base64Tool.decode(fileContent, file.getAbsolutePath());
+			SoundFileLearner learner = new SoundFileLearner(sound, file.getAbsolutePath());
+			learner.extractFeatures();
+
+			LearnedSounds.addSound(sound);
+			LearnedSounds.saveSounds();
+
+		} catch (IOException | LineUnavailableException | REngineException | REXPMismatchException
+				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+			success = false;
+		}
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -19,7 +70,11 @@ public class SaveSoundAction extends JsonReplyAction {
 
 		JSONObject jsonObject = new JSONObject();
 
-		jsonObject.put(JsonFields.ACTION_KEY, SaveSound.Reply.ACTION_VALUE);
+		jsonObject.put(JsonFields.ACTION_KEY, Reply.ACTION_VALUE);
+
+		JSONObject data = new JSONObject();
+		data.put(Reply.SUCCESS_KEY, success);
+		jsonObject.put(JsonFields.DATA_KEY, data);
 
 		return jsonObject;
 	}
