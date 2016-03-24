@@ -18,8 +18,6 @@ import diplomarbeit.audioant.Model.Helper.Settings;
 import diplomarbeit.audioant.R;
 
 public class SettingsActivity extends AppCompatActivity {
-
-
     private LinearLayout linearLayout_choose_notification;
     private Settings settings;
     private CheckBox checkBox_led;
@@ -38,6 +36,19 @@ public class SettingsActivity extends AppCompatActivity {
         hideElementsIfNecessary();
     }
 
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (uri != null) {
+                settings.setSound(uri);
+                setChosenSoundToTextView();
+            }
+        }
+    }
+
+
+    //  Initialising methods
     private void initElements() {
         linearLayout_choose_notification = (LinearLayout) findViewById(R.id.settings_linearlayout_choose_notification);
         settings = new Settings(this);
@@ -54,6 +65,26 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+
+    //  Methods that show dialogs
+    public void showInfo(View v) {
+        ShowTextAlert textAlert = new ShowTextAlert();
+        textAlert.setText(getResources().getString(R.string.settings_notifications_description));
+        textAlert.setHeader(getResources().getString(R.string.settings_notifications_description_header));
+        textAlert.show(getFragmentManager(), "notifications help");
+    }
+
+    public void showNotificationDialog(View v) {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Benachrichtigungston auswählen");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, settings.getCurrentSound());
+
+        this.startActivityForResult(intent, 1);
+    }
+
+
+    //  Updating views methods
     public void setChosenSoundToTextView() {
         Ringtone ringtone = RingtoneManager.getRingtone(this, settings.getCurrentSound());
         String title = ringtone.getTitle(this);
@@ -64,14 +95,8 @@ public class SettingsActivity extends AppCompatActivity {
         if (!checkBox_audio.isChecked()) linearLayout_choose_notification.setVisibility(View.GONE);
     }
 
-    public void showInfo(View v) {
-        ShowTextAlert textAlert = new ShowTextAlert();
-        textAlert.setText(getResources().getString(R.string.settings_notifications_description));
-        textAlert.setHeader(getResources().getString(R.string.settings_notifications_description_header));
-        textAlert.show(getFragmentManager(), "notifications help");
-    }
 
-    //Demo using Toast
+    //  Onclick Methods
     public void checkBoxClicked(View v) {
         CheckBox checkBox = (CheckBox) v;
         switch (checkBox.getId()) {
@@ -90,24 +115,4 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
-    public void showNotificationDialog(View v) {
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Benachrichtigungston auswählen");
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, settings.getCurrentSound());
-
-        this.startActivityForResult(intent, 1);
-    }
-
-    //Handle the notification tone selected by the user
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
-            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            if (uri != null) {
-                settings.setSound(uri);
-                setChosenSoundToTextView();
-            }
-        }
-    }
 }

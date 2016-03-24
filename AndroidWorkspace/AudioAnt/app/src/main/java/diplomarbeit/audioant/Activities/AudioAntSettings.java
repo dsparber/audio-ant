@@ -1,6 +1,7 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.media.MediaPlayer;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -62,8 +62,8 @@ public class AudioAntSettings extends AppCompatActivity {
     private boolean connectedToNewNetwork = false;
     private boolean readyForResult = false;
     private String chosenNetwork = "";
-    private WifiManager wifiManager;
     private MediaPlayer player;
+    private AlertDialog loadingDialog;
     private TextView textView_ChosenSound;
     private int alertSoundId = 0;
     private ArrayAdapter<SoundListItem> arrayAdapterSounds;
@@ -88,7 +88,7 @@ public class AudioAntSettings extends AppCompatActivity {
             try {
                 JSONObject object = new JSONObject();
                 object.put("action", "getCurrentSettings");
-                communicationService.sendText(object.toString());
+                communicationService.sendToServer(object.toString());
                 Log.d(TAG, "AudioAnt settings were requested");
             } catch (JSONException e) {
                 Log.d(TAG, "Json could not be created");
@@ -146,9 +146,8 @@ public class AudioAntSettings extends AppCompatActivity {
         arrayAdapterSounds = new ArrayAdapter<>(AudioAntSettings.this, android.R.layout.select_dialog_singlechoice);
         arrayAdapterNetworks = new ArrayAdapter<String>(AudioAntSettings.this, android.R.layout.select_dialog_singlechoice);
 
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
+        wifiHelper.startScan();
     }
 
     @Override
@@ -189,7 +188,8 @@ public class AudioAntSettings extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    //Logic of BroadcastReceiver Methods
+
+    //  Methods that implement what should happen on received Broadcasts or finished Timers
     public void handleAlertSounds(Context context, Intent intent) {
         try {
             JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
@@ -233,7 +233,7 @@ public class AudioAntSettings extends AppCompatActivity {
 
     public void handleWifiNetworksRecieved(Context context, Intent intent) {
         if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-            List<ScanResult> scanResults = wifiManager.getScanResults();
+            List<ScanResult> scanResults = wifiHelper.getScanResults();
             arrayAdapterNetworks.clear();
             for (int i = 0; i < scanResults.size(); i++) {
                 arrayAdapterNetworks.add(scanResults.get(i).SSID);
@@ -249,18 +249,16 @@ public class AudioAntSettings extends AppCompatActivity {
                 NetworkInfo networkInfo = i.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 if (networkInfo != null) {
                     if (networkInfo.isConnected()) {
-                        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-                        String ssid = wifiInfo.getSSID();
+                        String ssid = wifiHelper.getCurrentNetworkSSID();
                         if (ssid.equals(wlanName.getText() + "")) {
-                            if (wifiInfo.getSupplicantState().equals(SupplicantState.COMPLETED)) {
+                            if (wifiHelper.getSupplicantState().equals(SupplicantState.COMPLETED)) {
                                 Log.d(TAG, "conneted to new network");
                                 connectedToNewNetwork = true;
                                 readyForResult = true;
                                 reconnectToHotspot();
                             }
                         } else if (ssid.equals(new Constants().AA_HOTSPOT_NAME)) {
-                            if (wifiInfo.getSupplicantState().equals(SupplicantState.COMPLETED)) {
+                            if (wifiHelper.getSupplicantState().equals(SupplicantState.COMPLETED)) {
                                 if (readyForResult) {
                                     Log.d(TAG, "connected to AudioAnt Hotspot");
                                     initialiseConnectionToAudioAnt();
@@ -275,7 +273,9 @@ public class AudioAntSettings extends AppCompatActivity {
     }
 
     public void handleWifiReconnectReceived(Context context, Intent intent) {
+        loadingDialog.dismiss();
         if (connectedToNewNetwork) {
+
             sendConnectToLocalWifiJson();
             Toast.makeText(this, "es hat funktioniert!!!", Toast.LENGTH_SHORT).show();
             new Settings(this).setLocalWifiName("" + wlanName.getText());
@@ -297,6 +297,51 @@ public class AudioAntSettings extends AppCompatActivity {
     }
 
 
+    //  initialisation methods + method invoked on buttonClick
+    public void buttonClicked(View v) {
+        Button button = (Button) v;
+        switch (button.getId()) {
+            case R.id.button_wlan_infos_senden:
+                showLoadingDialog();
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        connectedToNewNetwork = false;
+                        registerReceiver(wifiChangedReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+                        communicationService.closeSocket();
+                        wifiHelper.connectToWifi("" + wlanName.getText(), "" + wlanPassword.getText());
+                        startWifiConnectTimer();
+                    }
+                });
+                t.start();
+                break;
+            case R.id.audioant_settings_button_wlan_list:
+                chooseWifiFromListDialog();
+                break;
+        }
+    }
+
+    public void initialiseConnectionToAudioAnt() {
+        communicationService.reconnectToAudioAntHotspot();
+    }
+
+    public void requestSoundsIfFirstStart() {
+        settings = new Settings(this);
+        if (!settings.getSoundsLoaded()) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("action", "getAlertSounds");
+                communicationService.sendToServer(jsonObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            readAlerts();
+        }
+    }
+
+
+    //  Sending Json Methods
     public void sendConnectToLocalWifiJson() {
         try {
             JSONObject object = new JSONObject();
@@ -305,16 +350,29 @@ public class AudioAntSettings extends AppCompatActivity {
             data.put("SSID", "" + wlanName.getText());
             data.put("password", "" + wlanPassword.getText());
             object.put("data", data);
-            communicationService.sendText(object.toString());
+            communicationService.sendToServer(object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void initialiseConnectionToAudioAnt() {
-        communicationService.reconnectToAudioAntHotspot();
+    public void sendSaveSettingsJson() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("action", "changeSettings");
+            JSONObject data = new JSONObject();
+            data.put("lighSignals", checkBox_lightSignals.isChecked());
+            data.put("audioSignals", checkBox_audioSignals.isChecked());
+            data.put("alertSoundId", alertSoundId);
+            jsonObject.put("data", data);
+            communicationService.sendToServer(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
+
+    //  binding and unbinding to service Methods
     public void bindToCommunicationService() {
         if (!serviceIsBound) {
             Thread t = new Thread(new Runnable() {
@@ -338,36 +396,8 @@ public class AudioAntSettings extends AppCompatActivity {
         }
     }
 
-    public void sendSaveSettingsJson() {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("action", "changeSettings");
-            JSONObject data = new JSONObject();
-            data.put("lighSignals", checkBox_lightSignals.isChecked());
-            data.put("audioSignals", checkBox_audioSignals.isChecked());
-            data.put("alertSoundId", alertSoundId);
-            jsonObject.put("data", data);
-            communicationService.sendText(jsonObject.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void requestSoundsIfFirstStart() {
-        settings = new Settings(this);
-        if (!settings.getSoundsLoaded()) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("action", "getAlertSounds");
-                communicationService.sendText(jsonObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            readAlerts();
-        }
-    }
-
+    //  Methods that show different Dialogs
     public void showChooseAlertDialog(View v) {
 
         final AlertDialog.Builder chooseAlertDialog = new AlertDialog.Builder(AudioAntSettings.this);
@@ -401,6 +431,64 @@ public class AudioAntSettings extends AppCompatActivity {
         chooseAlertDialog.show();
     }
 
+    public void showLoadingDialog() {
+        loadingDialog = new ProgressDialog(AudioAntSettings.this);
+        loadingDialog.setMessage("Die Eingegebenen Daten werden überprüft");
+        loadingDialog.setCancelable(false);
+        loadingDialog.show();
+    }
+
+    public void chooseWifiFromListDialog() {
+        final AlertDialog.Builder chooseWifiDialog = new AlertDialog.Builder(AudioAntSettings.this);
+        chooseWifiDialog.setTitle(getResources().getString(R.string.audioant_settings_choose_wifi_header));
+        chooseWifiDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }
+        );
+        chooseWifiDialog.setPositiveButton("Fertig", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                wlanName.setText(chosenNetwork);
+            }
+        });
+
+        final ListView listViewNetworks = new ListView(this);
+        listViewNetworks.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        listViewNetworks.setAdapter(arrayAdapterNetworks);
+        listViewNetworks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listViewNetworks.setSelection(position);
+                chosenNetwork = arrayAdapterNetworks.getItem(position);
+            }
+        });
+
+        chooseWifiDialog.setView(listViewNetworks);
+        chooseWifiDialog.show();
+
+    }
+
+    public void showWlanHelp(View v) {
+        ShowTextAlert textAlert = new ShowTextAlert();
+        switch (v.getId()) {
+            case R.id.info_wlan_importance:
+                textAlert.setText(getResources().getString(R.string.wlan_description));
+                textAlert.setHeader(getResources().getString(R.string.wlan_description_header));
+                textAlert.show(getFragmentManager(), "wlan help");
+                break;
+            case R.id.info_audioant_notifications:
+                textAlert.setText(getResources().getString(R.string.audioant_benachrichtigungen_description));
+                textAlert.setHeader(getResources().getString(R.string.audioant_benachrichtigungen_description_header));
+                textAlert.show(getFragmentManager(), "wlan help");
+                break;
+        }
+    }
+
+
+    //  Methods concerning the alert sounds the app can receive and play
     public void playAlertFromName(String name) {
         File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
         File[] files = folder.listFiles();
@@ -475,41 +563,8 @@ public class AudioAntSettings extends AppCompatActivity {
         fileOrDirectory.delete();
     }
 
-    public void chooseWifiFromListDialog() {
-        final AlertDialog.Builder chooseWifiDialog = new AlertDialog.Builder(AudioAntSettings.this);
-        chooseWifiDialog.setTitle(getResources().getString(R.string.audioant_settings_choose_wifi_header));
-        chooseWifiDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }
-        );
-        chooseWifiDialog.setPositiveButton("Fertig", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                wlanName.setText(chosenNetwork);
-            }
-        });
 
-        final ListView listViewNetworks = new ListView(this);
-        listViewNetworks.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        listViewNetworks.setAdapter(arrayAdapterNetworks);
-        listViewNetworks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listViewNetworks.setSelection(position);
-                chosenNetwork = arrayAdapterNetworks.getItem(position);
-            }
-        });
-
-        chooseWifiDialog.setView(listViewNetworks);
-        chooseWifiDialog.show();
-
-    }
-
-
-
+    //  Methods concerning the network settings input testing process
     public void startWifiConnectTimer() {
         Thread t = new Thread(new Runnable() {
             @Override
@@ -533,43 +588,5 @@ public class AudioAntSettings extends AppCompatActivity {
     public void reconnectToHotspot() {
         Log.d(TAG, "trying to reconnect to hotspot");
         wifiHelper.connectToWifi(new Constants().AA_HOTSPOT_NAME, new Constants().AA_HOTSPOT_PW);
-    }
-
-    public void buttonClicked(View v) {
-        Button button = (Button) v;
-        switch (button.getId()) {
-            case R.id.button_wlan_infos_senden:
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        connectedToNewNetwork = false;
-                        registerReceiver(wifiChangedReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
-                        communicationService.closeSocket();
-                        wifiHelper.connectToWifi("" + wlanName.getText(), "" + wlanPassword.getText());
-                        startWifiConnectTimer();
-                    }
-                });
-                t.start();
-                break;
-            case R.id.audioant_settings_button_wlan_list:
-                chooseWifiFromListDialog();
-                break;
-        }
-    }
-
-    public void showWlanHelp(View v) {
-        ShowTextAlert textAlert = new ShowTextAlert();
-        switch (v.getId()) {
-            case R.id.info_wlan_importance:
-                textAlert.setText(getResources().getString(R.string.wlan_description));
-                textAlert.setHeader(getResources().getString(R.string.wlan_description_header));
-                textAlert.show(getFragmentManager(), "wlan help");
-                break;
-            case R.id.info_audioant_notifications:
-                textAlert.setText(getResources().getString(R.string.audioant_benachrichtigungen_description));
-                textAlert.setHeader(getResources().getString(R.string.audioant_benachrichtigungen_description_header));
-                textAlert.show(getFragmentManager(), "wlan help");
-                break;
-        }
     }
 }

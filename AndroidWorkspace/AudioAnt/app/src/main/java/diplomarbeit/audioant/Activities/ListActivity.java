@@ -49,7 +49,7 @@ public class ListActivity extends AppCompatActivity {
             try {
                 JSONObject object = new JSONObject();
                 object.put("action", "getListOfSounds");
-                communicationService.sendText(object.toString());
+                communicationService.sendToServer(object.toString());
                 Log.d(TAG, "list of sounds was requested");
             } catch (JSONException e) {
                 Log.d(TAG, "Json could not be created");
@@ -64,52 +64,14 @@ public class ListActivity extends AppCompatActivity {
     private BroadcastReceiver soundDeletedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            listItems = new ArrayList<>();
-            try {
-                JSONObject object = new JSONObject();
-                object.put("action", "getListOfSounds");
-                communicationService.sendText(object.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleSoundDeleterReceived(context, intent);
         }
     };
     private BroadcastReceiver listOfSoundsReceiver = new BroadcastReceiver() {
         @Override
 
         public void onReceive(Context context, Intent intent) {
-            try {
-                listOfSounds = (ListView) findViewById(R.id.list);
-                adapter = new ArrayAdapter<SoundListItem>(ListActivity.this, android.R.layout.simple_expandable_list_item_1, listItems);
-                listOfSounds.setAdapter(adapter);
-                listOfSounds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        final SoundListItem selectedItem = listItems.get(position);
-                        AlertDialog.Builder alert = new AlertDialog.Builder(ListActivity.this);
-                        alert.setTitle("Ton löschen");
-                        alert.setMessage("Wollen sie Das Geräusch \"" + selectedItem.getName() + "\" wirklich löschen?");
-                        alert.setNegativeButton("Nein", null);
-                        alert.setPositiveButton("Ja, löschen", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sendDeleteSoundCommand(selectedItem.getNumber());
-                            }
-                        });
-                        alert.show();
-                    }
-                });
-                JSONObject j = new JSONObject(intent.getStringExtra("json"));
-                JSONObject data = j.getJSONObject("data");
-                JSONArray sounds = data.getJSONArray("sounds");
-                for (int i = 0; i < sounds.length(); i++) {
-                    JSONObject sound = sounds.getJSONObject(i);
-                    SoundListItem item = new SoundListItem(sound.getString("name"), sound.getInt("number"));
-                    listItems.add(item);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            handleListOfSoundsReceived(context, intent);
         }
     };
 
@@ -130,6 +92,73 @@ public class ListActivity extends AppCompatActivity {
         bindToCommunicationService();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                unbindFromCommunicationService();
+                super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        unbindFromCommunicationService();
+        super.onBackPressed();
+    }
+
+
+    //  Methods that implement what should happen on received Broadcasts or finished Timers
+    public void handleListOfSoundsReceived(Context context, Intent intent) {
+        try {
+            listOfSounds = (ListView) findViewById(R.id.list);
+            adapter = new ArrayAdapter<SoundListItem>(ListActivity.this, android.R.layout.simple_expandable_list_item_1, listItems);
+            listOfSounds.setAdapter(adapter);
+            listOfSounds.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final SoundListItem selectedItem = listItems.get(position);
+                    AlertDialog.Builder alert = new AlertDialog.Builder(ListActivity.this);
+                    alert.setTitle("Ton löschen");
+                    alert.setMessage("Wollen sie Das Geräusch \"" + selectedItem.getName() + "\" wirklich löschen?");
+                    alert.setNegativeButton("Nein", null);
+                    alert.setPositiveButton("Ja, löschen", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sendDeleteSoundJson(selectedItem.getNumber());
+                        }
+                    });
+                    alert.show();
+                }
+            });
+            JSONObject j = new JSONObject(intent.getStringExtra("json"));
+            JSONObject data = j.getJSONObject("data");
+            JSONArray sounds = data.getJSONArray("sounds");
+            for (int i = 0; i < sounds.length(); i++) {
+                JSONObject sound = sounds.getJSONObject(i);
+                SoundListItem item = new SoundListItem(sound.getString("name"), sound.getInt("number"));
+                listItems.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleSoundDeleterReceived(Context context, Intent intent) {
+        listItems = new ArrayList<>();
+        try {
+            JSONObject object = new JSONObject();
+            object.put("action", "getListOfSounds");
+            communicationService.sendToServer(object.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //  Methods for binding and unbinding to the communicationService
     public void bindToCommunicationService() {
         if (!serviceIsBound) {
             Thread t = new Thread(new Runnable() {
@@ -153,23 +182,8 @@ public class ListActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                unbindFromCommunicationService();
-                super.onOptionsItemSelected(item);
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
-    @Override
-    public void onBackPressed() {
-        unbindFromCommunicationService();
-        super.onBackPressed();
-    }
-
+    //  Methods for showing dialogs
     public void showListHelp(View v) {
         ShowTextAlert textAlert = new ShowTextAlert();
         textAlert.setText(getResources().getString(R.string.list_description));
@@ -178,12 +192,13 @@ public class ListActivity extends AppCompatActivity {
     }
 
 
-    private void sendDeleteSoundCommand(int soundNumber) {
+    //  Methods for sending Jsons to the server
+    private void sendDeleteSoundJson(int soundNumber) {
         JSONObject object = new JSONObject();
         try {
             object.put("action", "deleteSound");
             object.put("data", soundNumber);
-            communicationService.sendText(object.toString());
+            communicationService.sendToServer(object.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
