@@ -5,7 +5,7 @@ from outputManager import OutputManager
 from inputManager import InputManager
 
 HOST = ''		# Symbolic name meaning all available interfaces
-PORT = 4209
+PORT = 4207
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

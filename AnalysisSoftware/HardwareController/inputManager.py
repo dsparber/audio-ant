@@ -39,10 +39,8 @@ class InputManager:
 				self.outManager.wifi.toggleHotspot()
 				self.lastHotspot = current_milli_time()
 		elif name == "BUTTON_CONFIRM":
-			self.outManager.sound.stop()
-			self.outManager.alertLight.stop()
+			self.outManager.resetAlerts()
 			self.send("BUTTON;" + name)
-			self.outManager.display.displayClock()
 		else:
 			print name
 

@@ -20,7 +20,7 @@ class Display:
         GPIO.setup(PINS.DisplayBL, GPIO.OUT)
 
         self.disp = LCD.PCD8544(PINS.DisplayDC, PINS.DisplayRST, spi=SPI.SpiDev(PINS.DisplaySPI_PORT, PINS.DisplaySPI_DEVICE, max_speed_hz=4000000))
-        self.disp.begin(contrast=50)
+        self.disp.begin(contrast=35)
         self.disp.clear()
         self.disp.display()
 
