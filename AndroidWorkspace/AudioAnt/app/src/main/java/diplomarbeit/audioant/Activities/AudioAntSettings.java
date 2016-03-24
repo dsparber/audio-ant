@@ -361,7 +361,7 @@ public class AudioAntSettings extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("action", "changeSettings");
             JSONObject data = new JSONObject();
-            data.put("lighSignals", checkBox_lightSignals.isChecked());
+            data.put("lightSignals", checkBox_lightSignals.isChecked());
             data.put("audioSignals", checkBox_audioSignals.isChecked());
             data.put("alertSoundId", alertSoundId);
             jsonObject.put("data", data);

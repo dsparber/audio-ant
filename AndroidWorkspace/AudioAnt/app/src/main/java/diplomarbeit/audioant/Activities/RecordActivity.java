@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
@@ -53,7 +52,6 @@ public class RecordActivity extends AppCompatActivity {
     private Settings settings;
     private TextView textView_ChosenSound;
     private TextView textView_displayTime;
-    private Uri uri_sound;
     private Button button_record;
     private Button button_play;
     private Button button_save;
@@ -183,13 +181,27 @@ public class RecordActivity extends AppCompatActivity {
         try {
             JSONObject j = new JSONObject(intent.getStringExtra("json"));
             JSONObject data = j.getJSONObject("data");
-            Intent i = new Intent(RecordActivity.this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            i.putExtra("message", data.getString("message"));
-            unbindFromCommunicationService();
-            startActivity(i);
+            if (data.getBoolean("successful")) {
+                Intent i = new Intent(RecordActivity.this, MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                i.putExtra("message", data.getString("message"));
+                unbindFromCommunicationService();
+                startActivity(i);
+            } else {
+                AlertDialog.Builder learnedUnsuccessfulDialog = new AlertDialog.Builder(RecordActivity.this);
+                learnedUnsuccessfulDialog.setMessage("Das lernen schlug fehl!");
+                learnedUnsuccessfulDialog.setTitle("Fehler!");
+                learnedUnsuccessfulDialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        geräuschSchonAufgenommen = false;
+                    }
+                });
+                learnedUnsuccessfulDialog.show();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -366,6 +378,7 @@ public class RecordActivity extends AppCompatActivity {
         try {
             data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
             data.put("soundName", geräuschName.getText());
+            data.put("fileExtension", ".mp3");
             data.put("alertId", chosenAlertNumber);
 
             object.put("action", "saveSound");

@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +43,6 @@ public class ListActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
-            Toast.makeText(getApplicationContext(), "jetzt", Toast.LENGTH_SHORT).show();
             serviceIsBound = true;
             try {
                 JSONObject object = new JSONObject();

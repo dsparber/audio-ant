@@ -1,8 +1,10 @@
 package diplomarbeit.audioant.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -10,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,6 +57,12 @@ public class AlarmActivity extends AppCompatActivity {
             serviceIsBound = false;
         }
     };
+    private BroadcastReceiver alertHandledByAudioAntReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            stopAlarmingMethods();
+        }
+    };
 
 
     @Override
@@ -62,6 +71,8 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm);
         layout = (LinearLayout) findViewById(R.id.alarm_linear_layout);
         settings = new Settings(this);
+
+        LocalBroadcastManager.getInstance(AlarmActivity.this).registerReceiver(alertHandledByAudioAntReceiver, new IntentFilter("alertConfirmed"));
 
         Intent i = getIntent();
         initialiseElements(i);
@@ -247,6 +258,11 @@ public class AlarmActivity extends AppCompatActivity {
 
     //  OnClick Methods
     public void buttonClicked(View v) {
+        stopAlarmingMethods();
+    }
+
+
+    public void stopAlarmingMethods() {
         try {
             continueFlash = false;
             continueSound = false;

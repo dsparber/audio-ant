@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import diplomarbeit.audioant.Model.Helper.Constants;
 import diplomarbeit.audioant.Model.Helper.Settings;
@@ -91,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 stop = System.currentTimeMillis();
                 Log.d(TAG, "" + (stop - start));
-                Toast.makeText(MainActivity.this, "jetzt", Toast.LENGTH_SHORT).show();
                 serviceIsBound = true;
             }
         }
@@ -217,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
         });
         t.start();
     }
-
 
 
     public void bindToCommunicationService() {
