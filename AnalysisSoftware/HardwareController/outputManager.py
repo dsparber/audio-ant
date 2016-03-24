@@ -40,5 +40,14 @@ class OutputManager:
 			self.display.addText(str(options[0]))
 			self.display.displayText()
 
+		if function == "BUTTON":
+			if str(options[0]) == "BUTTON_CONFIRM":
+				self.resetAlerts()
+
 		if function == "WIFI":
 			self.wifi.addNetwork(options[0], options[1])
+
+	def resetAlerts(self):
+		self.sound.stop()
+		self.alertLight.stop()
+		self.display.displayClock()

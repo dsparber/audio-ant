@@ -69,8 +69,8 @@ public class RaspberryTool implements Observer {
 				analyser = new AudioStreamAnalyser();
 				analyser.addObserver(new EventLogger());
 				analyser.addObserver(new DetailLogger());
-				analyser.addObserver(new RaspberryEvents());
-				analyser.addObserver(new AndroidEvents());
+				analyser.addObserver(RaspberryEvents.getInstance());
+				analyser.addObserver(AndroidEvents.getInstance());
 			}
 			if (!analyser.isRunning()) {
 				analyser.start();

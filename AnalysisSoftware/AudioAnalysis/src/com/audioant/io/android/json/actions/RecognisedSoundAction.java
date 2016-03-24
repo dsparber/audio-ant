@@ -11,7 +11,7 @@ import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.RecognisedSound.Request;
 import com.audioant.io.android.json.JsonRequestAction;
 
-public class RecognisedSoundAction extends JsonRequestAction {
+public class RecognisedSoundAction implements JsonRequestAction {
 
 	private List<Sound> soundList;
 

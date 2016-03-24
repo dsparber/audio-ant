@@ -13,10 +13,10 @@ import com.audioant.alert.AlertSounds;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
 import com.audioant.config.Config;
+import com.audioant.io.android.AndroidConnection;
+import com.audioant.io.android.json.actions.AlertConfirmedAction;
 import com.audioant.io.raspberry.AlertController;
 import com.audioant.io.raspberry.ButtonController;
-import com.audioant.io.raspberry.DisplayController;
-import com.audioant.io.raspberry.SoundController;
 import com.audioant.io.raspberry.hardware.Button;
 
 /**
@@ -28,23 +28,34 @@ import com.audioant.io.raspberry.hardware.Button;
  */
 public class RaspberryEvents implements Observer {
 
-	private List<Sound> lastSounds;
-	private List<Sound> alertedSounds;
+	private static RaspberryEvents raspberryEvents;
 
-	public RaspberryEvents() throws IOException {
-		lastSounds = new ArrayList<Sound>();
-		alertedSounds = new ArrayList<Sound>();
+	public static RaspberryEvents getInstance() throws IOException {
+		if (raspberryEvents == null) {
+			raspberryEvents = new RaspberryEvents();
+		}
+		return raspberryEvents;
+	}
+
+	private List<Sound> lastNotified;
+
+	private RaspberryEvents() throws IOException {
+		lastNotified = new ArrayList<Sound>();
 		ButtonController.getInstance().addObserver(this);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
 
+		Events events = Events.getInstance();
+
 		if (arg instanceof Button) {
 			Button button = (Button) arg;
 			if (button.equals(Button.BUTTON_CONFIRM)) {
-				lastSounds = new ArrayList<Sound>();
-				alertedSounds = new ArrayList<Sound>();
+				events.reset();
+
+				AlertConfirmedAction action = new AlertConfirmedAction();
+				AndroidConnection.write(action.createRequest().toJSONString());
 			}
 		}
 
@@ -53,12 +64,13 @@ public class RaspberryEvents implements Observer {
 			@SuppressWarnings("unchecked")
 			List<Sound> sounds = (List<Sound>) arg;
 
-			List<Sound> newSounds = getNewSounds(sounds);
+			events.addAlertedSouds(lastNotified);
+			List<Sound> newSounds = events.getNewSounds(sounds);
 
 			try {
 				AlertSettings settings = AlertSettings.getInstance();
 
-				if (notNotified(newSounds)) {
+				if (events.notNotified(newSounds)) {
 					if (settings.isLightSignals()) {
 						AlertController.getInstance().blink();
 
@@ -71,41 +83,20 @@ public class RaspberryEvents implements Observer {
 									+ AlertSounds.getSoundFallback(id, defaultId).getId() + '/'
 									+ Config.ALERT_SOUNDS_FILE;
 
-							SoundController.getInstance().play(path);
+							AlertController.getInstance().playSound(path);
 						}
 					}
 				}
 				if (!newSounds.isEmpty()) {
 					for (Sound sound : newSounds) {
-						DisplayController.getInstance().write(sound.getTextForDisplay());
+						AlertController.getInstance().writeText(sound.getTextForDisplay());
 					}
 				}
 
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
-
-			alertedSounds.addAll(newSounds);
+			lastNotified = newSounds;
 		}
-	}
-
-	private boolean notNotified(List<Sound> newSounds) {
-		return newSounds.size() == lastSounds.size();
-	}
-
-	private List<Sound> getNewSounds(List<Sound> sounds) {
-
-		for (Sound sound : sounds) {
-			lastSounds.add(sound);
-		}
-
-		List<Sound> newSounds = new ArrayList<Sound>();
-
-		for (Sound sound : lastSounds) {
-			if (!alertedSounds.contains(sound)) {
-				newSounds.add(sound);
-			}
-		}
-		return newSounds;
 	}
 }

@@ -135,4 +135,10 @@ public interface JsonFields {
 			String ACTION_VALUE = "receivedRecognisedSound";
 		}
 	}
+
+	public interface AlertConfirmed {
+		public interface Request {
+			String ACTION_VALUE = "alertConfirmed";
+		}
+	}
 }
