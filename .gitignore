@@ -22,3 +22,4 @@ __pycache__
 **/res/learnedSounds/**/*.xml
 *.log
 alertSettings.json
+AnalysisSoftware/AudioAnalysis/res/learnedSounds/**/*.mp3

@@ -50,7 +50,19 @@ public class SaveSoundAction extends JsonReplyAction {
 
 		try {
 			file = Base64Tool.decode(fileContent, file.getAbsolutePath());
-			SoundFileLearner learner = new SoundFileLearner(sound, file.getAbsolutePath());
+
+			// Convert
+			String inputFile = file.getAbsolutePath();
+			String outputFile = file.getAbsolutePath().replace(".mp3", ".wav");
+
+			ProcessBuilder builder = new ProcessBuilder("ffmpeg", "-y", "-i", inputFile, outputFile);
+			Process process = builder.start();
+
+			process.getErrorStream().close();
+			process.getInputStream().close();
+			process.getOutputStream().close();
+
+			SoundFileLearner learner = new SoundFileLearner(sound, file.getAbsolutePath().replace(".mp3", ".wav"));
 			learner.extractFeatures();
 
 			LearnedSounds.addSound(sound);
