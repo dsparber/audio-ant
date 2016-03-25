@@ -10,26 +10,26 @@
     tools:context="diplomarbeit.audioant.Activities.MoreInfoToSoundActivity">
 
     <TextView
+        android:id="@+id/more_info_textview_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_xlarge"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Soundname"
-        android:id="@+id/more_info_textview_name"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="Soundname"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/text_size_xlarge" />
 
     <LinearLayout
         android:id="@+id/more_info_layout_benachrichtigungston"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/more_info_textview_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
         android:background="@drawable/seperator_bottom"
         android:onClick="showChooseAlertDialog"
         android:orientation="vertical"
-        android:paddingTop="8dp"
-        android:layout_below="@+id/more_info_textview_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp">
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/more_info_textview_benachrichtigungslabel"
@@ -45,4 +45,38 @@
             android:text="Beispielton"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height_medium"
+        android:layout_below="@+id/more_info_layout_benachrichtigungston"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:drawableLeft="@drawable/ic_play_arrow_24dp"
+        android:text="@string/more_info_button_play"
+        android:textSize="@dimen/text_size_normal" />
+
+    <ImageView
+        android:id="@+id/info_more_info"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignEnd="@+id/more_info_layout_benachrichtigungston"
+        android:layout_alignRight="@+id/more_info_layout_benachrichtigungston"
+        android:layout_alignTop="@+id/more_info_textview_name"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/ic_info_black_24dp"
+        android:onClick="showMoreInfoHelp" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button2"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:hint="Neuer Geräuschname"
+        android:textSize="24sp" />
 </RelativeLayout>

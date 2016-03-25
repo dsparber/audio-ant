@@ -116,4 +116,9 @@
     <string name="alarm_button_schließen">Schließen</string>
 
 
+    <!-- More Info to Sound Activity-->
+    <string name="more_info_button_play">Gelerntes Geräusch abspielen</string>
+    <string name="more_info_description">Hier können Sie sich den aufgenommenen Ton anhören</string>
+    <string name="more_info_description_header">Information</string>
+
 </resources>
