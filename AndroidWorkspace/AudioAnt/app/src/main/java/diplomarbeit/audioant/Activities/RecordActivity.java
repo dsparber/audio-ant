@@ -190,7 +190,6 @@ public class RecordActivity extends AppCompatActivity {
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                i.putExtra("message", data.getString("message"));
                 unbindFromCommunicationService();
                 startActivity(i);
             } else {
@@ -386,7 +385,7 @@ public class RecordActivity extends AppCompatActivity {
         JSONObject data = new JSONObject();
         try {
             data.put("fileContent", fileToString(new File(getAbsoluteFileLocation())));
-            data.put("soundName", geräuschName.getText());
+            data.put("name", geräuschName.getText());
             data.put("fileExtension", ".mp3");
             data.put("alertId", chosenAlertNumber);
 

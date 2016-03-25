@@ -174,6 +174,7 @@ public class CommunicationService extends Service {
                 String incoming;
                 try {
                     while ((incoming = reader.readLine()) != null) {
+                        Log.d(TAG, incoming);
                         if (checkIfRecognisedSounds(incoming)) {
                             startAlarmActivity(incoming);
                         } else {

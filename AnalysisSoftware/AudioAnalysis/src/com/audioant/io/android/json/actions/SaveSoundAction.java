@@ -55,8 +55,9 @@ public class SaveSoundAction extends JsonReplyAction {
 			String inputFile = file.getAbsolutePath();
 			String outputFile = file.getAbsolutePath().replace(".mp3", ".wav");
 
-			ProcessBuilder builder = new ProcessBuilder("ffmpeg", "-y", "-i", inputFile, outputFile);
+			ProcessBuilder builder = new ProcessBuilder("/usr/local/bin/ffmpeg", "-y", "-i", inputFile, outputFile);
 			Process process = builder.start();
+			process.waitFor();
 
 			process.getErrorStream().close();
 			process.getInputStream().close();
@@ -69,7 +70,7 @@ public class SaveSoundAction extends JsonReplyAction {
 			LearnedSounds.saveSounds();
 
 		} catch (IOException | LineUnavailableException | REngineException | REXPMismatchException
-				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException e) {
+				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException | InterruptedException e) {
 			e.printStackTrace();
 			success = false;
 		}
@@ -79,7 +80,7 @@ public class SaveSoundAction extends JsonReplyAction {
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getReply() {
-
+		
 		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(JsonFields.ACTION_KEY, Reply.ACTION_VALUE);
