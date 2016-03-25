@@ -31,10 +31,10 @@ class LedController:
 
     def ledBlink(self, pin):
         self.ledBlinking[pin] = True
-        start_new_thread(ledBlinkThread ,(pin,))
+        start_new_thread(self.ledBlinkThread ,(pin,))
 
     def ledBlinkThread(self, pin):
-        while ledBlinking[pin]:
+        while self.ledBlinking[pin]:
             GPIO.output(pin, True)
             time.sleep(CONFIG.ledBlinkDelay)
             GPIO.output(pin, False)
