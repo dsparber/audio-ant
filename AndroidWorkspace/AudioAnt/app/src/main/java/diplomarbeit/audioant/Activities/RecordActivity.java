@@ -47,6 +47,7 @@ import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {
     private static boolean serviceIsBound = false;
+    AlertDialog.Builder learnedUnsuccessfulDialog;
     private String recordingHelpText;
     private String recordingHelpTextHeader;
     private Settings settings;
@@ -190,7 +191,8 @@ public class RecordActivity extends AppCompatActivity {
                 unbindFromCommunicationService();
                 startActivity(i);
             } else {
-                AlertDialog.Builder learnedUnsuccessfulDialog = new AlertDialog.Builder(RecordActivity.this);
+                if (learnedUnsuccessfulDialog == null)
+                    learnedUnsuccessfulDialog = new AlertDialog.Builder(RecordActivity.this);
                 learnedUnsuccessfulDialog.setMessage("Das lernen schlug fehl!");
                 learnedUnsuccessfulDialog.setTitle("Fehler!");
                 learnedUnsuccessfulDialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -200,7 +202,12 @@ public class RecordActivity extends AppCompatActivity {
                         geräuschSchonAufgenommen = false;
                     }
                 });
-                learnedUnsuccessfulDialog.show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        learnedUnsuccessfulDialog.show();
+                    }
+                });
             }
         } catch (JSONException e) {
             e.printStackTrace();

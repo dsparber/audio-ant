@@ -77,34 +77,22 @@ public class CommunicationService extends Service {
             public void run() {
                 A:
                 while (true) {
+                    B:
                     while (true) {
                         Thread tt = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                if (!isConnected) {
-                                    try {
-                                        socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
-                                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                                        printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-                                        isConnected = true;
-                                        Intent i = new Intent("verbunden");
-                                        LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
-                                        Log.d(TAG, "Verbindung zum Server erfolgreich");
-                                        listenForAudioAntMessages();
-
-                                    } catch (IOException e) {
-                                        Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
-                                    }
-                                }
+                                connectToServerThread();
                             }
                         });
                         tt.start();
 
                         try {
-                            Thread.sleep(50000);
-                            if (!isConnected) break;
-                            else break A;
+                            Thread.sleep(2000);
+                            if (!isConnected) {
+                                tt.interrupt();
+                                break B;
+                            } else break A;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -158,6 +146,25 @@ public class CommunicationService extends Service {
             }
         });
         t.start();
+    }
+
+    synchronized void connectToServerThread() {
+        if (!isConnected) {
+            try {
+                socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+                isConnected = true;
+                Intent i = new Intent("verbunden");
+                LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
+                Log.d(TAG, "Verbindung zum Server erfolgreich");
+                listenForAudioAntMessages();
+
+            } catch (IOException e) {
+                Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
+            }
+        }
     }
 
     private void listenForAudioAntMessages() {

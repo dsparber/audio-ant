@@ -36,6 +36,7 @@ public class AlarmActivity extends AppCompatActivity {
     private LinearLayout layout;
     private Settings settings;
     private Thread flashThread;
+    private Thread iconBlinkThread;
 
     private boolean serviceIsBound = false;
     private boolean continueFlash = true;
@@ -121,6 +122,8 @@ public class AlarmActivity extends AppCompatActivity {
         if (settings.getUseVibration()) {
             startVibrating();
         }
+
+
     }
 
     private void createSoundNameTextViews(JSONArray sounds) throws JSONException {
@@ -214,6 +217,11 @@ public class AlarmActivity extends AppCompatActivity {
             }
         });
         t.start();
+
+    }
+
+    public void iconBlink() {
+
 
     }
 
