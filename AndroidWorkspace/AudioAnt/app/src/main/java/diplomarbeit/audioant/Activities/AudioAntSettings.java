@@ -15,11 +15,9 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,13 +35,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Classes.SoundListItem;
+import diplomarbeit.audioant.Model.Helper.AlertSoundHelper;
 import diplomarbeit.audioant.Model.Helper.Constants;
 import diplomarbeit.audioant.Model.Helper.Settings;
 import diplomarbeit.audioant.Model.Helper.WifiHelper;
@@ -53,6 +49,7 @@ import diplomarbeit.audioant.R;
 public class AudioAntSettings extends AppCompatActivity {
 
     private final String TAG = "AA_SETTINGS";
+    private AlertSoundHelper alertSoundHelper;
     private CheckBox checkBox_lightSignals;
     private CheckBox checkBox_audioSignals;
     private WifiHelper wifiHelper;
@@ -131,6 +128,8 @@ public class AudioAntSettings extends AppCompatActivity {
         setContentView(R.layout.activity_audio_ant_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        alertSoundHelper = new AlertSoundHelper();
+
         wifiHelper = new WifiHelper(this);
         wlanName = (EditText) findViewById(R.id.editText_wifi_name);
         wlanPassword = (EditText) findViewById(R.id.editText_wifi_password);
@@ -195,7 +194,7 @@ public class AudioAntSettings extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
             JSONObject data = jsonObject.getJSONObject("data");
             JSONArray sounds = data.getJSONArray("sounds");
-            deleteExistingAlerts();
+            alertSoundHelper.deleteExistingAlerts();
             for (int i = 0; i < sounds.length(); i++) {
                 JSONObject sound = (JSONObject) sounds.get(i);
                 String name = sound.getString("name");
@@ -204,10 +203,10 @@ public class AudioAntSettings extends AppCompatActivity {
                 String fileContent = sound.getString("fileContent");
                 String fullFileName = number + "-" + name + "-" + fileName;
 
-                saveAlert(fullFileName, fileContent);
+                alertSoundHelper.saveAlert(fullFileName, fileContent);
             }
             settings.setSoundsLoaded(true);
-            readAlerts();
+            alertSoundHelper.readAlerts(arrayAdapterSounds);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -336,7 +335,7 @@ public class AudioAntSettings extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            readAlerts();
+            alertSoundHelper.readAlerts(arrayAdapterSounds);
         }
     }
 
@@ -423,7 +422,7 @@ public class AudioAntSettings extends AppCompatActivity {
                 SoundListItem chosenAlert = arrayAdapterSounds.getItem(position);
                 alertSoundId = chosenAlert.getNumber();
                 textView_ChosenSound.setText(chosenAlert.getName());
-                playAlertFromName(chosenAlert.getName());
+                alertSoundHelper.playAlertFromName(chosenAlert.getName());
             }
         });
         listViewSounds.setSelection(alertSoundId);
@@ -485,82 +484,6 @@ public class AudioAntSettings extends AppCompatActivity {
                 textAlert.show(getFragmentManager(), "wlan help");
                 break;
         }
-    }
-
-
-    //  Methods concerning the alert sounds the app can receive and play
-    public void playAlertFromName(String name) {
-        File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        File[] files = folder.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            String[] items = files[i].getName().split("-");
-            if (items[1].equals(name)) {
-                try {
-                    if (player != null) {
-                        player.release();
-                        player = null;
-                    }
-                    player = new MediaPlayer();
-                    player.setDataSource(files[i].getAbsolutePath());
-                    player.prepare();
-                    player.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-    public void deleteExistingAlerts() {
-        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        deleteRecursive(dir);
-    }
-
-    public void saveAlert(String fileName, String fileContent) {
-        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        dir.mkdirs();
-        File f = new File(dir, fileName);
-
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        byte[] data = Base64.decode(fileContent, Base64.NO_WRAP);
-        try {
-            FileOutputStream fos = new FileOutputStream(f.getAbsoluteFile());
-            fos.write(data);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Alert saved from json");
-    }
-
-    public void readAlerts() {
-        File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        File[] files = folder.listFiles();
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                String[] items = files[i].getName().split("-");
-                int number = Integer.parseInt(items[0]);
-                String name = items[1];
-                arrayAdapterSounds.add(new SoundListItem(name, number));
-                Log.d(TAG, "Found file " + files[i].getName());
-            }
-        }
-    }
-
-    public void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
-                deleteRecursive(child);
-
-        fileOrDirectory.delete();
     }
 
 

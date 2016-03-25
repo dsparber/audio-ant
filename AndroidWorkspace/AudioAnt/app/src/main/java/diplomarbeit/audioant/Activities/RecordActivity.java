@@ -35,11 +35,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import diplomarbeit.audioant.Fragments.ShowTextAlert;
 import diplomarbeit.audioant.Model.Classes.SoundListItem;
+import diplomarbeit.audioant.Model.Helper.AlertSoundHelper;
 import diplomarbeit.audioant.Model.Helper.Settings;
 import diplomarbeit.audioant.Model.Services.CommunicationService;
 import diplomarbeit.audioant.Model.Services.RecordSignalService;
@@ -48,6 +48,7 @@ import diplomarbeit.audioant.R;
 public class RecordActivity extends AppCompatActivity {
     private static boolean serviceIsBound = false;
     AlertDialog.Builder learnedUnsuccessfulDialog;
+    private AlertSoundHelper alertSoundHelper;
     private String recordingHelpText;
     private String recordingHelpTextHeader;
     private Settings settings;
@@ -131,6 +132,8 @@ public class RecordActivity extends AppCompatActivity {
         recordingHelpText = getResources().getString(R.string.recording_description);
         recordingHelpTextHeader = getResources().getString(R.string.recording_description_header);
         settings = new Settings(this);
+        alertSoundHelper = new AlertSoundHelper();
+
         textView_ChosenSound = (TextView) findViewById(R.id.record_textView_sound_chosen);
         button_record = (Button) findViewById(R.id.record_button_start_recording);
         button_play = (Button) findViewById(R.id.record_button_replay);
@@ -160,7 +163,7 @@ public class RecordActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<>(
                 RecordActivity.this,
                 android.R.layout.select_dialog_singlechoice);
-        readAlerts();
+        alertSoundHelper.readAlerts(arrayAdapter);
     }
 
     public void requestSoundsIfFirstStart() {
@@ -199,7 +202,6 @@ public class RecordActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        geräuschSchonAufgenommen = false;
                     }
                 });
                 runOnUiThread(new Runnable() {
@@ -219,7 +221,7 @@ public class RecordActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(intent.getStringExtra("json"));
             JSONObject data = jsonObject.getJSONObject("data");
             JSONArray sounds = data.getJSONArray("sounds");
-            deleteExistingAlerts();
+            alertSoundHelper.deleteExistingAlerts();
             for (int i = 0; i < sounds.length(); i++) {
                 JSONObject sound = (JSONObject) sounds.get(i);
                 String name = sound.getString("name");
@@ -228,10 +230,10 @@ public class RecordActivity extends AppCompatActivity {
                 String fileContent = sound.getString("fileContent");
                 String fullFileName = number + "-" + name + "-" + fileName;
 
-                saveAlert(fullFileName, fileContent);
+                alertSoundHelper.saveAlert(fullFileName, fileContent);
             }
             settings.setSoundsLoaded(true);
-            readAlerts();
+            alertSoundHelper.readAlerts(arrayAdapter);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -265,7 +267,7 @@ public class RecordActivity extends AppCompatActivity {
                 SoundListItem chosenAlert = arrayAdapter.getItem(position);
                 chosenAlertNumber = chosenAlert.getNumber();
                 textView_ChosenSound.setText(chosenAlert.getName());
-                playAlertFromName(chosenAlert.getName());
+                alertSoundHelper.playAlertFromName(chosenAlert.getName());
             }
         });
         listView.setSelection(chosenAlertNumber);
@@ -431,27 +433,6 @@ public class RecordActivity extends AppCompatActivity {
         return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
-    public void saveAudioFile(String s) {
-        File f = new File(getAbsoluteFileLocation());
-        if (f.exists()) {
-            f.delete();
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        byte[] data = Base64.decode(s, Base64.NO_WRAP);
-        try {
-            FileOutputStream fos = new FileOutputStream(getAbsoluteFileLocation());
-            fos.write(data);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "File saved from json");
-    }
-
     public String getAbsoluteFileLocation() {
         File dir = new File(Environment.getExternalStorageDirectory(), ".AudioAnt");
         return dir.getAbsolutePath() + "/Signalton.mp3";
@@ -483,80 +464,5 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-
-    //  Methods concerning alerts
-    public void saveAlert(String fileName, String fileContent) {
-        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        dir.mkdirs();
-        File f = new File(dir, fileName);
-
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        byte[] data = Base64.decode(fileContent, Base64.NO_WRAP);
-        try {
-            FileOutputStream fos = new FileOutputStream(f.getAbsoluteFile());
-            fos.write(data);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Alert saved from json");
-    }
-
-    public void playAlertFromName(String name) {
-        File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        File[] files = folder.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            String[] items = files[i].getName().split("-");
-            if (items[1].equals(name)) {
-                try {
-                    if (player != null) {
-                        player.release();
-                        player = null;
-                    }
-                    player = new MediaPlayer();
-                    player.setDataSource(files[i].getAbsolutePath());
-                    player.prepare();
-                    player.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-    public void deleteExistingAlerts() {
-        File dir = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        deleteRecursive(dir);
-    }
-
-    public void readAlerts() {
-        File folder = new File(new File(Environment.getExternalStorageDirectory(), ".AudioAnt"), "Alerts");
-        File[] files = folder.listFiles();
-        if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                String[] items = files[i].getName().split("-");
-                int number = Integer.parseInt(items[0]);
-                String name = items[1];
-                arrayAdapter.add(new SoundListItem(name, number));
-                Log.d(TAG, "Found file " + files[i].getName());
-            }
-        }
-    }
-
-    public void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
-                deleteRecursive(child);
-
-        fileOrDirectory.delete();
-    }
 
 }
