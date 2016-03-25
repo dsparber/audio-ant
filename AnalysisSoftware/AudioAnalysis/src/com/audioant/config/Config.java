@@ -231,4 +231,9 @@ public class Config {
 
 	// Text
 	public static final String TEXT_SOUND = ConfigReader.getProperty("textSound");
+	
+	// FFMPEG
+	public static final String FFMPEG_COMMAND = ConfigReader.getProperty("ffmpegCommand");
+	public static final String FFMPEG_INPUT = ConfigReader.getProperty("ffmpegInput");
+	public static final String FFMPEG_OVERRIDE = ConfigReader.getProperty("ffmpegOverride");
 }

@@ -53,9 +53,9 @@ public class SaveSoundAction extends JsonReplyAction {
 
 			// Convert
 			String inputFile = file.getAbsolutePath();
-			String outputFile = file.getAbsolutePath().replace(".mp3", ".wav");
+			String outputFile = file.getAbsolutePath().replace(fileExtension, Config.LEARNED_SOUNDS_FILE_DEFAULT_EXTENSION);
 
-			ProcessBuilder builder = new ProcessBuilder("/usr/local/bin/ffmpeg", "-y", "-i", inputFile, outputFile);
+			ProcessBuilder builder = new ProcessBuilder(Config.FFMPEG_COMMAND, Config.FFMPEG_OVERRIDE, Config.FFMPEG_INPUT, inputFile, outputFile);
 			Process process = builder.start();
 			process.waitFor();
 
@@ -63,7 +63,7 @@ public class SaveSoundAction extends JsonReplyAction {
 			process.getInputStream().close();
 			process.getOutputStream().close();
 
-			SoundFileLearner learner = new SoundFileLearner(sound, file.getAbsolutePath().replace(".mp3", ".wav"));
+			SoundFileLearner learner = new SoundFileLearner(sound, file.getAbsolutePath().replace(fileExtension, Config.LEARNED_SOUNDS_FILE_DEFAULT_EXTENSION));
 			learner.extractFeatures();
 
 			LearnedSounds.addSound(sound);
