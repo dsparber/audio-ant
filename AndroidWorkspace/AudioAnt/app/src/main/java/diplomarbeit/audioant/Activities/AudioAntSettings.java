@@ -334,7 +334,7 @@ public class AudioAntSettings extends AppCompatActivity {
     }
 
     public void initialiseConnectionToAudioAnt() {
-        communicationService.reconnectToAudioAntHotspot();
+        communicationService.initialiseNetworkConnection(true);
     }
 
 
@@ -368,7 +368,7 @@ public class AudioAntSettings extends AppCompatActivity {
         }
     }
 
-    private void fetchData(){
+    private void fetchData() {
         try {
             JSONObject object = new JSONObject();
             object.put("action", "getCurrentSettings");

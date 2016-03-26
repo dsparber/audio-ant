@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.net.Socket;
 
 import diplomarbeit.audioant.Activities.AlarmActivity;
@@ -25,7 +24,7 @@ import diplomarbeit.audioant.Model.Helper.Constants;
 public class CommunicationService extends Service {
 
     private static String TAG = "BOUND_SERICE";
-    Socket socket = null;
+    private Socket socket = null;
     private IBinder binder = new MyBinder();
     private BufferedReader reader;
     private PrintWriter printer;
@@ -37,7 +36,7 @@ public class CommunicationService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "service created");
-        initialiseNetworkConnection();
+        initialiseNetworkConnection(false);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CommunicationService extends Service {
 
 
     //  Initialisation methods
-    private void initialiseNetworkConnection() {
+    public void initialiseNetworkConnection(final boolean reconnect) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -83,12 +82,14 @@ public class CommunicationService extends Service {
                         Thread tt = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                connectToServerThread();
+//                              Try to connect to the Server
+                                connectToServer(reconnect);
                             }
                         });
                         tt.start();
 
                         try {
+//                          Try connecting to the server again if not successful after two seconds
                             Thread.sleep(2000);
                             if (!isConnected) {
                                 tt.interrupt();
@@ -104,67 +105,29 @@ public class CommunicationService extends Service {
         t.start();
     }
 
-    public void reconnectToAudioAntHotspot() {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                A:
-                while (true) {
-                    while (true) {
-                        Thread tt = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!isConnected) {
-                                    try {
-                                        socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
-                                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                                        printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                                        isConnected = true;
-                                        Log.d(TAG, "Erneutes verbinden zum Server erfolgreich!!");
-                                        Intent i = new Intent("reconnected");
-                                        LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
-                                        listenForAudioAntMessages(reader);
+    synchronized void connectToServer(boolean reconnect) {
+        if (!isConnected) try {
+//          Establish a connection to the server
+            socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            isConnected = true;
 
-                                        socketClosedOnPurpose = false;
+//          Start listening for incoming data from the server
+            listenForAudioAntMessages(reader);
 
-                                    } catch (IOException e) {
-                                        Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
-                                    }
-                                }
-                            }
-                        });
-                        tt.start();
-
-                        try {
-                            Thread.sleep(50000);
-                            if (!isConnected) break;
-                            else break A;
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-        t.start();
-    }
-
-    synchronized void connectToServerThread() {
-        if (!isConnected) {
-            try {
-                socket = new Socket(new Constants().AA_HOTSPOT_IP, new Constants().AA_HOTSPOT_PORT);
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                printer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-                isConnected = true;
-                Intent i = new Intent("verbunden");
-                LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
+//          Inform Activities about completed connection process
+            Intent i;
+            if (reconnect) {
+                Log.d(TAG, "Erneutes verbinden zum Server erfolgreich!!");
+                i = new Intent("reconnected");
+            } else {
+                i = new Intent("verbunden");
                 Log.d(TAG, "Verbindung zum Server erfolgreich");
-                listenForAudioAntMessages(reader);
-
-            } catch (IOException e) {
-                Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
             }
+            LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
+        } catch (IOException e) {
+            Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
         }
     }
 
@@ -174,18 +137,23 @@ public class CommunicationService extends Service {
             public void run() {
                 String incoming;
                 try {
+//                  Listen for incoming messages
                     while ((incoming = reader.readLine()) != null) {
                         Log.d(TAG, incoming);
+
+//                      Check if the incoming data indicates a recognised sound
                         if (checkIfRecognisedSounds(incoming)) {
+//                          Start the activity that notifies the user
                             startAlarmActivity(incoming);
                         } else {
+//                          Send the received data to the activities
                             sendLocalBroadcast(incoming);
                         }
                     }
                     Log.d(TAG, "Die Verbindung zum Server wurde verloren");
                     if (!socketClosedOnPurpose) {
                         Log.d(TAG, "trying to reconnect");
-                        initialiseNetworkConnection();
+                        initialiseNetworkConnection(false);
                         handleServerDisconnected();
                         isConnected = false;
                     }
@@ -195,7 +163,7 @@ public class CommunicationService extends Service {
                         Log.d(TAG, "trying to reconnect");
                         isConnected = false;
                         handleServerDisconnected();
-                        initialiseNetworkConnection();
+                        initialiseNetworkConnection(false);
                     }
                 }
             }
@@ -219,22 +187,23 @@ public class CommunicationService extends Service {
     }
 
     private void sendLocalBroadcast(String s) {
+//      Send local broadcast with received json object as extra
         Intent intent;
         try {
             JSONObject jsonObject = new JSONObject(s);
             intent = new Intent(jsonObject.getString("action"));
             intent.putExtra("json", jsonObject.toString());
 
-        } catch (JSONException e) {
-            intent = new Intent("Test");
-            intent.putExtra("text", s);
-        }
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        Log.d(TAG, "sending broadcast");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            Log.d(TAG, "sending broadcast");
 
+        } catch (JSONException e) {
+            Log.d(TAG, "received invalid json");
+        }
     }
 
     private boolean checkIfRecognisedSounds(String s) {
+//      Check if incoming JSON indicates a recognised sound
         try {
             JSONObject object = new JSONObject(s);
             String action = object.getString("action");
@@ -248,6 +217,7 @@ public class CommunicationService extends Service {
     }
 
     private void startAlarmActivity(String jsonFile) {
+//      Start Activity that informs the user
         Intent i = new Intent(CommunicationService.this, AlarmActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -259,6 +229,7 @@ public class CommunicationService extends Service {
 
     //  Methods that handle the server connection
     public void handleServerDisconnected() {
+//      Return to MainActivity if connection to server is lost
         Intent i = new Intent(CommunicationService.this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -267,6 +238,7 @@ public class CommunicationService extends Service {
     }
 
     public void closeSocket() {
+//      Close the socket
         try {
             socketClosedOnPurpose = true;
             isConnected = false;

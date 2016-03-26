@@ -23,10 +23,8 @@ public class RecordSignalService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-//      Check if the service is already running
-        if (alreadyStarted) {
-            Log.d(TAG, "Die Aufnahme laeuft bereits");
-        } else {
+//      Check if the service is already running and start recording if not
+        if (!alreadyStarted) {
             alreadyStarted = true;
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -41,14 +39,13 @@ public class RecordSignalService extends Service {
 
     @Override
     public void onDestroy() {
-//      called when stopService(....) is invoked from any class
+//      executed when stopService(....) is called from any class
         super.onDestroy();
         stopRecording();
         Log.d(TAG, "Die Aufnahme wurde angehalten!");
     }
 
 
-    //  Recording Methods
     public void recordToFile() {
 //      Initialising the MediaRecorder and specifying recording properties
         recorder = new MediaRecorder();
@@ -56,24 +53,29 @@ public class RecordSignalService extends Service {
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.setAudioEncodingBitRate(16);
-        recorder.setAudioSamplingRate(32000);
+        recorder.setAudioSamplingRate(16000);
+
+//      Create the file the sound should be recorded to
         File f = new File(getBaseDir() + "/Signalton.mp3");
         if (f.exists()) {
             f.delete();
         }
+
         try {
             f.createNewFile();
             recorder.setOutputFile(f.getAbsolutePath());
-//          Start recording and save to file
+
+//          Start recording audio to file
             recorder.prepare();
             recorder.start();
-            Log.d(TAG, "Der Service laeuft bereits!");
+            Log.d(TAG, "Die Aufnahme wurde gestartet");
         } catch (IOException e) {
             Log.e(TAG, "Die Aufnahme konnte nicht gestartet werden", e);
         }
     }
 
     public void stopRecording() {
+//      Aufnahme anhalten
         recorder.stop();
         recorder.release();
         recorder = null;
@@ -81,7 +83,7 @@ public class RecordSignalService extends Service {
     }
 
 
-    //  returns the Directory the audio files are saved in, creates dir
+    //  returns the Directory the audio files are saved in, creates it first if necessary
     public File getBaseDir() {
         File dir = new File(Environment.getExternalStorageDirectory(), ".AudioAnt");
         dir.mkdirs();

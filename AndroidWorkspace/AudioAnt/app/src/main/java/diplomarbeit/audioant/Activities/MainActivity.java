@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        wifiHelper = new WifiHelper(this);
 
+        wifiHelper = new WifiHelper(this);
         constants = new Constants();
         settings = new Settings(this);
         serverConnectionTimer = new CountDownTimer(60000, 1000) {
@@ -365,4 +365,5 @@ public class MainActivity extends AppCompatActivity {
     public void startAudioAntSettingsActivity(View v) {
         startActivity(new Intent(MainActivity.this, AudioAntSettings.class));
     }
+
 }
