@@ -24,3 +24,4 @@ __pycache__
 alertSettings.json
 AnalysisSoftware/AudioAnalysis/res/learnedSounds/**/*.mp3
 AnalysisSoftware/AudioAnalysis/out
+AnalysisSoftware/AudioAnalysis/res/log/
