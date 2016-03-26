@@ -52,10 +52,6 @@ public class AndroidConnection extends Observable {
 		for (int i = 0; i < sockets.size(); i++) {
 
 			try {
-				if (!sockets.get(i).isConnected() || sockets.get(i).isClosed() || !sockets.get(i).isBound()) {
-					throw new SocketException();
-				}
-
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sockets.get(i).getOutputStream()));
 				writer.write(text);
 				writer.newLine();

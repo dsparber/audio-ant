@@ -1,6 +1,7 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,8 +48,8 @@ import diplomarbeit.audioant.R;
 
 public class RecordActivity extends AppCompatActivity {
     private static boolean serviceIsBound = false;
-    AlertDialog.Builder learnedUnsuccessfulDialog;
     private AlertSoundHelper alertSoundHelper;
+    private ProgressDialog waitingForResponse;
     private String recordingHelpText;
     private String recordingHelpTextHeader;
     private Settings settings;
@@ -185,31 +186,40 @@ public class RecordActivity extends AppCompatActivity {
         try {
             JSONObject j = new JSONObject(intent.getStringExtra("json"));
             JSONObject data = j.getJSONObject("data");
-            if (data.getBoolean("successful")) {
-                Intent i = new Intent(RecordActivity.this, MainActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                unbindFromCommunicationService();
-                startActivity(i);
+
+            final AlertDialog.Builder learnedStatusDialog = new AlertDialog.Builder(RecordActivity.this);
+            learnedStatusDialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    unbindFromCommunicationService();
+                    Intent i = new Intent(RecordActivity.this, MainActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                }
+            });
+
+            if(data.getBoolean("successful")) {
+                learnedStatusDialog.setMessage("Das Lernen war erfolgreich!");
+                learnedStatusDialog.setTitle("Erfolg");
             } else {
-                if (learnedUnsuccessfulDialog == null)
-                    learnedUnsuccessfulDialog = new AlertDialog.Builder(RecordActivity.this);
-                learnedUnsuccessfulDialog.setMessage("Das lernen schlug fehl!");
-                learnedUnsuccessfulDialog.setTitle("Fehler!");
-                learnedUnsuccessfulDialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        learnedUnsuccessfulDialog.show();
-                    }
-                });
+                learnedStatusDialog.setMessage("Es konnte leider kein Ton erkannt werden.");
+                learnedStatusDialog.setTitle("Fehler");
             }
+
+            if (waitingForResponse != null)
+                waitingForResponse.dismiss();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    learnedStatusDialog.show();
+                }
+            });
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -381,6 +391,9 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void sendButtonClicked(View v) {
+
+        showWaitingForReplyInfo();
+
         JSONObject object = new JSONObject();
         JSONObject data = new JSONObject();
         try {
@@ -445,7 +458,7 @@ public class RecordActivity extends AppCompatActivity {
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent i = new Intent(getApplicationContext(), CommunicationService.class);
+                    Intent i = new Intent(RecordActivity.this, CommunicationService.class);
                     bindService(i, serviceConnection, 0);
                     startService(i);
                 }
@@ -461,6 +474,18 @@ public class RecordActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, "service could not be unbound because it wasn't bound");
         }
+    }
+
+    private void showWaitingForReplyInfo() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                waitingForResponse = new ProgressDialog(RecordActivity.this);
+                waitingForResponse.setMessage("Der aufgenommene Ton wird analysiert");
+                waitingForResponse.setCancelable(false);
+                waitingForResponse.show();
+            }
+        });
     }
 
 

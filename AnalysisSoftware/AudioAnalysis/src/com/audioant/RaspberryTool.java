@@ -62,7 +62,7 @@ public class RaspberryTool implements Observer {
 		}
 	}
 
-	private static void startAnalysis() {
+	public static void startAnalysis() {
 		try {
 			if (analyser == null) {
 
@@ -84,7 +84,7 @@ public class RaspberryTool implements Observer {
 		}
 	}
 
-	private static void stopAnalysis() {
+	public static void stopAnalysis() {
 		if (analyser != null && analyser.isRunning()) {
 			analyser.stop();
 			led(Led.LED_RUNNING, 0);

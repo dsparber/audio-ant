@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.net.Socket;
 
 import diplomarbeit.audioant.Activities.AlarmActivity;
@@ -122,7 +123,7 @@ public class CommunicationService extends Service {
                                         Log.d(TAG, "Erneutes verbinden zum Server erfolgreich!!");
                                         Intent i = new Intent("reconnected");
                                         LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
-                                        listenForAudioAntMessages();
+                                        listenForAudioAntMessages(reader);
 
                                         socketClosedOnPurpose = false;
 
@@ -159,7 +160,7 @@ public class CommunicationService extends Service {
                 Intent i = new Intent("verbunden");
                 LocalBroadcastManager.getInstance(CommunicationService.this).sendBroadcast(i);
                 Log.d(TAG, "Verbindung zum Server erfolgreich");
-                listenForAudioAntMessages();
+                listenForAudioAntMessages(reader);
 
             } catch (IOException e) {
                 Log.d(TAG, "Verbindung zum Server konnte nicht aufgebaut werden");
@@ -167,7 +168,7 @@ public class CommunicationService extends Service {
         }
     }
 
-    private void listenForAudioAntMessages() {
+    private void listenForAudioAntMessages(final BufferedReader reader) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {

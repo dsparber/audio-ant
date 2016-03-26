@@ -1,6 +1,7 @@
 package diplomarbeit.audioant.Activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,6 +35,7 @@ public class ListActivity extends AppCompatActivity {
 
     private final String TAG = "LIST_ACTIVITY";
     private ListView listOfSounds;
+    private ProgressDialog waitForDataDialog;
     private ArrayList<SoundListItem> listItems = new ArrayList<>();
     private ArrayAdapter<SoundListItem> adapter;
     private boolean serviceIsBound = false;
@@ -44,14 +46,7 @@ public class ListActivity extends AppCompatActivity {
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
             serviceIsBound = true;
-            try {
-                JSONObject object = new JSONObject();
-                object.put("action", "getListOfSounds");
-                communicationService.sendToServer(object.toString());
-                Log.d(TAG, "list of sounds was requested");
-            } catch (JSONException e) {
-                Log.d(TAG, "Json could not be created");
-            }
+            requestSounds();
         }
 
         @Override
@@ -62,6 +57,7 @@ public class ListActivity extends AppCompatActivity {
     private BroadcastReceiver soundDeletedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Received");
             handleSoundDeleterReceived(context, intent);
         }
     };
@@ -77,6 +73,9 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        showWaitDialog();
+
         setContentView(R.layout.activity_list_files);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -125,7 +124,9 @@ public class ListActivity extends AppCompatActivity {
                     alert.setPositiveButton("Ja, löschen", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            showWaitDialog();
                             sendDeleteSoundJson(selectedItem.getNumber());
+                            requestSounds();
                         }
                     });
                     alert.show();
@@ -134,24 +135,30 @@ public class ListActivity extends AppCompatActivity {
             JSONObject j = new JSONObject(intent.getStringExtra("json"));
             JSONObject data = j.getJSONObject("data");
             JSONArray sounds = data.getJSONArray("sounds");
+            listItems.removeAll(listItems);
             for (int i = 0; i < sounds.length(); i++) {
                 JSONObject sound = sounds.getJSONObject(i);
                 SoundListItem item = new SoundListItem(sound.getString("name"), sound.getInt("number"));
                 listItems.add(item);
             }
+            waitForDataDialog.dismiss();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public void handleSoundDeleterReceived(Context context, Intent intent) {
-        listItems = new ArrayList<>();
+        Log.d(TAG, "Test");
+    }
+
+    private void requestSounds(){
         try {
             JSONObject object = new JSONObject();
             object.put("action", "getListOfSounds");
             communicationService.sendToServer(object.toString());
+            Log.d(TAG, "list of sounds was requested");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Json could not be created");
         }
     }
 
@@ -200,5 +207,17 @@ public class ListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showWaitDialog(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                waitForDataDialog = new ProgressDialog(ListActivity.this);
+                waitForDataDialog.setMessage("Aktualisieren");
+                waitForDataDialog.setCancelable(false);
+                waitForDataDialog.show();
+            }
+        });
     }
 }

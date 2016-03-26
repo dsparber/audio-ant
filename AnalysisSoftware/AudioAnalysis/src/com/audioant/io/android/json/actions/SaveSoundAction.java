@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 
+import com.audioant.RaspberryTool;
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.learning.SoundFileLearner;
 import com.audioant.audio.model.Sound;
@@ -63,14 +64,16 @@ public class SaveSoundAction extends JsonReplyAction {
 			process.getInputStream().close();
 			process.getOutputStream().close();
 
+			RaspberryTool.stopAnalysis();
 			SoundFileLearner learner = new SoundFileLearner(sound, file.getAbsolutePath().replace(fileExtension, Config.LEARNED_SOUNDS_FILE_DEFAULT_EXTENSION));
 			learner.extractFeatures();
+			RaspberryTool.startAnalysis();
 
 			LearnedSounds.addSound(sound);
 			LearnedSounds.saveSounds();
 
 		} catch (IOException | LineUnavailableException | REngineException | REXPMismatchException
-				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException | InterruptedException e) {
+				| UnsupportedAudioFileException | ParserConfigurationException | TransformerException | InterruptedException | IndexOutOfBoundsException e) {
 			e.printStackTrace();
 			success = false;
 		}

@@ -49,6 +49,7 @@ import diplomarbeit.audioant.R;
 public class AudioAntSettings extends AppCompatActivity {
 
     private final String TAG = "AA_SETTINGS";
+    private ProgressDialog loadSettingsDialog;
     private AlertSoundHelper alertSoundHelper;
     private CheckBox checkBox_lightSignals;
     private CheckBox checkBox_audioSignals;
@@ -77,19 +78,13 @@ public class AudioAntSettings extends AppCompatActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+
+
             CommunicationService.MyBinder binder = (CommunicationService.MyBinder) service;
             communicationService = binder.getService();
-            requestSoundsIfFirstStart();
+            fetchData();
             Log.d(TAG, "Der service ist jetzt verbunden");
             serviceIsBound = true;
-            try {
-                JSONObject object = new JSONObject();
-                object.put("action", "getCurrentSettings");
-                communicationService.sendToServer(object.toString());
-                Log.d(TAG, "AudioAnt settings were requested");
-            } catch (JSONException e) {
-                Log.d(TAG, "Json could not be created");
-            }
         }
 
         @Override
@@ -128,6 +123,8 @@ public class AudioAntSettings extends AppCompatActivity {
         setContentView(R.layout.activity_audio_ant_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        showLoadSettingsDialog();
+
         alertSoundHelper = new AlertSoundHelper();
 
         wifiHelper = new WifiHelper(this);
@@ -147,6 +144,19 @@ public class AudioAntSettings extends AppCompatActivity {
 
         registerReceiver(wifiScanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiHelper.startScan();
+    }
+
+    private void showLoadSettingsDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadSettingsDialog = new ProgressDialog(AudioAntSettings.this);
+                loadSettingsDialog.setMessage("Die aktuellen Einstellungen werden geladen");
+                loadSettingsDialog.setCancelable(false);
+                loadSettingsDialog.show();
+            }
+        });
+
     }
 
     @Override
@@ -214,6 +224,9 @@ public class AudioAntSettings extends AppCompatActivity {
     }
 
     public void handleSettingsReceived(Context context, Intent intent) {
+
+        loadSettingsDialog.dismiss();
+
         try {
             JSONObject obj = new JSONObject(intent.getStringExtra("json"));
             JSONObject data = obj.getJSONObject("data");
@@ -324,21 +337,6 @@ public class AudioAntSettings extends AppCompatActivity {
         communicationService.reconnectToAudioAntHotspot();
     }
 
-    public void requestSoundsIfFirstStart() {
-        settings = new Settings(this);
-        if (!settings.getSoundsLoaded()) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("action", "getAlertSounds");
-                communicationService.sendToServer(jsonObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            alertSoundHelper.readAlerts(arrayAdapterSounds);
-        }
-    }
-
 
     //  Sending Json Methods
     public void sendConnectToLocalWifiJson() {
@@ -367,6 +365,17 @@ public class AudioAntSettings extends AppCompatActivity {
             communicationService.sendToServer(jsonObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void fetchData(){
+        try {
+            JSONObject object = new JSONObject();
+            object.put("action", "getCurrentSettings");
+            communicationService.sendToServer(object.toString());
+            Log.d(TAG, "AudioAnt settings were requested");
+        } catch (JSONException e) {
+            Log.d(TAG, "Json could not be created");
         }
     }
 
