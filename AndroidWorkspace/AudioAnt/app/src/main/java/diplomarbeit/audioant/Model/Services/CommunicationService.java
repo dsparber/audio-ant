@@ -25,7 +25,6 @@ public class CommunicationService extends Service {
 
     private static String TAG = "BOUND_SERICE";
     private Socket socket = null;
-    private IBinder binder = new MyBinder();
     private BufferedReader reader;
     private PrintWriter printer;
     private boolean isConnected = false;
@@ -42,13 +41,14 @@ public class CommunicationService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Service was bound");
+        IBinder binder = new MyBinder();
         return binder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "the service was started");
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CommunicationService extends Service {
             reader.close();
             printer.close();
         } catch (IOException e) {
-
+            Log.d(TAG, "reader and writer couldn't be closed");
         }
     }
 
@@ -77,7 +77,6 @@ public class CommunicationService extends Service {
             public void run() {
                 A:
                 while (true) {
-                    B:
                     while (true) {
                         Thread tt = new Thread(new Runnable() {
                             @Override
@@ -93,7 +92,7 @@ public class CommunicationService extends Service {
                             Thread.sleep(2000);
                             if (!isConnected) {
                                 tt.interrupt();
-                                break B;
+                                break;
                             } else break A;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -178,11 +177,10 @@ public class CommunicationService extends Service {
         try {
             Log.d(TAG, "string wird an server gesendet");
             printer.write(content);
-            printer.write("\r");
+//            printer.write("\r");
             printer.flush();
         } catch (NullPointerException e) {
             Log.d(TAG, "fehler beim senden, server stream nicht bereit");
-
         }
     }
 

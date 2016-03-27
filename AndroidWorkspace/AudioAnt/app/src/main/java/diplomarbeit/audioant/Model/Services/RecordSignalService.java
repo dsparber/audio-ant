@@ -68,6 +68,8 @@ public class RecordSignalService extends Service {
 //          Start recording audio to file
             recorder.prepare();
             recorder.start();
+
+
             Log.d(TAG, "Die Aufnahme wurde gestartet");
         } catch (IOException e) {
             Log.e(TAG, "Die Aufnahme konnte nicht gestartet werden", e);

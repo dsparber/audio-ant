@@ -25,7 +25,6 @@ public class Settings {
         sharedPref = context.getSharedPreferences(FILE_KEY, Context.MODE_PRIVATE);
     }
 
-
     public boolean getUseVibration() {
         return sharedPref.getBoolean(vibrationKey, false);
     }
