@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import math
 import time
 import CONFIG
 import PINS
@@ -34,11 +35,15 @@ class LedController:
         start_new_thread(self.ledBlinkThread ,(pin,))
 
     def ledBlinkThread(self, pin):
-        while self.ledBlinking[pin]:
-            GPIO.output(pin, True)
-            time.sleep(CONFIG.ledBlinkDelay)
-            GPIO.output(pin, False)
-            time.sleep(CONFIG.ledBlinkDelay)
+        p = GPIO.PWM(pin, 100)
+	p.start(0)
+	i = 0
+	while self.ledBlinking[pin]:
+	    i = i + math.pi/10
+	    dc = (math.sin(i) + 1) * 50
+	    p.ChangeDutyCycle(dc)
+	    time.sleep(0.05)
+	p.stop()
 
     def ledWifi(self, on):
         self.setLed(PINS.ledWifi, on)

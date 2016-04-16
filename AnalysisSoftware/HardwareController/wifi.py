@@ -45,7 +45,7 @@ class WifiController:
 		return self.up
 
 	def isHotspotOn(self):
-		self.ap = subprocess.check_output("scripts/ap.sh")[:-1] == "active" and self.getNetwork() == "AudioAnt" and self.getIP() == "192.168.42.1"
+		self.ap = subprocess.check_output("scripts/ap.sh")[:-1] == "active" and "192.168.42.1" in self.getIP()
 		return self.ap
 
 	def toggle(self):

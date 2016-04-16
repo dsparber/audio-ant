@@ -8,7 +8,7 @@ class AlertLight:
 
     def __init__(self):
         GPIO.setup(PINS.alertLight, GPIO.OUT)
-        GPIO.output(PINS.alertLight, True)
+        GPIO.output(PINS.alertLight, False)
         self.running = False
 
     def blink(self):
@@ -27,7 +27,7 @@ class AlertLight:
         self.running = False
 
     def on(self):
-        GPIO.output(PINS.alertLight, False)
+        GPIO.output(PINS.alertLight, True)
 
     def off(self):
-        GPIO.output(PINS.alertLight, True)
+        GPIO.output(PINS.alertLight, False)
