@@ -59,6 +59,7 @@ public class AudioAntSettings extends AppCompatActivity {
     private Settings settings;
     private boolean connectedToNewNetwork = false;
     private boolean readyForResult = false;
+    private boolean resultReceived = false;
     private String chosenNetwork = "";
     private MediaPlayer player;
     private AlertDialog loadingDialog;
@@ -225,7 +226,10 @@ public class AudioAntSettings extends AppCompatActivity {
 
     public void handleSettingsReceived(Context context, Intent intent) {
 
-        loadSettingsDialog.dismiss();
+        if (loadSettingsDialog != null)
+            loadSettingsDialog.dismiss();
+
+        resultReceived = true;
 
         try {
             JSONObject obj = new JSONObject(intent.getStringExtra("json"));
@@ -289,22 +293,19 @@ public class AudioAntSettings extends AppCompatActivity {
         if (connectedToNewNetwork) {
 
             sendConnectToLocalWifiJson();
-            Toast.makeText(this, "es hat funktioniert!!!", Toast.LENGTH_SHORT).show();
             new Settings(this).setLocalWifiName("" + wlanName.getText());
             readyForResult = false;
         } else {
-            Toast.makeText(this, "es hat nicht funktioniert!!!", Toast.LENGTH_SHORT).show();
-
-//            AlertDialog.Builder alert = new AlertDialog.Builder(AudioAntSettings.this);
-//            alert.setTitle("Fehler!");
-//            alert.setMessage(getResources().getString(R.string.audioant_settings_message_connect_error));
-//            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                }
-//            });
-//            alert.show();
+            AlertDialog.Builder alert = new AlertDialog.Builder(AudioAntSettings.this);
+            alert.setTitle("Fehler!");
+            alert.setMessage(getResources().getString(R.string.audioant_settings_message_connect_error));
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alert.show();
         }
     }
 
@@ -369,14 +370,26 @@ public class AudioAntSettings extends AppCompatActivity {
     }
 
     private void fetchData() {
-        try {
-            JSONObject object = new JSONObject();
-            object.put("action", "getCurrentSettings");
-            communicationService.sendToServer(object.toString());
-            Log.d(TAG, "AudioAnt settings were requested");
-        } catch (JSONException e) {
-            Log.d(TAG, "Json could not be created");
-        }
+        resultReceived = false;
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                while (!resultReceived) {
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("action", "getCurrentSettings");
+                        communicationService.sendToServer(object.toString());
+                        Log.d(TAG, "AudioAnt settings were requested");
+                        Thread.sleep(500);
+                    } catch (JSONException | InterruptedException e) {
+                        Log.d(TAG, "Json could not be created");
+                    }
+
+                }
+            }
+        };
+        new Thread(r).start();
     }
 
 
@@ -520,5 +533,6 @@ public class AudioAntSettings extends AppCompatActivity {
     public void reconnectToHotspot() {
         Log.d(TAG, "trying to reconnect to hotspot");
         wifiHelper.connectToWifi(new Constants().AA_HOTSPOT_NAME, new Constants().AA_HOTSPOT_PW);
+        communicationService.initialiseNetworkConnection(true);
     }
 }

@@ -41,15 +41,18 @@ public class WifiHelper {
             }
         }
 
+        int netId = -1;
+
         //Damit netzwerke nicht doppelt auftauchen
         List<WifiConfiguration> bekannteNetzwerke = wifiManager.getConfiguredNetworks();
         for (int i = 0; i < bekannteNetzwerke.size(); i++) {
             if (bekannteNetzwerke.get(i).SSID.equals("\"" + ssid + "\"")) {
-                int netId = bekannteNetzwerke.get(i).networkId;
-                wifiManager.removeNetwork(netId);
+                netId = bekannteNetzwerke.get(i).networkId;
             }
         }
-        int netId = wifiManager.addNetwork(wifiConfiguration);
+        if (netId == -1) {
+            netId = wifiManager.addNetwork(wifiConfiguration);
+        }
         wifiManager.enableNetwork(netId, true);
         wifiManager.setWifiEnabled(true);
     }
