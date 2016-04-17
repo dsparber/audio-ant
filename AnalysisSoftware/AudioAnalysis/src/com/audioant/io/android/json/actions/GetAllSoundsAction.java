@@ -7,9 +7,9 @@ import org.json.simple.JSONObject;
 
 import com.audioant.audio.learning.LearnedSounds;
 import com.audioant.audio.model.Sound;
-import com.audioant.io.android.json.JsonReplyAction;
 import com.audioant.io.android.json.JsonFields;
 import com.audioant.io.android.json.JsonFields.GetAllSounds;
+import com.audioant.io.android.json.JsonReplyAction;
 
 public class GetAllSoundsAction extends JsonReplyAction {
 
@@ -29,7 +29,7 @@ public class GetAllSoundsAction extends JsonReplyAction {
 
 		for (Sound s : soundList) {
 			JSONObject sound = new JSONObject();
-			sound.put(GetAllSounds.Reply.SOUND_NAME_KEY, s.getNameNotNull());
+			sound.put(GetAllSounds.Reply.SOUND_NAME_KEY, s.getTextForDisplay());
 			sound.put(GetAllSounds.Reply.SOUND_NUMBER_KEY, new Integer(s.getId()));
 			sounds.add(sound);
 		}

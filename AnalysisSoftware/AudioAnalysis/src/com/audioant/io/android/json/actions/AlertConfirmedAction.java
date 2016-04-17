@@ -15,7 +15,7 @@ public class AlertConfirmedAction implements JsonRequestAction {
 	public AlertConfirmedAction(JSONObject jsonObject) {
 		try {
 			AlertController.getInstance().confirmAlert();
-			Events.getInstance().reset();
+			Events.reset();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

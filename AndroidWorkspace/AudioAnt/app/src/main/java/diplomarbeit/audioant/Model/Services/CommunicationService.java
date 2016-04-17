@@ -177,7 +177,7 @@ public class CommunicationService extends Service {
         try {
             Log.d(TAG, "string wird an server gesendet");
             printer.write(content);
-//            printer.write("\r");
+            printer.write("\r\n");
             printer.flush();
         } catch (NullPointerException e) {
             Log.d(TAG, "fehler beim senden, server stream nicht bereit");

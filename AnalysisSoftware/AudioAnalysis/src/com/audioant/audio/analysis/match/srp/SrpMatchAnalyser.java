@@ -54,6 +54,7 @@ public class SrpMatchAnalyser {
 
 				if (isMatch(recentValue, savedValue)) {
 					c2++;
+					break;
 				}
 			}
 		}
