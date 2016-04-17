@@ -28,7 +28,9 @@ public class AudioAnt {
 
 			new File(log).getParentFile().mkdirs();
 
-			System.setErr(new PrintStream(new FileOutputStream(log)));
+			if (!(args.length > 0 && args[0].equals("log"))) {
+				System.setErr(new PrintStream(new FileOutputStream(log)));
+			}
 
 			RaspberryTool.start();
 		}

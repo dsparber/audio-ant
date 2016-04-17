@@ -35,9 +35,8 @@ public class Events {
 		alertedSounds.addAll(sounds);
 	}
 
-	public void reset() {
-		lastSounds = new ArrayList<Sound>();
-		alertedSounds = new ArrayList<Sound>();
+	public static void reset() {
+		events = null;
 	}
 
 	public boolean notNotified(List<Sound> newSounds) {
@@ -53,7 +52,7 @@ public class Events {
 		List<Sound> newSounds = new ArrayList<Sound>();
 
 		for (Sound sound : lastSounds) {
-			if (!alertedSounds.contains(sound)) {
+			if (!alertedSounds.contains(sound) && !newSounds.contains(sound)) {
 				newSounds.add(sound);
 			}
 		}

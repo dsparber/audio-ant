@@ -52,10 +52,15 @@ public class RaspberryEvents implements Observer {
 		if (arg instanceof Button) {
 			Button button = (Button) arg;
 			if (button.equals(Button.BUTTON_CONFIRM)) {
-				events.reset();
+				Events.reset();
 
 				AlertConfirmedAction action = new AlertConfirmedAction();
 				AndroidConnection.write(action.createRequest().toJSONString());
+				try {
+					AlertController.getInstance().confirmAlert();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -70,26 +75,23 @@ public class RaspberryEvents implements Observer {
 			try {
 				AlertSettings settings = AlertSettings.getInstance();
 
-				if (events.notNotified(newSounds)) {
-					if (settings.isLightSignals()) {
-						AlertController.getInstance().blink();
-
-						if (settings.isAudioSignals()) {
-
-							Integer id = LearnedSounds.getSound(newSounds.get(0).getId()).getAlertId();
-							Integer defaultId = AlertSettings.getInstance().getAlertSoundId();
-
-							String path = Config.FOLDER_GLOBAL + Config.ALERT_SOUNDS_FOLDER_PATH
-									+ AlertSounds.getSoundFallback(id, defaultId).getId() + '/'
-									+ Config.ALERT_SOUNDS_FILE;
-
-							AlertController.getInstance().playSound(path);
-						}
-					}
-				}
 				if (!newSounds.isEmpty()) {
 					for (Sound sound : newSounds) {
 						AlertController.getInstance().writeText(sound.getTextForDisplay());
+					}
+					System.out.println();
+					if (settings.isLightSignals()) {
+						AlertController.getInstance().blink();
+					}
+					if (settings.isAudioSignals()) {
+
+						Integer id = LearnedSounds.getSound(newSounds.get(0).getId()).getAlertId();
+						Integer defaultId = AlertSettings.getInstance().getAlertSoundId();
+
+						String path = Config.FOLDER_GLOBAL + Config.ALERT_SOUNDS_FOLDER_PATH
+								+ AlertSounds.getSoundFallback(id, defaultId).getId() + '/' + Config.ALERT_SOUNDS_FILE;
+
+						AlertController.getInstance().playSound(path);
 					}
 				}
 
